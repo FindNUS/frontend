@@ -1,0 +1,8 @@
+@use "../abstracts/variables" as *;
+
+@import url("https://fonts.googleapis.com/css2?family=Dosis:wght@400;700&display=swap");
+
+body {
+  font-family: $font-body, sans-serif;
+  font-size: $ftsz-body;
+}
