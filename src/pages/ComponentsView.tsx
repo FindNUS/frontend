@@ -2,6 +2,7 @@ import React from "react";
 import "../App.scss";
 import Logo from "../components/logo";
 import Button from "../components/Button";
+import ButtonFound from "../components/ButtonFound";
 import SearchBar from "../components/SearchBar";
 
 function ComponentsView() {
@@ -17,6 +18,7 @@ function ComponentsView() {
         <Button class="btn btn--secondary" text="Secondary" />
         <Button class="btn btn--tertiary" text="Tertiary" />
         <Button class="btn btn--search" text="Search" />
+        <ButtonFound />
       </div>
       <div>
         <h2>Search Bar</h2>
