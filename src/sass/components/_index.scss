@@ -1,2 +1,7 @@
 @forward "./button";
 @forward "./logo";
+@forward "./search";
+
+.components > * {
+  padding-bottom: 1rem;
+}
