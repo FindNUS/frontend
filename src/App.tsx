@@ -1,19 +1,17 @@
 import React from "react";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import "./App.scss";
-import Logo from "./components/logo";
-import Button from "./components/Button";
+import Home from "./pages/Home";
+import ComponentsView from "./pages/ComponentsView";
 
 function App() {
   return (
-    <div className="App">
-      <Logo />
-      <div>
-        <h2>Buttons</h2>
-      <Button class="btn btn__primary" text="Primary" />
-      <Button class="btn btn__secondary" text="Secondary" />
-      <Button class="btn btn__tertiary" text="Tertiary" />
-      </div>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/components" element={<ComponentsView />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
