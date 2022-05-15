@@ -4,6 +4,7 @@ import Logo from "../components/logo";
 import Button from "../components/Button";
 import ButtonFound from "../components/ButtonFound";
 import SearchBar from "../components/SearchBar";
+import Header from "../components/header/Header";
 
 function ComponentsView() {
   return (
@@ -23,6 +24,9 @@ function ComponentsView() {
       <div>
         <h2>Search Bar</h2>
         <SearchBar prompt="Search for an item" />
+      </div>
+      <div>
+        <Header />
       </div>
     </div>
   );

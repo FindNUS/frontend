@@ -1,7 +1,9 @@
 @forward "./button";
+@forward "./link";
 @forward "./logo";
 @forward "./search";
 
 .components > * {
   padding-bottom: 1rem;
+  background-color: #ccc;
 }
