@@ -1,0 +1,42 @@
+@use "../abstracts/variables" as *;
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 2rem 6rem;
+  height: $header-height;
+
+  .nav {
+    &__list {
+      list-style: none;
+      display: flex;
+      flex-direction: row;
+      gap: 2rem;
+      font-weight: bold;
+      color: $colour-white;
+    }
+
+    &__item {
+      position: relative;
+      padding: 1rem 2rem;
+      cursor: pointer;
+      // filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+
+      &::after {
+        content: "";
+        height: 0.3rem;
+        width: 0;
+        background-color: $colour-secondary;
+        position: absolute;
+        bottom: 0;
+        left: 25%;
+        transition: width 1s cubic-bezier(0.075, 0.82, 0.165, 1);
+      }
+
+      &:hover::after {
+        width: 50%;
+      }
+    }
+  }
+}

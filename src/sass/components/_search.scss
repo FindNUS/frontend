@@ -1,0 +1,22 @@
+@use "../abstracts/variables" as *;
+
+.search {
+  height: 5rem;
+  width: 50rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: $colour-primary;
+  border-radius: 2.5rem;
+
+  &__prompt {
+    width: 100%;
+    border: none;
+    background: none;
+    color: $colour-white;
+    margin-left: 2.5rem;
+    margin-right: 1rem;
+    font-family: "Dosis";
+    font-size: 2rem;
+  }
+}
