@@ -1,10 +1,14 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import "./App.scss";
 import Home from "./pages/Home";
 import ComponentsView from "./pages/ComponentsView";
 
 function App() {
+  useEffect(() => {
+    document.title = "FindNUS";
+  }, []);
+
   return (
     <BrowserRouter>
       <Routes>
