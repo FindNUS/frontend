@@ -1,6 +1,4 @@
 @use "../abstracts/variables" as *;
-$bg-filter-alpha: 0.2;
-$header-height: 10rem;
 
 .home {
   width: 100vw;
@@ -14,7 +12,7 @@ $header-height: 10rem;
   background-attachment: fixed;
   background-position: center;
   background-size: cover;
-  padding: 2rem;
+  padding: $pages-padding;
 
   &__nav {
     height: $header-height;
