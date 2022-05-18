@@ -6,11 +6,15 @@ import "./index.css";
 import App from "./App";
 import store from "./store";
 import reportWebVitals from "./reportWebVitals";
+import { ReactReduxFirebaseProvider } from "react-redux-firebase";
+import { rrfProps } from "./firebase";
 
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
-      <App />
+      <ReactReduxFirebaseProvider {...rrfProps}>
+        <App />
+      </ReactReduxFirebaseProvider>
     </Provider>
   </React.StrictMode>,
   document.getElementById("root")
