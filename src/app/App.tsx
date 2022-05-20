@@ -1,9 +1,9 @@
 import React, { useEffect } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import "./App.scss";
-import Home from "./pages/Home";
-import ComponentsView from "./pages/ComponentsView";
-import Login from "./pages/Login";
+import Home from "../pages/Home";
+import ComponentsView from "../pages/ComponentsView";
+import Login from "../pages/Login";
 
 function App() {
   useEffect(() => {
