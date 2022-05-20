@@ -1,5 +1,5 @@
 import React from "react";
-import "../App.scss";
+import "../app/App.scss";
 import Logo from "../components/logo";
 import Button from "../components/Button";
 import ButtonFound from "../components/ButtonFound";
