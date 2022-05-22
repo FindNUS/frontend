@@ -2,6 +2,7 @@ import React from "react";
 import FormField from "../../components/FormField";
 import { useAppDispatch } from "../../app/hooks";
 import { onChangeNumber, onChangeOTP } from "./loginSlice";
+import GetOTPButton from "./GetOTPButton";
 
 const LoginForm: React.FC = function () {
   const dispatch = useAppDispatch();
@@ -19,19 +20,8 @@ const LoginForm: React.FC = function () {
     dispatch(onChangeOTP(target.value));
   };
 
-  // User verification
-  const handleGetOTP = (ev: React.MouseEvent<HTMLButtonElement>) => {
-    ev.preventDefault();
-    // TODO
-  };
-
-  const handleVerifyOTP = (ev: React.MouseEvent<HTMLFormElement>) => {
-    ev.preventDefault();
-    // TODO
-  };
-
   return (
-    <form className="login-form" onSubmit={handleVerifyOTP}>
+    <form className="login-form">
       <h3 className="login-form__header">Log In</h3>
       <div>
         <FormField
@@ -43,12 +33,7 @@ const LoginForm: React.FC = function () {
         <div>
           <FormField labelContent="Enter OTP" onChange={handleInputOTPChange} />
         </div>
-        <button
-          className="btn btn--tertiary login-form__btn"
-          onClick={handleGetOTP}
-        >
-          Get OTP
-        </button>
+        <GetOTPButton />
       </div>
       <div className="login-form__submit">
         <button type="submit" className="btn btn--secondary">
