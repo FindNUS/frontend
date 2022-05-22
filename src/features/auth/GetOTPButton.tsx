@@ -1,12 +1,18 @@
 import React from "react";
-import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { setConfirmationResult, selectNumber } from "./loginSlice";
+import { useAppSelector } from "../../app/hooks";
+import { selectNumber } from "./loginSlice";
 import firebase from "firebase/compat/app";
+import type { confirmationResultType } from "./LoginForm";
 
 const BUTTON_ID_GET_OTP = "button-get-otp";
 
-const GetOTPButton: React.FC = function () {
-  const dispatch = useAppDispatch();
+interface GetOTPButtonProps {
+  onGetOTP: React.Dispatch<React.SetStateAction<confirmationResultType>>;
+}
+
+const GetOTPButton: React.FC<GetOTPButtonProps> = function (
+  props: GetOTPButtonProps
+) {
   const inputNumber = useAppSelector(selectNumber);
   // RecaptchaVerifier is not initialised at run time
   // since the button must be in the DOM at the time of initialisation
@@ -22,7 +28,7 @@ const GetOTPButton: React.FC = function () {
       .auth()
       .signInWithPhoneNumber(inputNumber, appVerifier);
     console.log("Requested for OTP");
-    dispatch(setConfirmationResult(confirmationResult));
+    props.onGetOTP(confirmationResult);
   };
 
   return (

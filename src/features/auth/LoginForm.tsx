@@ -1,11 +1,25 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import FormField from "../../components/FormField";
-import { useAppDispatch } from "../../app/hooks";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { onChangeNumber, onChangeOTP } from "./loginSlice";
+import firebase from "firebase/compat/app";
 import GetOTPButton from "./GetOTPButton";
+import VerifyOTPButton from "./VerifyOTPButton";
+
+export type confirmationResultType =
+  | firebase.auth.ConfirmationResult
+  | undefined;
 
 const LoginForm: React.FC = function () {
   const dispatch = useAppDispatch();
+  const [confirmationResult, setConfirmationResult] =
+    useState<confirmationResultType>(undefined);
+  const state = useAppSelector((state) => state);
+
+  useEffect(() => {
+    console.log(confirmationResult);
+    console.log(state);
+  }, [confirmationResult, state]);
 
   // Handle form input change
   // Dispatch action to update input number in store
@@ -33,12 +47,13 @@ const LoginForm: React.FC = function () {
         <div>
           <FormField labelContent="Enter OTP" onChange={handleInputOTPChange} />
         </div>
-        <GetOTPButton />
+        <GetOTPButton onGetOTP={setConfirmationResult} />
       </div>
       <div className="login-form__submit">
-        <button type="submit" className="btn btn--secondary">
-          Log In
-        </button>
+        <VerifyOTPButton
+          confirmationResult={confirmationResult}
+          setConfirmationResult={setConfirmationResult}
+        />
       </div>
     </form>
   );
