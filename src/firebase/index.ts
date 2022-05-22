@@ -1,4 +1,5 @@
-import store from "../store";
+import store from "../app/store";
+import { getAuth } from "firebase/auth";
 
 // Firebase
 import firebase from "firebase/compat/app";
@@ -21,6 +22,10 @@ const fbConfig = {
 
 // Initialize firebase instance
 firebase.initializeApp(fbConfig);
+
+// Phone number sign-in setup
+const auth = getAuth();
+auth.languageCode = "it";
 
 export const rrfProps = {
   firebase,

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 
 interface FormFieldProps {
   labelContent: string;
+  onChange: (ev: React.FormEvent<HTMLInputElement>) => void;
 }
 
 const FormField: React.FC<FormFieldProps> = function (props: FormFieldProps) {
@@ -21,6 +22,7 @@ const FormField: React.FC<FormFieldProps> = function (props: FormFieldProps) {
         className="form-field__input"
         onFocus={handleFocusChange}
         onBlur={handleFocusChange}
+        onChange={props.onChange}
       />
     </>
   );
