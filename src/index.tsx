@@ -6,7 +6,7 @@ import App from "./app/App";
 import store from "./app/store";
 import reportWebVitals from "./reportWebVitals";
 import { ReactReduxFirebaseProvider } from "react-redux-firebase";
-import { rrfProps } from "./firebase";
+import { rrfProps } from "./features/auth/firebase";
 
 ReactDOM.render(
   <React.StrictMode>

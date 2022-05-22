@@ -2,7 +2,7 @@ import { combineReducers } from "@reduxjs/toolkit";
 import { firebaseReducer } from "react-redux-firebase";
 
 // Reducers
-import loginReducer from "./slices/login-slice";
+import loginReducer from "../features/auth/loginSlice";
 
 const rootReducer = combineReducers({
   firebase: firebaseReducer,

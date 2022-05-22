@@ -1,7 +1,7 @@
 import React from "react";
-import FormField from "./FormField";
-import { useAppDispatch } from "../app/hooks";
-import { onChangeNumber, onChangeOTP } from "../app/slices/login-slice";
+import FormField from "../../components/FormField";
+import { useAppDispatch } from "../../app/hooks";
+import { onChangeNumber, onChangeOTP } from "./loginSlice";
 
 const LoginForm: React.FC = function () {
   const dispatch = useAppDispatch();
