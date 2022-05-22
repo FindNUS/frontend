@@ -15,6 +15,15 @@ const VerifyOTPButton: React.FC<VerifyOTPButtonProps> = function (
 ) {
   const inputOTP = useAppSelector(selectOTP);
 
+  /**
+   * Verifies OTP input by the user
+   *
+   * User must get OTP before they are allowed to verify OTP
+   *
+   * @param ev The DOM event triggerred by a mouse click
+   * @returns {void}
+   * @todo Implement error handling with error message
+   */
   const handleVerifyOTP = async (ev: React.MouseEvent<HTMLButtonElement>) => {
     try {
       ev.preventDefault();

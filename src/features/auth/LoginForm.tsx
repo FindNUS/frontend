@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import FormField from "../../components/FormField";
-import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { useAppDispatch } from "../../app/hooks";
 import { onChangeNumber, onChangeOTP } from "./loginSlice";
 import firebase from "firebase/compat/app";
 import GetOTPButton from "./GetOTPButton";
@@ -14,21 +14,23 @@ const LoginForm: React.FC = function () {
   const dispatch = useAppDispatch();
   const [confirmationResult, setConfirmationResult] =
     useState<confirmationResultType>(undefined);
-  const state = useAppSelector((state) => state);
-
-  useEffect(() => {
-    console.log(confirmationResult);
-    console.log(state);
-  }, [confirmationResult, state]);
 
   // Handle form input change
-  // Dispatch action to update input number in store
+  /**
+   * Update input phone number in the store
+   * Dispatches the onChangeNumber action
+   * @param ev The DOM event triggerred by an input element change
+   */
   const handleInputNumberChange = (ev: React.FormEvent<HTMLInputElement>) => {
     const target = ev.target as HTMLInputElement;
     dispatch(onChangeNumber(target.value));
   };
 
-  // Dispatch action to update OTP in store
+  /**
+   * Update input OTP in the store
+   * Dispatches the onChangeOTP action
+   * @param ev The DOM event triggerred by an input element change
+   */
   const handleInputOTPChange = (ev: React.FormEvent<HTMLInputElement>) => {
     const target = ev.target as HTMLInputElement;
     dispatch(onChangeOTP(target.value));
