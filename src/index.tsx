@@ -5,11 +5,15 @@ import { Provider } from "react-redux";
 import App from "./app/App";
 import store from "./app/store";
 import reportWebVitals from "./reportWebVitals";
+import { ReactReduxFirebaseProvider } from "react-redux-firebase";
+import { rrfProps } from "./app/firebase";
 
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
-      <App />
+      <ReactReduxFirebaseProvider {...rrfProps}>
+        <App />
+      </ReactReduxFirebaseProvider>
     </Provider>
   </React.StrictMode>,
   document.getElementById("root")

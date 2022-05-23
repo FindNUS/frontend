@@ -1,6 +1,8 @@
 @use "../abstracts/variables" as *;
 
 .form-field {
+  margin-top: -1rem;
+
   &__label {
     background-color: inherit;
     padding: 0.2rem 0.6rem;
