@@ -1,0 +1,39 @@
+@use "../abstracts/variables" as *;
+
+.popup-msg {
+  background-color: $colour-grey-dark-medium;
+  color: $colour-white;
+  width: 100%;
+  padding: 0.8rem 2rem;
+  border-radius: 5px;
+  font-size: 90%;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+
+  &__message {
+    padding-left: 0.5rem;
+  }
+
+  &__icon {
+    margin-bottom: -0.2rem;
+  }
+
+  &--success {
+    background-color: $colour-success;
+    border: 2.4px solid darken($colour-success, 20);
+    color: inherit;
+  }
+
+  &--warning {
+    background-color: $colour-warning;
+    border: 2.4px solid darken($colour-warning, 20);
+    color: inherit;
+  }
+
+  &--error {
+    background-color: $colour-error;
+    border: 2.4px solid darken($colour-error, 20);
+    color: inherit;
+  }
+}

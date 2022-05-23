@@ -5,9 +5,17 @@ import { onChangeNumber, onChangeOTP } from "./loginSlice";
 import firebase from "firebase/compat/app";
 import GetOTPButton from "./GetOTPButton";
 import VerifyOTPButton from "./VerifyOTPButton";
+import { PopupMessageProps } from "../../components/PopupMessage";
 
 export type confirmationResultType =
   | firebase.auth.ConfirmationResult
+  | undefined;
+
+export type LoginStatus =
+  | "success"
+  | "warning"
+  | "error"
+  | "loading"
   | undefined;
 
 const LoginForm: React.FC = function () {
@@ -39,14 +47,14 @@ const LoginForm: React.FC = function () {
   return (
     <form className="login-form">
       <h3 className="login-form__header">Log In</h3>
-      <div>
+      <div className="form-field">
         <FormField
           labelContent="Phone Number"
           onChange={handleInputNumberChange}
         />
       </div>
       <div className="login-form__otp">
-        <div>
+        <div className="form-field">
           <FormField labelContent="Enter OTP" onChange={handleInputOTPChange} />
         </div>
         <GetOTPButton onGetOTP={setConfirmationResult} />
