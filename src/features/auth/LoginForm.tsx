@@ -33,6 +33,7 @@ const LoginForm: React.FC = function () {
   const loginMessage = useAppSelector(selectLoginMessage);
   const [appVerifier, setAppVerifier] = useState<recaptchaType>(undefined);
   const recaptchaWrapperRef = useRef<HTMLDivElement>(null);
+  const inputOTPRef = useRef<HTMLInputElement>(null);
 
   // Handle form input change
   /**
@@ -55,6 +56,12 @@ const LoginForm: React.FC = function () {
     dispatch(onChangeOTP(target.value));
   };
 
+  // Clear OTP field after user is verified
+  if (!confirmationResult && inputOTPRef.current) {
+    const { current: inputOTPEl } = inputOTPRef;
+    inputOTPEl.value = "";
+  }
+
   return (
     <form className="login-form">
       <h3 className="login-form__header">Log In</h3>
@@ -74,6 +81,7 @@ const LoginForm: React.FC = function () {
             labelContent="Enter OTP"
             onChange={handleInputOTPChange}
             disabled={!confirmationResult}
+            inputRef={inputOTPRef}
           />
         </div>
         <GetOTPButton
