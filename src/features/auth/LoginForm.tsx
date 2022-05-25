@@ -65,11 +65,16 @@ const LoginForm: React.FC = function () {
         <FormField
           labelContent="Phone Number"
           onChange={handleInputNumberChange}
+          disabled={false}
         />
       </div>
       <div className="login-form__otp">
         <div className="form-field">
-          <FormField labelContent="Enter OTP" onChange={handleInputOTPChange} />
+          <FormField
+            labelContent="Enter OTP"
+            onChange={handleInputOTPChange}
+            disabled={!confirmationResult}
+          />
         </div>
         <GetOTPButton
           setConfirmationResult={setConfirmationResult}

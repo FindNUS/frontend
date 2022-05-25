@@ -81,6 +81,7 @@ const VerifyOTPButton: React.FC<VerifyOTPButtonProps> = function (
       type="submit"
       className="btn btn--secondary"
       onClick={handleVerifyOTP}
+      disabled={!props.confirmationResult}
     >
       Verify OTP
     </button>

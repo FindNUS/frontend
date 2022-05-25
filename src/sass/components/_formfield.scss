@@ -36,5 +36,9 @@
       outline: none;
       border: 2.2px solid $colour-tertiary;
     }
+
+    &:disabled:hover {
+      cursor: not-allowed;
+    }
   }
 }
