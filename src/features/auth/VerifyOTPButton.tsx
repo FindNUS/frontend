@@ -3,6 +3,7 @@ import { useAppSelector, useAppDispatch } from "../../app/hooks";
 import { selectOTP, updateStatus, updateMessage } from "./loginSlice";
 import type { confirmationResultType, recaptchaType } from "./LoginForm";
 import firebase from "firebase/compat/app";
+import { clearAppVerifier } from "./GetOTPButton";
 
 interface VerifyOTPButtonProps {
   confirmationResult: confirmationResultType;
@@ -19,7 +20,7 @@ const VerifyOTPButton: React.FC<VerifyOTPButtonProps> = function (
 ) {
   const inputOTP = useAppSelector(selectOTP);
   const dispatch = useAppDispatch();
-  const { setAppVerifier } = props;
+  const { setAppVerifier, setConfirmationResult, recaptchaRef } = props;
   const { appVerifier } = props as {
     appVerifier: firebase.auth.RecaptchaVerifier;
   };
@@ -55,7 +56,7 @@ const VerifyOTPButton: React.FC<VerifyOTPButtonProps> = function (
 
       // Successfully Logged In
       // Clear confirmation upon verification
-      props.setConfirmationResult(undefined);
+      setConfirmationResult(undefined);
 
       dispatch(updateStatus("success"));
       dispatch(
@@ -67,11 +68,8 @@ const VerifyOTPButton: React.FC<VerifyOTPButtonProps> = function (
       );
 
       // Clear reCAPTCHA widget and destroy the current instance
-      appVerifier.clear();
       setAppVerifier(undefined);
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      recaptchaRef.current.innerHTML = `<div id="recaptcha-container"></div>`;
+      clearAppVerifier(appVerifier, recaptchaRef);
     } catch (error) {
       // TODO: Handle error
       console.error(error);

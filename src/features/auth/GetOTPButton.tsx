@@ -23,7 +23,7 @@ interface GetOTPButtonProps {
  *  Set to undefined if to only re-render the ref element.
  * @param recaptchaRef Ref to the wrapper div for the reCAPTCHA element.
  */
-const clearAppVerifier = (
+export const clearAppVerifier = (
   appVerifier: firebase.auth.RecaptchaVerifier | undefined,
   recaptchaRef: React.RefObject<HTMLDivElement>
 ) => {
