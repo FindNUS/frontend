@@ -3,6 +3,7 @@ import { useAppSelector, useAppDispatch } from "../../app/hooks";
 import { selectOTP, updateStatus, updateMessage } from "./loginSlice";
 import type { confirmationResultType, recaptchaType } from "./LoginForm";
 import firebase from "firebase/compat/app";
+import { clearAppVerifier } from "./GetOTPButton";
 
 interface VerifyOTPButtonProps {
   confirmationResult: confirmationResultType;
@@ -19,20 +20,19 @@ const VerifyOTPButton: React.FC<VerifyOTPButtonProps> = function (
 ) {
   const inputOTP = useAppSelector(selectOTP);
   const dispatch = useAppDispatch();
-  const { setAppVerifier } = props;
+  const { setAppVerifier, setConfirmationResult, recaptchaRef } = props;
   const { appVerifier } = props as {
     appVerifier: firebase.auth.RecaptchaVerifier;
   };
 
   /**
-   * Verifies OTP input by the user
+   * Verifies OTP input by the user.
+   * User must get OTP before they are allowed to verify OTP.
    *
-   * User must get OTP before they are allowed to verify OTP
-   *
-   * @param ev The DOM event triggerred by a mouse click
+   * @param ev The DOM event triggerred by a mouse click.
    * @returns
-   * @todo Store returned user credentials
-   * @todo Handle caught errors
+   * @todo Store returned user credentials.
+   * @todo Handle caught errors.
    */
   const handleVerifyOTP = async (ev: React.MouseEvent<HTMLButtonElement>) => {
     // Check if user has requested for OTP
@@ -56,7 +56,7 @@ const VerifyOTPButton: React.FC<VerifyOTPButtonProps> = function (
 
       // Successfully Logged In
       // Clear confirmation upon verification
-      props.setConfirmationResult(undefined);
+      setConfirmationResult(undefined);
 
       dispatch(updateStatus("success"));
       dispatch(
@@ -68,14 +68,18 @@ const VerifyOTPButton: React.FC<VerifyOTPButtonProps> = function (
       );
 
       // Clear reCAPTCHA widget and destroy the current instance
-      appVerifier.clear();
       setAppVerifier(undefined);
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      recaptchaRef.current.innerHTML = `<div id="recaptcha-container"></div>`;
-    } catch (error) {
-      // TODO: Handle error
-      console.error(error);
+      clearAppVerifier(appVerifier, recaptchaRef);
+    } catch (e) {
+      // OTP Verification Error
+      const error = e as Error;
+
+      // Set error login state
+      dispatch(updateStatus("error"));
+      dispatch(updateMessage(error.message));
+      console.error(error.message);
+
+      // TODO: If OTP expired, allow user to request for another OTP
     }
   };
 
@@ -84,6 +88,7 @@ const VerifyOTPButton: React.FC<VerifyOTPButtonProps> = function (
       type="submit"
       className="btn btn--secondary"
       onClick={handleVerifyOTP}
+      disabled={!props.confirmationResult}
     >
       Verify OTP
     </button>

@@ -6,12 +6,12 @@ const Login: React.FC = function () {
   return (
     <div className="login">
       <Header />
-      <div className="login__container">
+      <section className="login__container">
         <div className="login__message">
           <h1>Welcome</h1>
         </div>
         <LoginForm />
-      </div>
+      </section>
     </div>
   );
 };

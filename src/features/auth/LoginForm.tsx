@@ -33,11 +33,12 @@ const LoginForm: React.FC = function () {
   const loginMessage = useAppSelector(selectLoginMessage);
   const [appVerifier, setAppVerifier] = useState<recaptchaType>(undefined);
   const recaptchaWrapperRef = useRef<HTMLDivElement>(null);
+  const inputOTPRef = useRef<HTMLInputElement>(null);
 
   // Handle form input change
   /**
-   * Update input phone number in the store
-   * Dispatches the onChangeNumber action
+   * Update input phone number in the store.
+   * Dispatches the onChangeNumber action.
    * @param ev The DOM event triggerred by an input element change
    */
   const handleInputNumberChange = (ev: React.FormEvent<HTMLInputElement>) => {
@@ -46,14 +47,20 @@ const LoginForm: React.FC = function () {
   };
 
   /**
-   * Update input OTP in the store
-   * Dispatches the onChangeOTP action
-   * @param ev The DOM event triggerred by an input element change
+   * Update input OTP in the store.
+   * Dispatches the onChangeOTP action.
+   * @param ev The DOM event triggerred by an input element change.
    */
   const handleInputOTPChange = (ev: React.FormEvent<HTMLInputElement>) => {
     const target = ev.target as HTMLInputElement;
     dispatch(onChangeOTP(target.value));
   };
+
+  // Clear OTP field after user is verified
+  if (!confirmationResult && inputOTPRef.current) {
+    const { current: inputOTPEl } = inputOTPRef;
+    inputOTPEl.value = "";
+  }
 
   return (
     <form className="login-form">
@@ -65,14 +72,20 @@ const LoginForm: React.FC = function () {
         <FormField
           labelContent="Phone Number"
           onChange={handleInputNumberChange}
+          disabled={false}
         />
       </div>
       <div className="login-form__otp">
         <div className="form-field">
-          <FormField labelContent="Enter OTP" onChange={handleInputOTPChange} />
+          <FormField
+            labelContent="Enter OTP"
+            onChange={handleInputOTPChange}
+            disabled={!confirmationResult}
+            inputRef={inputOTPRef}
+          />
         </div>
         <GetOTPButton
-          onGetOTP={setConfirmationResult}
+          setConfirmationResult={setConfirmationResult}
           recaptchaRef={recaptchaWrapperRef}
           setAppVerifier={setAppVerifier}
         />
