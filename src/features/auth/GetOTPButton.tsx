@@ -5,9 +5,12 @@ import {
   updateStatus,
   updateMessage,
   selectLoginStatus,
+  selectLastRequested,
+  setLastRequested,
 } from "./loginSlice";
 import firebase from "firebase/compat/app";
 import { confirmationResultType, recaptchaType } from "./LoginForm";
+import { OTP_REQUEST_TIMEOUT } from "../../constants/auth";
 
 interface GetOTPButtonProps {
   setConfirmationResult: React.Dispatch<
@@ -41,6 +44,7 @@ const GetOTPButton: React.FC<GetOTPButtonProps> = function (
   const dispatch = useAppDispatch();
   const inputNumber = useAppSelector(selectNumber);
   const loginStatus = useAppSelector(selectLoginStatus);
+  const lastRequested = useAppSelector(selectLastRequested);
 
   // Clear reCAPTCHA verifier when not in use
   useEffect(() => {
@@ -88,6 +92,32 @@ const GetOTPButton: React.FC<GetOTPButtonProps> = function (
         dispatch(updateMessage("Invalid phone number!"));
         return;
       }
+
+      // Set OTP last requested time to now (when button is clicked)
+      const now = new Date().getTime();
+      !lastRequested && dispatch(setLastRequested(now));
+
+      // Check if insuffidient time has passed
+      if (lastRequested) {
+        const timeNow = new Date().getTime();
+        const timeRemaining = Math.round(
+          (OTP_REQUEST_TIMEOUT - (timeNow - lastRequested)) / 1000
+        );
+
+        dispatch(updateStatus("warning"));
+        dispatch(
+          updateMessage(
+            `Wait ${timeRemaining} seconds before requesting for another OTP!`
+          )
+        );
+        return;
+      }
+
+      // Clear last request time after timeout
+      setTimeout(() => {
+        dispatch(setLastRequested(undefined));
+        dispatch(updateStatus(undefined));
+      }, OTP_REQUEST_TIMEOUT);
 
       // Set loading login state
       dispatch(updateStatus("loading"));
