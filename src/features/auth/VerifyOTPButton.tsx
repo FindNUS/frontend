@@ -70,9 +70,16 @@ const VerifyOTPButton: React.FC<VerifyOTPButtonProps> = function (
       // Clear reCAPTCHA widget and destroy the current instance
       setAppVerifier(undefined);
       clearAppVerifier(appVerifier, recaptchaRef);
-    } catch (error) {
-      // TODO: Handle error
-      console.error(error);
+    } catch (e) {
+      // OTP Verification Error
+      const error = e as Error;
+
+      // Set error login state
+      dispatch(updateStatus("error"));
+      dispatch(updateMessage(error.message));
+      console.error(error.message);
+
+      // TODO: If OTP expired, allow user to request for another OTP
     }
   };
 
