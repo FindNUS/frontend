@@ -25,14 +25,13 @@ const VerifyOTPButton: React.FC<VerifyOTPButtonProps> = function (
   };
 
   /**
-   * Verifies OTP input by the user
+   * Verifies OTP input by the user.
+   * User must get OTP before they are allowed to verify OTP.
    *
-   * User must get OTP before they are allowed to verify OTP
-   *
-   * @param ev The DOM event triggerred by a mouse click
+   * @param ev The DOM event triggerred by a mouse click.
    * @returns
-   * @todo Store returned user credentials
-   * @todo Handle caught errors
+   * @todo Store returned user credentials.
+   * @todo Handle caught errors.
    */
   const handleVerifyOTP = async (ev: React.MouseEvent<HTMLButtonElement>) => {
     // Check if user has requested for OTP

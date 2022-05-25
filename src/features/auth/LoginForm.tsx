@@ -36,8 +36,8 @@ const LoginForm: React.FC = function () {
 
   // Handle form input change
   /**
-   * Update input phone number in the store
-   * Dispatches the onChangeNumber action
+   * Update input phone number in the store.
+   * Dispatches the onChangeNumber action.
    * @param ev The DOM event triggerred by an input element change
    */
   const handleInputNumberChange = (ev: React.FormEvent<HTMLInputElement>) => {
@@ -46,9 +46,9 @@ const LoginForm: React.FC = function () {
   };
 
   /**
-   * Update input OTP in the store
-   * Dispatches the onChangeOTP action
-   * @param ev The DOM event triggerred by an input element change
+   * Update input OTP in the store.
+   * Dispatches the onChangeOTP action.
+   * @param ev The DOM event triggerred by an input element change.
    */
   const handleInputOTPChange = (ev: React.FormEvent<HTMLInputElement>) => {
     const target = ev.target as HTMLInputElement;
