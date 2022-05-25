@@ -72,7 +72,7 @@ const LoginForm: React.FC = function () {
           <FormField labelContent="Enter OTP" onChange={handleInputOTPChange} />
         </div>
         <GetOTPButton
-          onGetOTP={setConfirmationResult}
+          setConfirmationResult={setConfirmationResult}
           recaptchaRef={recaptchaWrapperRef}
           setAppVerifier={setAppVerifier}
         />

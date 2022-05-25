@@ -10,7 +10,9 @@ import firebase from "firebase/compat/app";
 import { confirmationResultType, recaptchaType } from "./LoginForm";
 
 interface GetOTPButtonProps {
-  onGetOTP: React.Dispatch<React.SetStateAction<confirmationResultType>>;
+  setConfirmationResult: React.Dispatch<
+    React.SetStateAction<confirmationResultType>
+  >;
   recaptchaRef: React.RefObject<HTMLDivElement>;
   setAppVerifier: React.Dispatch<React.SetStateAction<recaptchaType>>;
 }
@@ -59,7 +61,7 @@ const GetOTPButton: React.FC<GetOTPButtonProps> = function (
   const handleGetOTP = async (ev: React.MouseEvent<HTMLButtonElement>) => {
     ev.preventDefault();
     const appVerifier = setupAppVerifier();
-    const { recaptchaRef, onGetOTP } = props;
+    const { recaptchaRef, setConfirmationResult } = props;
 
     try {
       // TODO: Validate number input
@@ -76,7 +78,7 @@ const GetOTPButton: React.FC<GetOTPButtonProps> = function (
       const confirmationResult = await firebase
         .auth()
         .signInWithPhoneNumber(inputNumber, appVerifier);
-      onGetOTP(confirmationResult);
+      setConfirmationResult(confirmationResult);
 
       // Set success login state
       dispatch(updateStatus("success"));
