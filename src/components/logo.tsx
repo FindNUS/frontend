@@ -1,11 +1,12 @@
 import React from "react";
+import findnusLogo from "../img/Logo_White_Red.png";
+import { Link } from "react-router-dom";
 
 const Logo: React.FC = function () {
   return (
-    <span className="logo">
-      <span className="logo__front">Find</span>
-      <span className="logo__back">NUS</span>
-    </span>
+    <Link to="/">
+      <img src={findnusLogo} className="logo" alt="FindNUS Logo" />
+    </Link>
   );
 };
 

@@ -1,5 +1,5 @@
 import React from "react";
-import Logo from "../components/logo";
+import Logo from "../components/Logo";
 import ButtonLink from "../components/buttons/ButtonLink";
 import SearchBar from "../components/SearchBar";
 import ButtonFound from "../components/buttons/ButtonFound";

@@ -1,15 +1,11 @@
 import React from "react";
-import Logo from "../logo";
-import { Link } from "react-router-dom";
+import Logo from "../Logo";
 import NavItem from "./NavItem";
 
 const Header: React.FC = function () {
   return (
     <header className="header">
-      <Link to="/" className="link--wrapper">
-        <Logo />
-      </Link>
-
+      <Logo />
       <nav className="nav">
         <ul className="nav__list">
           <NavItem to="/" text="Home" />
