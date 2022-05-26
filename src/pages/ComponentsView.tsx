@@ -1,8 +1,8 @@
 import React from "react";
 import "../app/App.scss";
 import Logo from "../components/logo";
-import Button from "../components/Button";
-import ButtonFound from "../components/ButtonFound";
+import Button from "../components/buttons/Button";
+import ButtonFound from "../components/buttons/ButtonFound";
 import SearchBar from "../components/SearchBar";
 import Header from "../components/header/Header";
 
