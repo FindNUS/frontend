@@ -16,6 +16,7 @@ const Home: React.FC = function () {
         <SearchBar prompt="Search for an item" />
         <ButtonFound />
       </section>
+      <section className="search-results"></section>
     </div>
   );
 };
