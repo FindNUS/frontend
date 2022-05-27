@@ -11,10 +11,10 @@ import ItemCard from "../components/ItemCard";
 function ComponentsView() {
   return (
     <div className="components">
-      <h2>Logo</h2>
+      <h3>Logo</h3>
       <Logo />
 
-      <h2>Buttons</h2>
+      <h3>Buttons</h3>
       <div className="components__horizontal">
         <Button class="btn btn--primary" text="Primary" />
         <Button class="btn btn--secondary" text="Secondary" />
@@ -23,20 +23,20 @@ function ComponentsView() {
         <ButtonFound />
       </div>
 
-      <h2>Search Bar</h2>
+      <h3>Search Bar</h3>
       <SearchBar prompt="Search for an item" />
 
-      <h2>Header</h2>
+      <h3>Header</h3>
       <Header />
 
-      <h2>Popup Message</h2>
+      <h3>Popup Message</h3>
       <div className="components__horizontal">
         <PopupMessage status="success" message="Success" />
         <PopupMessage status="warning" message="Warning" />
         <PopupMessage status="error" message="Error" />
       </div>
 
-      <h2>Item</h2>
+      <h3>Item</h3>
       <ItemCard
         category="grades"
         id="1"
@@ -45,6 +45,15 @@ function ComponentsView() {
         location="MPSH2"
         imageUrl="https://singaporegossip.files.wordpress.com/2016/07/download.jpg"
       />
+
+      <h3>Headings</h3>
+      <h1>This is a h1</h1>
+      <h2>This is a h2</h2>
+      <h3>This is a h3</h3>
+      <h4>This is a h4</h4>
+      <h5>This is a h5</h5>
+      <h6>This is a h6</h6>
+      <h2 className="text-white-shadow">This is a white h2</h2>
     </div>
   );
 }
