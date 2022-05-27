@@ -4,6 +4,7 @@ import "./App.scss";
 import Home from "../pages/Home";
 import ComponentsView from "../pages/ComponentsView";
 import Login from "../pages/Login";
+import SearchPage from "../pages/SearchPage";
 
 function App() {
   useEffect(() => {
@@ -15,6 +16,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/search" element={<SearchPage />} />
         <Route path="/components" element={<ComponentsView />} />
       </Routes>
     </BrowserRouter>
