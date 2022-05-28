@@ -1,7 +1,7 @@
 import React from "react";
 import Logo from "../components/Logo";
 import ButtonLink from "../components/buttons/ButtonLink";
-import SearchBar from "../components/SearchBar";
+import SearchBar from "../features/search/SearchBar";
 import ButtonFound from "../components/buttons/ButtonFound";
 
 const Home: React.FC = function () {
