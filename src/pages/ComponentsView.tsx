@@ -3,7 +3,7 @@ import "../app/App.scss";
 import Logo from "../components/Logo";
 import Button from "../components/buttons/Button";
 import ButtonFound from "../components/buttons/ButtonFound";
-import SearchBar from "../components/SearchBar";
+import SearchBar from "../features/search/SearchBar";
 import Header from "../components/header/Header";
 import PopupMessage from "../components/PopupMessage";
 import ItemCard from "../components/ItemCard";
