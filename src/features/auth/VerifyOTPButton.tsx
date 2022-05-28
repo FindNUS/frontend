@@ -1,5 +1,5 @@
 import React from "react";
-import { useAppSelector, useAppDispatch } from "../../app/hooks";
+import { useAppSelector, useAppDispatch } from "../../hooks";
 import { selectOTP, updateStatus, updateMessage } from "./loginSlice";
 import type { confirmationResultType, recaptchaType } from "./LoginForm";
 import firebase from "firebase/compat/app";

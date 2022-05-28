@@ -1,6 +1,6 @@
 import React, { useState, useRef } from "react";
 import FormField from "../../components/form/FormField";
-import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { useAppDispatch, useAppSelector } from "../../hooks";
 import {
   onChangeNumber,
   onChangeOTP,
