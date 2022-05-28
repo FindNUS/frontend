@@ -1,0 +1,40 @@
+@use "../abstracts/variables" as *;
+
+.item-card {
+  width: 25rem;
+  height: 31rem;
+  background-color: $colour-white;
+
+  &__image {
+    height: 20rem;
+    width: 100%;
+    border-radius: $card-border-radius $card-border-radius 0 0;
+    object-fit: cover;
+    padding: 1rem 1.5rem 0 1.5rem;
+  }
+
+  &__contents {
+    padding: 1rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    justify-content: center;
+  }
+
+  &__name {
+    font-size: 110%;
+    font-weight: bold;
+    margin-bottom: 0.2rem;
+  }
+
+  &__location {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  &__date {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+}

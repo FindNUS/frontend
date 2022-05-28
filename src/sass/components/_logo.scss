@@ -1,15 +1,4 @@
-@use "../abstracts/variables" as *;
-
 .logo {
-  font-family: "Dosis";
-  font-size: 5rem;
-  font-weight: bold;
-
-  &__front {
-    color: $colour-white;
-  }
-
-  &__back {
-    color: $colour-secondary;
-  }
+  height: 5rem;
+  margin: 1rem 2rem;
 }

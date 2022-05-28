@@ -8,7 +8,7 @@ const Login: React.FC = function () {
       <Header />
       <section className="login__container">
         <div className="login__message">
-          <h1>Welcome</h1>
+          <h1 className="text-white-shadow">Welcome</h1>
         </div>
         <LoginForm />
       </section>

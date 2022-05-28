@@ -1,5 +1,5 @@
 import React from "react";
-import ButtonSearch from "./ButtonSearch";
+import ButtonSearch from "./buttons/ButtonSearch";
 
 interface SearchBarProps {
   prompt: string;
