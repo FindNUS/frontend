@@ -1,46 +1,65 @@
-# Getting Started with Create React App
+# FindNUS Frontend (Orbital 2022)
+![Website](https://img.shields.io/website?down_color=red&down_message=offline&up_color=green&up_message=online&url=https%3A%2F%2Ffindnus.netlify.app%2F)
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-## Available Scripts
+## Overview
 
-In the project directory, you can run:
+[![FindNUS Homepage](https://i.imgur.com/gaKicrb.png)](https://findnus.netlify.app)
 
-### `npm start`
+### [Demo](https://findnus.netlify.app)
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+FindNUS is a lost and found item management system which aims to supplement existing NUS lost and found system in National University of Singapore (NUS) by reducing the barriers for item finders to submit an item online. As such, item losters are more likely to find an item which they have lost on top of items which only make it to the security personnel.
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
 
-### `npm test`
+## Getting Started
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+A demo of this application can be accessed at https://findnus.netlify.app
 
-### `npm run build`
+__Installation__ 
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+```shell
+git clone https://github.com/FindNUS/frontend.git
+cd frontend
+npm install
+```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+__Configure app__
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+- Make a copy of [.env.example](.env.example) and rename it as `.env`
+- Configure the project in the `.env` file by setting the parameters corresponding to your firebase project, and the path to API
 
-### `npm run eject`
+  _Note: The backend setup must be linked to the same firebase project_ 
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+__Launch the app__
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+- Run `npm start` to initialise the local server
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+## Features
 
-## Learn More
+- Search for items via keyword
+- Authenticate users via phone number
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## Frontend Timeline
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### Milestone 1
+
+- SMS login
+- App routing  
+- Protected routing
+- API call for item search (Keywords: Water bottle, Laptop, Mouse, Matric card, CS1231 Notes, Airpods, Lanyard with card)
+
+__Remarks__
+
+- Non-functional components: Filter, found item submission
+- Known problems: On login page, <kbd>Enter</kbd> only works for getting OTP. Pressing <kbd>Enter</kbd> to verify OTP will cause page refresh.
+
+
+## App Directory
+
+| Route         | Page                        | Remarks                                                    |
+| ------------- | --------------------------- | ---------------------------------------------------------- |
+| `/`           | Main page                   |                                                            |
+| `/login`      | User authentication         |                                                            |
+| `/dashboard`  | User profile                | Protected route, user must be authenticated to access page |
+| `/components` | Overview of components used | For development use                                        |
