@@ -1,26 +1,37 @@
 import { getAuth } from "firebase/auth";
-import { useEffect } from "react";
-import { useAppSelector, useAppDispatch } from "./reduxHooks";
+import { useAppDispatch } from "./reduxHooks";
 import { setIsLoggedIn, setToken } from "../features/auth/authSlice";
+import { useNavigate } from "react-router-dom";
+import {
+  setLastRequested,
+  updateMessage,
+  updateStatus,
+} from "../features/auth/loginSlice";
 
 const useFirebaseLogout = () => {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const auth = getAuth();
-  const firebaseAuthState = useAppSelector((state) => state.firebase.auth);
 
-  const { isEmpty: authIsEmpty } = firebaseAuthState;
+  auth.onAuthStateChanged((user) => {
+    if (user) return; // Logged in
 
-  useEffect(() => {
-    // Check if user is logged out
-    if (!authIsEmpty) return;
-
+    // Logged out
     // Update auth slice
     dispatch(setIsLoggedIn(false));
     dispatch(setToken(""));
-  }, [authIsEmpty]);
 
-  // Firebase sign out method
-  return auth.signOut.bind(auth);
+    // Update login slice
+    dispatch(updateStatus(undefined));
+    dispatch(updateMessage(""));
+    dispatch(setLastRequested(undefined));
+  });
+
+  // Logout then redirect user to home page
+  return () => {
+    auth.signOut();
+    navigate("/");
+  };
 };
 
 export default useFirebaseLogout;

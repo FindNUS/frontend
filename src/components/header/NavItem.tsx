@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 interface NavItemProps {
   text: string;
   to?: string;
-  onClick?: () => Promise<void> | undefined;
+  onClick?: (() => void) | (() => Promise<void>) | undefined;
 }
 
 const NavItem: React.FC<NavItemProps> = function (props: NavItemProps) {
