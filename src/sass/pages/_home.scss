@@ -14,14 +14,6 @@
   background-size: cover;
   padding: $pages-padding;
 
-  &__nav {
-    height: $header-height;
-    padding: 2rem 3rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
   &__header {
     color: $colour-white;
     padding-bottom: 5rem;

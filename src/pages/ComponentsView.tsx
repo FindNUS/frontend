@@ -27,7 +27,7 @@ function ComponentsView() {
       <SearchBar prompt="Search for an item" />
 
       <h3>Header</h3>
-      <Header />
+      <Header isHomePage={false} />
 
       <h3>Popup Message</h3>
       <div className="components__horizontal">
