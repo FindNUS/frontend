@@ -1,14 +1,31 @@
 import React from "react";
 import Header from "../components/header/Header";
 import SearchResults from "../features/search/SearchResults";
+import { useAppSelector } from "../hooks";
+import {
+  selectQuery,
+  selectQueryResults,
+  selectSearchLoading,
+} from "../features/search/searchSlice";
 
 const SearchPage: React.FC = function () {
+  const query = useAppSelector(selectQuery);
+  const queryResults = useAppSelector(selectQueryResults);
+  const queryLoading = useAppSelector(selectSearchLoading);
+
   return (
     <div className="search-page">
       <Header />
 
       <div className="search-message">
         <h2 className="heading-white text-white-shadow">Search Results</h2>
+        {!queryLoading && (
+          <span className="search-message__query text-white-shadow">{`Showing ${
+            queryResults.length
+          } ${
+            queryResults.length === 1 ? "result" : "results"
+          } for "${query}"`}</span>
+        )}
       </div>
 
       <div className="search-container">
@@ -32,9 +49,7 @@ const SearchPage: React.FC = function () {
           </div>
         </section>
 
-        <section className="search-results">
-          <SearchResults />
-        </section>
+        <SearchResults />
       </div>
     </div>
   );

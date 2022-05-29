@@ -7,6 +7,7 @@ import {
   selectQuery,
   selectQueryResults,
   setQueryResults,
+  setSearchLoading,
 } from "./searchSlice";
 
 type rawSearchResultsType = {
@@ -68,44 +69,55 @@ const SearchResults: React.FC = function () {
   } = useAxiosGet({ url, headers: "{}" });
 
   useEffect(() => {
-    if (isLoading) return;
+    if (isLoading) {
+      dispatch(setSearchLoading(true));
+      return;
+    }
+
     if (response === undefined) {
       dispatch(setQueryResults([]));
       return;
     }
     const items = parseSearchResults(response.data);
     dispatch(setQueryResults(items));
+    dispatch(setSearchLoading(false));
   }, [isLoading]);
 
   return (
-    <div className="search-results">
-      {isLoading && <h1>isLoading...</h1>}
-      {!isLoading && !error && (
-        <ul className="search-results__list">
-          {queryResults.map((item: searchItemType) => {
-            const { name, id, date, location, category, imageUrl } = item;
-            return (
-              <li className="search-results__item" key={id}>
-                <ItemCard
-                  name={name}
-                  id={id}
-                  date={date}
-                  location={location}
-                  category={category}
-                  imageUrl={imageUrl}
-                />
-              </li>
-            );
-          })}
-        </ul>
-      )}
-      {error && (
-        <div className="error-message">
-          <h2 className="text-white-shadow">Error</h2>
-          <span>{error.message}</span>
-        </div>
-      )}
-    </div>
+    <section className="search-results-container">
+      <div className="search-results">
+        {isLoading && (
+          <div className="search__loading">
+            <h2>Loading...</h2>
+          </div>
+        )}
+        {!isLoading && !error && (
+          <ul className="search-results__list">
+            {queryResults.map((item: searchItemType) => {
+              const { name, id, date, location, category, imageUrl } = item;
+              return (
+                <li className="search-results__item" key={id}>
+                  <ItemCard
+                    name={name}
+                    id={id}
+                    date={date}
+                    location={location}
+                    category={category}
+                    imageUrl={imageUrl}
+                  />
+                </li>
+              );
+            })}
+          </ul>
+        )}
+        {error && (
+          <div className="search__error">
+            <h2>Error</h2>
+            <span>{error.message}</span>
+          </div>
+        )}
+      </div>
+    </section>
   );
 };
 
