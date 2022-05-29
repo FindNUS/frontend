@@ -1,9 +1,11 @@
 import React from "react";
 import { useAppSelector, useAppDispatch } from "../../hooks";
 import { selectOTP, updateStatus, updateMessage } from "./loginSlice";
+import { setToken } from "./authSlice";
 import type { confirmationResultType, recaptchaType } from "./LoginForm";
 import firebase from "firebase/compat/app";
 import { clearAppVerifier } from "./GetOTPButton";
+import { useNavigate } from "react-router-dom";
 
 interface VerifyOTPButtonProps {
   confirmationResult: confirmationResultType;
@@ -24,6 +26,7 @@ const VerifyOTPButton: React.FC<VerifyOTPButtonProps> = function (
   const { appVerifier } = props as {
     appVerifier: firebase.auth.RecaptchaVerifier;
   };
+  const navigate = useNavigate();
 
   /**
    * Verifies OTP input by the user.
@@ -49,10 +52,13 @@ const VerifyOTPButton: React.FC<VerifyOTPButtonProps> = function (
       dispatch(updateStatus("loading"));
       dispatch(updateMessage("Verifying OTP..."));
 
-      // TODO: Handle returned firebase.auth.UserCredential
+      // Validate OTP
       const res = await props.confirmationResult.confirm(inputOTP);
-      console.log(res);
-      // TODO: Check if wrong OTP results in error thrown
+
+      // Update ID Token in auth slice
+      const idToken = await firebase.auth().currentUser?.getIdToken();
+      if (!idToken) throw new Error("Something went wrong");
+      dispatch(setToken(idToken));
 
       // Successfully Logged In
       // Clear confirmation upon verification
@@ -60,16 +66,15 @@ const VerifyOTPButton: React.FC<VerifyOTPButtonProps> = function (
 
       dispatch(updateStatus("success"));
       dispatch(
-        updateMessage(
-          `Successfully logged in as ${
-            res.user?.phoneNumber
-          }: ${res.user?.getIdToken()}`
-        )
+        updateMessage(`Successfully logged in as ${res.user?.phoneNumber}`)
       );
 
       // Clear reCAPTCHA widget and destroy the current instance
       setAppVerifier(undefined);
       clearAppVerifier(appVerifier, recaptchaRef);
+
+      // Redirect user to home page
+      navigate("/");
     } catch (e) {
       // OTP Verification Error
       const error = e as Error;
@@ -77,7 +82,6 @@ const VerifyOTPButton: React.FC<VerifyOTPButtonProps> = function (
       // Set error login state
       dispatch(updateStatus("error"));
       dispatch(updateMessage(error.message));
-      console.error(error.message);
 
       // TODO: If OTP expired, allow user to request for another OTP
     }
