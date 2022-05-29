@@ -139,10 +139,12 @@ const GetOTPButton: React.FC<GetOTPButtonProps> = function (
       // Set error login state
       dispatch(updateStatus("error"));
       dispatch(updateMessage(error.message));
-      console.error(error.message);
 
       // Clear reCAPTCHA widget and destroy the current instance
       clearAppVerifier(appVerifier, recaptchaRef);
+
+      // No OTP requested, allow user to request for another
+      dispatch(setLastRequested(undefined));
     }
   };
 
