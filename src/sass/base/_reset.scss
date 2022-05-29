@@ -1,0 +1,51 @@
+@use "../abstracts/variables" as *;
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
+}
+
+html {
+  box-sizing: border-box;
+  font-size: 62.5%;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: "dosis";
+  padding: 1rem;
+  color: $colour-grey-dark-medium;
+}
+
+h1 {
+  font-size: 6rem;
+}
+
+h2 {
+  font-size: 4.5rem;
+}
+
+h3 {
+  font-size: 3.5rem;
+}
+
+h4 {
+  font-size: 3rem;
+}
+h5 {
+  font-size: 2.5rem;
+}
+
+h6 {
+  font-size: 2rem;
+}
