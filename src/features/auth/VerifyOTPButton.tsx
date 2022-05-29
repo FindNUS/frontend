@@ -5,6 +5,7 @@ import { setToken } from "./authSlice";
 import type { confirmationResultType, recaptchaType } from "./LoginForm";
 import firebase from "firebase/compat/app";
 import { clearAppVerifier } from "./GetOTPButton";
+import { useNavigate } from "react-router-dom";
 
 interface VerifyOTPButtonProps {
   confirmationResult: confirmationResultType;
@@ -25,6 +26,7 @@ const VerifyOTPButton: React.FC<VerifyOTPButtonProps> = function (
   const { appVerifier } = props as {
     appVerifier: firebase.auth.RecaptchaVerifier;
   };
+  const navigate = useNavigate();
 
   /**
    * Verifies OTP input by the user.
@@ -70,6 +72,9 @@ const VerifyOTPButton: React.FC<VerifyOTPButtonProps> = function (
       // Clear reCAPTCHA widget and destroy the current instance
       setAppVerifier(undefined);
       clearAppVerifier(appVerifier, recaptchaRef);
+
+      // Redirect user to home page
+      navigate("/");
     } catch (e) {
       // OTP Verification Error
       const error = e as Error;
