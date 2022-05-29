@@ -86,7 +86,11 @@ const SearchResults: React.FC = function () {
   return (
     <section className="search-results-container">
       <div className="search-results">
-        {isLoading && <h1>isLoading...</h1>}
+        {isLoading && (
+          <div className="search__loading">
+            <h2>Loading...</h2>
+          </div>
+        )}
         {!isLoading && !error && (
           <ul className="search-results__list">
             {queryResults.map((item: searchItemType) => {
@@ -107,8 +111,8 @@ const SearchResults: React.FC = function () {
           </ul>
         )}
         {error && (
-          <div className="error-message">
-            <h2 className="text-white-shadow">Error</h2>
+          <div className="search__error">
+            <h2>Error</h2>
             <span>{error.message}</span>
           </div>
         )}
