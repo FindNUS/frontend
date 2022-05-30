@@ -7,16 +7,14 @@ import {
   selectLoginStatus,
   selectLoginMessage,
 } from "./loginSlice";
-import firebase from "firebase/compat/app";
+import { ConfirmationResult, RecaptchaVerifier } from "firebase/auth";
 import GetOTPButton from "./GetOTPButton";
 import VerifyOTPButton from "./VerifyOTPButton";
 import PopupMessage from "../../components/PopupMessage";
 
-export type recaptchaType = firebase.auth.RecaptchaVerifier | undefined;
+export type recaptchaType = RecaptchaVerifier | undefined;
 
-export type confirmationResultType =
-  | firebase.auth.ConfirmationResult
-  | undefined;
+export type confirmationResultType = ConfirmationResult | undefined;
 
 export type LoginStatus =
   | "success"

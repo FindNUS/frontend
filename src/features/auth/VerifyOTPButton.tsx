@@ -3,9 +3,10 @@ import { useAppSelector, useAppDispatch } from "../../hooks";
 import { selectOTP, updateStatus, updateMessage } from "./loginSlice";
 import { setToken } from "./authSlice";
 import type { confirmationResultType, recaptchaType } from "./LoginForm";
-import firebase from "firebase/compat/app";
-import { clearAppVerifier } from "./GetOTPButton";
+import { clearAppVerifier } from "../../hooks/useFirebaseGetOTP";
 import { useNavigate } from "react-router-dom";
+import firebase from "firebase/compat/app";
+import { RecaptchaVerifier } from "firebase/auth";
 
 interface VerifyOTPButtonProps {
   confirmationResult: confirmationResultType;
@@ -24,7 +25,7 @@ const VerifyOTPButton: React.FC<VerifyOTPButtonProps> = function (
   const dispatch = useAppDispatch();
   const { setAppVerifier, setConfirmationResult, recaptchaRef } = props;
   const { appVerifier } = props as {
-    appVerifier: firebase.auth.RecaptchaVerifier;
+    appVerifier: RecaptchaVerifier;
   };
   const navigate = useNavigate();
 
