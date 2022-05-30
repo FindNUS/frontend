@@ -5,8 +5,7 @@ import { setToken } from "./authSlice";
 import type { confirmationResultType, recaptchaType } from "./LoginForm";
 import { clearAppVerifier } from "../../hooks/useFirebaseGetOTP";
 import { useNavigate } from "react-router-dom";
-import firebase from "firebase/compat/app";
-import { RecaptchaVerifier } from "firebase/auth";
+import { getAuth, RecaptchaVerifier } from "firebase/auth";
 
 interface VerifyOTPButtonProps {
   confirmationResult: confirmationResultType;
@@ -27,6 +26,7 @@ const VerifyOTPButton: React.FC<VerifyOTPButtonProps> = function (
   const { appVerifier } = props as {
     appVerifier: RecaptchaVerifier;
   };
+  const auth = getAuth();
   const navigate = useNavigate();
 
   /**
@@ -57,7 +57,7 @@ const VerifyOTPButton: React.FC<VerifyOTPButtonProps> = function (
       const res = await props.confirmationResult.confirm(inputOTP);
 
       // Update ID Token in auth slice
-      const idToken = await firebase.auth().currentUser?.getIdToken();
+      const idToken = await auth.currentUser?.getIdToken();
       if (!idToken) throw new Error("Something went wrong");
       dispatch(setToken(idToken));
 
