@@ -11,6 +11,7 @@ import { ConfirmationResult, RecaptchaVerifier } from "firebase/auth";
 import GetOTPButton from "./GetOTPButton";
 import VerifyOTPButton from "./VerifyOTPButton";
 import PopupMessage from "../../components/PopupMessage";
+import { RECAPTCHA_CONTAINER_ELEMENT } from "../../constants";
 
 export type recaptchaType = RecaptchaVerifier | undefined;
 
@@ -97,9 +98,7 @@ const LoginForm: React.FC = function () {
           setAppVerifier={setAppVerifier}
         />
       </div>
-      <div ref={recaptchaWrapperRef}>
-        <div id="recaptcha-container"></div>
-      </div>
+      <div ref={recaptchaWrapperRef}>{RECAPTCHA_CONTAINER_ELEMENT}</div>
     </form>
   );
 };

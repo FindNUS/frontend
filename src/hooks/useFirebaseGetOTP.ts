@@ -17,7 +17,11 @@ import {
   updateStatus,
 } from "../features/auth/loginSlice";
 import { useAppDispatch, useAppSelector } from "./reduxHooks";
-import { OTP_REQUEST_TIMEOUT } from "../constants";
+import {
+  OTP_REQUEST_TIMEOUT,
+  RECAPTCHA_CONTAINER_ELEMENT,
+  RECAPTCHA_CONTAINER_ID,
+} from "../constants";
 
 export type setAppVerifierType = React.Dispatch<
   React.SetStateAction<recaptchaType>
@@ -39,7 +43,7 @@ interface useFirebaseGetOTPProps {
  */
 export const setupAppVerifier = (auth: Auth, setAV: setAppVerifierType) => {
   const av = new RecaptchaVerifier(
-    "recaptcha-container",
+    RECAPTCHA_CONTAINER_ID,
     {
       size: "invisible",
     },
@@ -63,7 +67,7 @@ export const clearAppVerifier = (
   appVerifier && appVerifier.clear();
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
-  recaptchaRef.current.innerHTML = `<div id="recaptcha-container"></div>`;
+  recaptchaRef.current.innerHTML = RECAPTCHA_CONTAINER_ELEMENT;
 };
 
 /**
