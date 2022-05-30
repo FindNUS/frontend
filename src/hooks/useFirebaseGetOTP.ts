@@ -27,7 +27,7 @@ export type setAppVerifierType = React.Dispatch<
   React.SetStateAction<recaptchaType>
 >;
 
-interface useFirebaseGetOTPProps {
+export interface useFirebaseGetOTPProps {
   setConfirmationResult: React.Dispatch<
     React.SetStateAction<confirmationResultType>
   >;

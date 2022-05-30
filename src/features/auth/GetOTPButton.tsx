@@ -1,30 +1,15 @@
 import React from "react";
 import { useAppSelector } from "../../hooks";
 import { selectNumber } from "./loginSlice";
-import { confirmationResultType } from "./LoginForm";
 import useFirebaseGetOTP, {
-  setAppVerifierType,
+  useFirebaseGetOTPProps,
 } from "../../hooks/useFirebaseGetOTP";
 
-interface GetOTPButtonProps {
-  setConfirmationResult: React.Dispatch<
-    React.SetStateAction<confirmationResultType>
-  >;
-  setAppVerifier: setAppVerifierType;
-  recaptchaRef: React.RefObject<HTMLDivElement>;
-}
-
-const GetOTPButton: React.FC<GetOTPButtonProps> = function (
-  props: GetOTPButtonProps
+const GetOTPButton: React.FC<useFirebaseGetOTPProps> = function (
+  props: useFirebaseGetOTPProps
 ) {
-  const { setConfirmationResult, setAppVerifier, recaptchaRef } = props;
   const inputNumber = useAppSelector(selectNumber);
-
-  const getOTPFromFirebase = useFirebaseGetOTP({
-    setConfirmationResult,
-    setAppVerifier,
-    recaptchaRef,
-  });
+  const getOTPFromFirebase = useFirebaseGetOTP({ ...props });
 
   /**
    * Request for OTP through firebase authentication.
