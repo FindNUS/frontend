@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "../../app/store";
-import { LoginStatus } from "../../features/auth/LoginForm";
+import { LoginStatus } from "./LoginForm";
 import { PopupMessageProps } from "../../components/PopupMessage";
 
 interface LoginState {
