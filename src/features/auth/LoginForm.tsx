@@ -7,16 +7,15 @@ import {
   selectLoginStatus,
   selectLoginMessage,
 } from "./loginSlice";
-import firebase from "firebase/compat/app";
+import { ConfirmationResult, RecaptchaVerifier } from "firebase/auth";
 import GetOTPButton from "./GetOTPButton";
 import VerifyOTPButton from "./VerifyOTPButton";
 import PopupMessage from "../../components/PopupMessage";
+import { RECAPTCHA_CONTAINER_ELEMENT } from "../../constants";
 
-export type recaptchaType = firebase.auth.RecaptchaVerifier | undefined;
+export type recaptchaType = RecaptchaVerifier | undefined;
 
-export type confirmationResultType =
-  | firebase.auth.ConfirmationResult
-  | undefined;
+export type confirmationResultType = ConfirmationResult | undefined;
 
 export type LoginStatus =
   | "success"
@@ -99,9 +98,7 @@ const LoginForm: React.FC = function () {
           setAppVerifier={setAppVerifier}
         />
       </div>
-      <div ref={recaptchaWrapperRef}>
-        <div id="recaptcha-container"></div>
-      </div>
+      <div ref={recaptchaWrapperRef}>{RECAPTCHA_CONTAINER_ELEMENT}</div>
     </form>
   );
 };
