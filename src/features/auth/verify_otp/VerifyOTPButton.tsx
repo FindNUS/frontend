@@ -1,9 +1,9 @@
 import React from "react";
-import { useAppSelector } from "../../hooks";
+import { useAppSelector } from "../../../hooks";
 import useFirebaseVerifyOTP, {
   useFirebaseVerifyOTPProps,
-} from "../../hooks/useFirebaseVerifyOTP";
-import { selectOTP } from "./loginSlice";
+} from "../../../hooks/useFirebaseVerifyOTP";
+import { selectOTP } from "../loginSlice";
 
 const VerifyOTPButton: React.FC<useFirebaseVerifyOTPProps> = function (
   props: useFirebaseVerifyOTPProps
