@@ -7,6 +7,7 @@ import {
   selectQueryResults,
   selectSearchLoading,
 } from "../features/search/searchSlice";
+import PageTitle from "../components/PageTitle";
 
 const SearchPage: React.FC = function () {
   const query = useAppSelector(selectQuery);
@@ -17,16 +18,16 @@ const SearchPage: React.FC = function () {
     <div className="search-page">
       <Header />
 
-      <div className="search-message">
-        <h2 className="heading-white text-white-shadow">Search Results</h2>
-        {!queryLoading && (
-          <span className="search-message__query text-white-shadow">{`Showing ${
-            queryResults.length
-          } ${
-            queryResults.length === 1 ? "result" : "results"
-          } for "${query}"`}</span>
-        )}
-      </div>
+      <PageTitle
+        title="Search Results"
+        message={
+          queryLoading
+            ? ""
+            : `Showing ${queryResults.length} ${
+                queryResults.length === 1 ? "result" : "results"
+              } for "${query}"`
+        }
+      />
 
       <div className="search-container">
         <section className="search-filter">
