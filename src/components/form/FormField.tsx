@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import FormInput from "./FormInput";
+import TextArea from "./TextArea";
 
 interface FormFieldProps {
   labelContent: string;
@@ -12,9 +13,10 @@ interface FormFieldProps {
 const FormField: React.FC<FormFieldProps> = function (props: FormFieldProps) {
   const [isFocus, setIsFocus] = useState(false);
   const handleFocusChange = () => setIsFocus((prevState) => !prevState);
-  const { inputRef } = props;
+  const { inputRef, onChange } = props;
   const type = props.type ?? "text";
   const disabled = props.disabled ?? false;
+  const isTextArea = props.type === "textarea";
 
   const inputProps = {
     type,
@@ -22,6 +24,10 @@ const FormField: React.FC<FormFieldProps> = function (props: FormFieldProps) {
     onFocus: handleFocusChange,
     onBlur: handleFocusChange,
     ...(inputRef && { ref: inputRef }), // Add inputRef is exists
+  };
+
+  const textareaProps = {
+    onChange,
   };
 
   return (
@@ -33,7 +39,9 @@ const FormField: React.FC<FormFieldProps> = function (props: FormFieldProps) {
       >
         {props.labelContent}
       </label>
-      <FormInput {...inputProps} />
+
+      {!isTextArea && <FormInput {...inputProps} />}
+      {isTextArea && <TextArea {...textareaProps} />}
     </div>
   );
 };
