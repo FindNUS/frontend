@@ -6,6 +6,7 @@ export interface FormInputProps {
   ref?: React.RefObject<HTMLInputElement>;
   onFocus: () => void;
   onBlur: () => void;
+  onChange: (ev: React.FormEvent) => void;
 }
 
 const FormInput: React.FC<FormInputProps> = function (props: FormInputProps) {

@@ -21,6 +21,7 @@ const FormField: React.FC<FormFieldProps> = function (props: FormFieldProps) {
   const inputProps = {
     type,
     disabled,
+    onChange,
     onFocus: handleFocusChange,
     onBlur: handleFocusChange,
     ...(inputRef && { ref: inputRef }), // Add inputRef is exists
