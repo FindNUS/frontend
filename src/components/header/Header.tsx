@@ -12,11 +12,15 @@ import {
 } from "../../constants";
 
 interface HeaderProps {
-  isHomePage: boolean;
+  isHomePage?: boolean;
+  isSubmitPage?: boolean;
 }
 
 const Header: React.FC<HeaderProps> = function (props: HeaderProps) {
-  const { isHomePage } = props;
+  // Default values for props
+  const isHomePage = props.isHomePage ?? false;
+  const isSubmitPage = props.isSubmitPage ?? false;
+
   const isLoggedIn = useAppSelector(selectAuthIsLoggedIn);
   const logout = useFirebaseLogout();
 
@@ -26,7 +30,9 @@ const Header: React.FC<HeaderProps> = function (props: HeaderProps) {
       <nav className="nav">
         <ul className="nav__list">
           {!isHomePage && <NavItem to={ROUTE_HOME} text="Home" />}
-          <NavItem to={ROUTE_SUBMIT_ITEM} text="Submit an item" />
+          {!isSubmitPage && (
+            <NavItem to={ROUTE_SUBMIT_ITEM} text="Submit an item" />
+          )}
           {!isLoggedIn && <NavItem to={ROUTE_LOGIN} text="Login" />}
           {isLoggedIn && <NavItem to={ROUTE_DASHBOARD} text="Dashboard" />}
           {isLoggedIn && <NavItem text="Logout" onClick={logout} />}

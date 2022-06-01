@@ -35,7 +35,7 @@ function ComponentsView() {
       />
 
       <h3>Header</h3>
-      <Header isHomePage={false} />
+      <Header />
 
       <h3>Popup Message</h3>
       <div className="components__horizontal">

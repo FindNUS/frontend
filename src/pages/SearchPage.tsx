@@ -15,7 +15,7 @@ const SearchPage: React.FC = function () {
 
   return (
     <div className="search-page">
-      <Header isHomePage={false} />
+      <Header />
 
       <div className="search-message">
         <h2 className="heading-white text-white-shadow">Search Results</h2>

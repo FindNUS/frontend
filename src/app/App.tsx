@@ -14,7 +14,9 @@ import {
   ROUTE_HOME,
   ROUTE_LOGIN,
   ROUTE_SEARCH,
+  ROUTE_SUBMIT_ITEM,
 } from "../constants";
+import SubmitItemPage from "../pages/SubmitItemPage";
 
 function App() {
   const isLoggedIn = useAppSelector(selectAuthIsLoggedIn);
@@ -31,6 +33,7 @@ function App() {
         {isLoggedIn && <Route path={ROUTE_DASHBOARD} element={<Dashboard />} />}
         <Route path={ROUTE_SEARCH} element={<SearchPage />} />
         <Route path={ROUTE_COMPONENTS} element={<ComponentsView />} />
+        <Route path={ROUTE_SUBMIT_ITEM} element={<SubmitItemPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
