@@ -8,6 +8,13 @@ import SearchPage from "../pages/SearchPage";
 import { useAppSelector } from "../hooks";
 import { selectAuthIsLoggedIn } from "../features/auth/authSlice";
 import Dashboard from "../pages/Dashboard";
+import {
+  ROUTE_COMPONENTS,
+  ROUTE_DASHBOARD,
+  ROUTE_HOME,
+  ROUTE_LOGIN,
+  ROUTE_SEARCH,
+} from "../constants";
 
 function App() {
   const isLoggedIn = useAppSelector(selectAuthIsLoggedIn);
@@ -19,11 +26,11 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Home />} />
-        {!isLoggedIn && <Route path="/login" element={<Login />} />}
-        {isLoggedIn && <Route path="/dashboard" element={<Dashboard />} />}
-        <Route path="/search" element={<SearchPage />} />
-        <Route path="/components" element={<ComponentsView />} />
+        <Route path={ROUTE_HOME} element={<Home />} />
+        {!isLoggedIn && <Route path={ROUTE_LOGIN} element={<Login />} />}
+        {isLoggedIn && <Route path={ROUTE_DASHBOARD} element={<Dashboard />} />}
+        <Route path={ROUTE_SEARCH} element={<SearchPage />} />
+        <Route path={ROUTE_COMPONENTS} element={<ComponentsView />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>

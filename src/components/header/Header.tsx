@@ -4,6 +4,12 @@ import NavItem from "./NavItem";
 import { useAppSelector } from "../../hooks";
 import { selectAuthIsLoggedIn } from "../../features/auth/authSlice";
 import useFirebaseLogout from "../../hooks/useFirebaseLogout";
+import {
+  ROUTE_DASHBOARD,
+  ROUTE_HOME,
+  ROUTE_LOGIN,
+  ROUTE_SUBMIT_ITEM,
+} from "../../constants";
 
 interface HeaderProps {
   isHomePage: boolean;
@@ -19,10 +25,10 @@ const Header: React.FC<HeaderProps> = function (props: HeaderProps) {
       <Logo />
       <nav className="nav">
         <ul className="nav__list">
-          {!isHomePage && <NavItem to="/" text="Home" />}
-          <NavItem to="/submit-item" text="Submit an item" />
-          {!isLoggedIn && <NavItem to="/login" text="Login" />}
-          {isLoggedIn && <NavItem to="/dashboard" text="Dashboard" />}
+          {!isHomePage && <NavItem to={ROUTE_HOME} text="Home" />}
+          <NavItem to={ROUTE_SUBMIT_ITEM} text="Submit an item" />
+          {!isLoggedIn && <NavItem to={ROUTE_LOGIN} text="Login" />}
+          {isLoggedIn && <NavItem to={ROUTE_DASHBOARD} text="Dashboard" />}
           {isLoggedIn && <NavItem text="Logout" onClick={logout} />}
         </ul>
       </nav>
