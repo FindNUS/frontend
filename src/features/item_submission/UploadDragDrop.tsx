@@ -14,6 +14,8 @@ const UploadDragDrop: React.FC<UploadDragDropProps> = function (
   const handleChange = (file: File) => {
     setFile(file);
   };
+  
+  console.log(file);
 
   return (
     <FileUploader
