@@ -3,7 +3,7 @@ import FormInput from "./FormInput";
 
 interface FormFieldProps {
   labelContent: string;
-  onChange: (ev: React.FormEvent<HTMLInputElement>) => void;
+  onChange: (ev: React.FormEvent) => void;
   disabled: boolean;
   inputRef?: React.RefObject<HTMLInputElement>;
   type?: string;
