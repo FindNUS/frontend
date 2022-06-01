@@ -1,5 +1,5 @@
 import React from "react";
-import findnusLogo from "../img/Logo_White_Red.png";
+import findnusLogo from "../assets/img/Logo_White_Red.png";
 import { Link } from "react-router-dom";
 import { ROUTE_HOME } from "../constants";
 
