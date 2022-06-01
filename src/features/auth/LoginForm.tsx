@@ -1,17 +1,11 @@
 import React, { useState, useRef } from "react";
-import FormField from "../../components/form/FormField";
-import { useAppDispatch, useAppSelector } from "../../hooks";
-import {
-  onChangeNumber,
-  onChangeOTP,
-  selectLoginStatus,
-  selectLoginMessage,
-} from "./loginSlice";
+import { useAppSelector } from "../../hooks";
+import { selectLoginStatus, selectLoginMessage } from "./loginSlice";
 import { ConfirmationResult, RecaptchaVerifier } from "firebase/auth";
-import GetOTPButton from "./GetOTPButton";
-import VerifyOTPButton from "./VerifyOTPButton";
 import PopupMessage from "../../components/PopupMessage";
 import { RECAPTCHA_CONTAINER_ELEMENT } from "../../constants";
+import GetOTPForm from "./get_otp/GetOTPForm";
+import VerifyOTPForm from "./verify_otp/VerifyOTPForm";
 
 export type recaptchaType = RecaptchaVerifier | undefined;
 
@@ -25,81 +19,36 @@ export type LoginStatus =
   | undefined;
 
 const LoginForm: React.FC = function () {
-  const dispatch = useAppDispatch();
   const [confirmationResult, setConfirmationResult] =
     useState<confirmationResultType>(undefined);
   const loginStatus = useAppSelector(selectLoginStatus);
   const loginMessage = useAppSelector(selectLoginMessage);
   const [appVerifier, setAppVerifier] = useState<recaptchaType>(undefined);
   const recaptchaWrapperRef = useRef<HTMLDivElement>(null);
-  const inputOTPRef = useRef<HTMLInputElement>(null);
 
-  // Handle form input change
-  /**
-   * Update input phone number in the store.
-   * Dispatches the onChangeNumber action.
-   * @param ev The DOM event triggerred by an input element change
-   */
-  const handleInputNumberChange = (ev: React.FormEvent<HTMLInputElement>) => {
-    const target = ev.target as HTMLInputElement;
-    dispatch(onChangeNumber(target.value));
+  const getOTPProps = {
+    setAppVerifier,
+    setConfirmationResult,
+    recaptchaRef: recaptchaWrapperRef,
   };
 
-  /**
-   * Update input OTP in the store.
-   * Dispatches the onChangeOTP action.
-   * @param ev The DOM event triggerred by an input element change.
-   */
-  const handleInputOTPChange = (ev: React.FormEvent<HTMLInputElement>) => {
-    const target = ev.target as HTMLInputElement;
-    dispatch(onChangeOTP(target.value));
+  const verifyOTPProps = {
+    ...getOTPProps,
+    appVerifier,
+    confirmationResult,
   };
-
-  // Clear OTP field after user is verified
-  if (!confirmationResult && inputOTPRef.current) {
-    const { current: inputOTPEl } = inputOTPRef;
-    inputOTPEl.value = "";
-  }
 
   return (
-    <form className="login-form">
+    <div className="login-form">
       <h3 className="login-form__header">Log In</h3>
       {loginStatus && (
         <PopupMessage status={loginStatus} message={loginMessage} />
       )}
-      <div className="form-field">
-        <FormField
-          labelContent="Phone Number"
-          onChange={handleInputNumberChange}
-          disabled={false}
-        />
-      </div>
-      <div className="login-form__otp">
-        <div className="form-field">
-          <FormField
-            labelContent="Enter OTP"
-            onChange={handleInputOTPChange}
-            disabled={!confirmationResult}
-            inputRef={inputOTPRef}
-          />
-        </div>
-        <GetOTPButton
-          setConfirmationResult={setConfirmationResult}
-          recaptchaRef={recaptchaWrapperRef}
-          setAppVerifier={setAppVerifier}
-        />
-      </div>
-      <div className="login-form__submit">
-        <VerifyOTPButton
-          confirmationResult={confirmationResult}
-          setConfirmationResult={setConfirmationResult}
-          recaptchaRef={recaptchaWrapperRef}
-          appVerifier={appVerifier}
-          setAppVerifier={setAppVerifier}
-        />
-      </div>
+
+      {!confirmationResult && <GetOTPForm {...getOTPProps} />}
+      {confirmationResult && <VerifyOTPForm {...verifyOTPProps} />}
       <div ref={recaptchaWrapperRef}>{RECAPTCHA_CONTAINER_ELEMENT}</div>
-    </form>
+    </div>
   );
 };
 

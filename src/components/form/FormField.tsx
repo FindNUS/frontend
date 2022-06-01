@@ -12,7 +12,7 @@ const FormField: React.FC<FormFieldProps> = function (props: FormFieldProps) {
   const handleFocusChange = () => setIsFocus((prevState) => !prevState);
 
   return (
-    <>
+    <div className="form-field">
       <label
         className={`form-field__label ${
           isFocus ? "form-field__label--focus" : ""
@@ -28,7 +28,7 @@ const FormField: React.FC<FormFieldProps> = function (props: FormFieldProps) {
         disabled={props.disabled}
         ref={props.inputRef}
       />
-    </>
+    </div>
   );
 };
 

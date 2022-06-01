@@ -1,7 +1,9 @@
 @use "../abstracts/variables" as *;
 
 .form-field {
-  margin-top: -1rem;
+  margin-top: 1.2rem;
+  position: relative;
+  width: 100%;
 
   &__label {
     background-color: inherit;
@@ -9,8 +11,9 @@
     font-size: 1.6rem;
     font-weight: bold;
     color: $colour-grey-dark-medium;
-    position: relative;
-    top: 1.2rem;
+    position: absolute;
+    // If updating label position, also update margin-top for div
+    top: -1.2rem;
     left: 1.5rem;
     transition: top 0.1s ease-out;
     z-index: 10;
@@ -18,7 +21,7 @@
 
     &--focus {
       color: $colour-tertiary;
-      top: 1rem;
+      top: -1.5rem;
     }
   }
 
@@ -29,7 +32,6 @@
     font-size: 1.6rem;
     border: 2px solid $colour-grey-dark-medium;
     border-radius: 10px;
-    // margin-bottom: 2rem;
     z-index: 5;
 
     &:focus {
