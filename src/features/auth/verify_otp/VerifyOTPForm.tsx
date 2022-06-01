@@ -30,14 +30,12 @@ const VerifyOTPForm: React.FC<useFirebaseVerifyOTPProps> = function (
 
   return (
     <form className="login-form__otp">
-      <div className="form-field">
-        <FormField
-          labelContent="Enter OTP"
-          onChange={handleInputOTPChange}
-          disabled={!props.confirmationResult}
-          inputRef={inputOTPRef}
-        />
-      </div>
+      <FormField
+        labelContent="Enter OTP"
+        onChange={handleInputOTPChange}
+        disabled={!props.confirmationResult}
+        inputRef={inputOTPRef}
+      />
       <VerifyOTPButton {...props} />
     </form>
   );
