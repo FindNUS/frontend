@@ -1,15 +1,28 @@
 import React, { useState } from "react";
+import FormInput from "./FormInput";
 
 interface FormFieldProps {
   labelContent: string;
   onChange: (ev: React.FormEvent<HTMLInputElement>) => void;
   disabled: boolean;
   inputRef?: React.RefObject<HTMLInputElement>;
+  type?: string;
 }
 
 const FormField: React.FC<FormFieldProps> = function (props: FormFieldProps) {
   const [isFocus, setIsFocus] = useState(false);
   const handleFocusChange = () => setIsFocus((prevState) => !prevState);
+  const { inputRef } = props;
+  const type = props.type ?? "text";
+  const disabled = props.disabled ?? false;
+
+  const inputProps = {
+    type,
+    disabled,
+    onFocus: handleFocusChange,
+    onBlur: handleFocusChange,
+    ...(inputRef && { ref: inputRef }), // Add inputRef is exists
+  };
 
   return (
     <div className="form-field">
@@ -20,14 +33,7 @@ const FormField: React.FC<FormFieldProps> = function (props: FormFieldProps) {
       >
         {props.labelContent}
       </label>
-      <input
-        className="form-field__input"
-        onFocus={handleFocusChange}
-        onBlur={handleFocusChange}
-        onChange={props.onChange}
-        disabled={props.disabled}
-        ref={props.inputRef}
-      />
+      <FormInput {...inputProps} />
     </div>
   );
 };
