@@ -1,13 +1,13 @@
 import React, { useEffect } from "react";
 import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import "./App.scss";
-import Home from "../pages/Home";
-import ComponentsView from "../pages/ComponentsView";
-import Login from "../pages/Login";
-import SearchPage from "../pages/SearchPage";
-import { useAppSelector } from "../hooks";
-import { selectAuthIsLoggedIn } from "../features/auth/authSlice";
-import Dashboard from "../pages/Dashboard";
+import Home from "./pages/Home";
+import ComponentsView from "./pages/ComponentsView";
+import Login from "./pages/Login";
+import SearchPage from "./pages/SearchPage";
+import { useAppSelector } from "./hooks";
+import { selectAuthIsLoggedIn } from "./features/auth/authSlice";
+import Dashboard from "./pages/Dashboard";
 
 function App() {
   const isLoggedIn = useAppSelector(selectAuthIsLoggedIn);
