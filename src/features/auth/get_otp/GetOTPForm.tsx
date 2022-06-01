@@ -16,7 +16,7 @@ const GetOTPForm: React.FC<useFirebaseGetOTPProps> = function (
    * Dispatches the onChangeNumber action.
    * @param ev The DOM event triggerred by an input element change
    */
-  const handleInputNumberChange = (ev: React.FormEvent<HTMLInputElement>) => {
+  const handleInputNumberChange = (ev: React.FormEvent) => {
     const target = ev.target as HTMLInputElement;
     dispatch(onChangeNumber(target.value));
   };

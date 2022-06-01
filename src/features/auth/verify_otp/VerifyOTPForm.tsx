@@ -17,7 +17,7 @@ const VerifyOTPForm: React.FC<useFirebaseVerifyOTPProps> = function (
    * Dispatches the onChangeOTP action.
    * @param ev The DOM event triggerred by an input element change.
    */
-  const handleInputOTPChange = (ev: React.FormEvent<HTMLInputElement>) => {
+  const handleInputOTPChange = (ev: React.FormEvent) => {
     const target = ev.target as HTMLInputElement;
     dispatch(onChangeOTP(target.value));
   };
