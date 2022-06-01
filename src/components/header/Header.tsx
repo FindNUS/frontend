@@ -10,40 +10,24 @@ interface HeaderProps {
 }
 
 const Header: React.FC<HeaderProps> = function (props: HeaderProps) {
+  const { isHomePage } = props;
   const isLoggedIn = useAppSelector(selectAuthIsLoggedIn);
   const logout = useFirebaseLogout();
 
-  switch (props.isHomePage) {
-    case true:
-      return (
-        <header className="header">
-          <Logo />
-          <nav className="nav">
-            <ul className="nav__list">
-              {!isLoggedIn && <NavItem to="/login" text="Login" />}
-              {isLoggedIn && <NavItem to="/dashboard" text="Dashboard" />}
-              {isLoggedIn && <NavItem text="Logout" onClick={logout} />}
-            </ul>
-          </nav>
-        </header>
-      );
-    case false:
-      return (
-        <header className="header">
-          <Logo />
-          <nav className="nav">
-            <ul className="nav__list">
-              <NavItem to="/" text="Home" />
-              <NavItem to="/" text="Lost an item" />
-              <NavItem to="/" text="Found an item" />
-              {!isLoggedIn && <NavItem to="/login" text="Login" />}
-              {isLoggedIn && <NavItem to="/dashboard" text="Dashboard" />}
-              {isLoggedIn && <NavItem text="Logout" onClick={logout} />}
-            </ul>
-          </nav>
-        </header>
-      );
-  }
+  return (
+    <header className="header">
+      <Logo />
+      <nav className="nav">
+        <ul className="nav__list">
+          {!isHomePage && <NavItem to="/" text="Home" />}
+          <NavItem to="/submit-item" text="Submit an item" />
+          {!isLoggedIn && <NavItem to="/login" text="Login" />}
+          {isLoggedIn && <NavItem to="/dashboard" text="Dashboard" />}
+          {isLoggedIn && <NavItem text="Logout" onClick={logout} />}
+        </ul>
+      </nav>
+    </header>
+  );
 };
 
 export default Header;
