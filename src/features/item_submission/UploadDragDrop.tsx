@@ -2,9 +2,11 @@ import React, { useEffect, useState } from "react";
 import { FileUploader } from "react-drag-drop-files";
 import { DRAG_DROP_MESSAGE, IMGUR_IMAGE_FORMATS } from "../../constants";
 import ImageIcon from "@mui/icons-material/Image";
+import { OutgoingMessage } from "http";
 
 interface UploadDragDropProps {
   className: string;
+  onImageUpload: (url: string) => void;
 }
 
 const UploadDragDrop: React.FC<UploadDragDropProps> = function (
@@ -17,18 +19,24 @@ const UploadDragDrop: React.FC<UploadDragDropProps> = function (
   const handleChange = (file: File) => {
     setFile(file);
   };
+  const { className, onImageUpload } = props;
 
   // Generate file URL to display uploaded image
   useEffect(() => {
-    file && setFileURL(URL.createObjectURL(file));
+    if (!file) return;
+    setFileURL(URL.createObjectURL(file));
   }, [file]);
+
+  useEffect(() => {
+    onImageUpload(fileURL);
+  }, [fileURL]);
 
   return (
     <FileUploader
       handleChange={handleChange}
       name="item-submission"
       types={IMGUR_IMAGE_FORMATS}
-      classes={`file-upload ${props.className}`}
+      classes={`file-upload ${className}`}
       hoverTitle="Drop image here"
       onDraggingStateChange={() => setIsHover((prev) => !prev)}
     >
