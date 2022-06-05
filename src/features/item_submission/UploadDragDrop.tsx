@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { FileUploader } from "react-drag-drop-files";
 import { DRAG_DROP_MESSAGE, IMGUR_IMAGE_FORMATS } from "../../constants";
 import ImageIcon from "@mui/icons-material/Image";
-import { OutgoingMessage } from "http";
 
 interface UploadDragDropProps {
   className: string;
