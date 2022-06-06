@@ -1,0 +1,19 @@
+@use "../../abstracts/variables" as *;
+
+.dashboard {
+  width: 100vw;
+  height: 100vh;
+  background-image: linear-gradient(
+      rgba(0, 0, 0, $bg-filter-alpha),
+      rgba(0, 0, 0, $bg-filter-alpha)
+    ),
+    url("../../../img/background.jpg");
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-position: center;
+  background-size: cover;
+  padding: $pages-padding;
+
+  display: flex;
+  flex-direction: column;
+}
