@@ -5,6 +5,7 @@ import { selectAuthIsLoggedIn } from "./features/auth/authSlice";
 import {
   ROUTE_COMPONENTS,
   ROUTE_DASHBOARD,
+  ROUTE_DASHBOARD_HOME,
   ROUTE_DASHBOARD_INNER_ITEMS,
   ROUTE_DASHBOARD_INNER_MANAGE,
   ROUTE_DASHBOARD_INNER_PROFILE,
@@ -38,7 +39,7 @@ function App() {
       <Routes>
         <Route path={ROUTE_HOME} element={<Home />} />
         {!isLoggedIn && <Route path={ROUTE_LOGIN} element={<Login />} />}
-        {!isLoggedIn && (
+        {isLoggedIn && (
           <Route path={ROUTE_DASHBOARD} element={<Dashboard />}>
             <Route
               path={ROUTE_DASHBOARD_INNER_PROFILE}
@@ -54,7 +55,7 @@ function App() {
             />
             <Route
               path="*"
-              element={<Navigate to={ROUTE_DASHBOARD} replace />}
+              element={<Navigate to={ROUTE_DASHBOARD_HOME} replace />}
             />
           </Route>
         )}

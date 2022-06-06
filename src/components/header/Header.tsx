@@ -6,6 +6,7 @@ import { selectAuthIsLoggedIn } from "../../features/auth/authSlice";
 import useFirebaseLogout from "../../hooks/useFirebaseLogout";
 import {
   ROUTE_DASHBOARD,
+  ROUTE_DASHBOARD_HOME,
   ROUTE_HOME,
   ROUTE_LOGIN,
   ROUTE_SUBMIT_ITEM,
@@ -34,7 +35,7 @@ const Header: React.FC<HeaderProps> = function (props: HeaderProps) {
             <NavItem to={ROUTE_SUBMIT_ITEM} text="Submit an item" />
           )}
           {!isLoggedIn && <NavItem to={ROUTE_LOGIN} text="Login" />}
-          {isLoggedIn && <NavItem to={ROUTE_DASHBOARD} text="Dashboard" />}
+          {isLoggedIn && <NavItem to={ROUTE_DASHBOARD_HOME} text="Dashboard" />}
           {isLoggedIn && <NavItem text="Logout" onClick={logout} />}
         </ul>
       </nav>
