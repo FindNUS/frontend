@@ -8,7 +8,7 @@ const Dashboard: React.FC = function () {
 
   return (
     <div className="dashboard">
-      <Header isHomePage={false} />
+      <Header />
       <section className="dashboard-body">
         <h2 className="text-white-shadow">Dashboard</h2>
         <span className="dashboard-body__message">

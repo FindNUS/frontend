@@ -62,15 +62,12 @@
       }
     }
 
+    &__phone,
     &__otp {
       display: flex;
-      align-items: flex-end;
+      flex-direction: column;
+      align-items: center;
       gap: 2rem;
-      margin-bottom: 2rem;
-    }
-
-    &__btn {
-      width: 12rem;
     }
 
     &__submit {

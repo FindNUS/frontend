@@ -1,0 +1,21 @@
+@use "../abstracts/variables" as *;
+
+.file-upload {
+  height: 100%;
+  padding: 2rem;
+  background-color: rgba($color: $colour-white, $alpha: 0.6);
+  border: 6px dashed $colour-grey-dark-medium;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+
+  &:hover {
+    cursor: pointer;
+  }
+  &__icon {
+    font-size: 10rem;
+  }
+}
