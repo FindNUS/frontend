@@ -1,5 +1,5 @@
 import React from "react";
-import Button from "../../components/buttons/Button";
+import ButtonSubmit from "../../components/buttons/ButtonSubmit";
 import FormField from "../../components/form/FormField";
 import { useAppDispatch } from "../../hooks";
 import {
@@ -70,7 +70,7 @@ const ItemSubmissionForm: React.FC = function () {
           type="textarea"
           disabled={false}
         />
-        <Button class="btn btn--primary" text="Submit" />
+        <ButtonSubmit className="btn btn--primary" text="Submit" />
       </div>
       <UploadDragDrop
         className="submit-item__form--upload"
