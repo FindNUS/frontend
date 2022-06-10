@@ -18,6 +18,7 @@ const PopupMessage: React.FC<PopupMessageProps> = function (
       className={`popup-msg ${
         props.status ? `popup-msg--${props.status}` : ""
       }`}
+      data-testid="popup-msg"
     >
       {props.status === "success" && (
         <DoneRoundedIcon fontSize="large" className="popup-msg__icon" />

@@ -7,6 +7,7 @@ import SearchBar from "../features/search/SearchBar";
 import Header from "../components/header/Header";
 import PopupMessage from "../components/PopupMessage";
 import ItemCard from "../components/ItemCard";
+import FormField from "../components/form/FormField";
 
 function ComponentsView() {
   return (
@@ -26,8 +27,15 @@ function ComponentsView() {
       <h3>Search Bar</h3>
       <SearchBar prompt="Search for an item" />
 
+      <h3>Form Field</h3>
+      <FormField
+        labelContent="Test Input"
+        onChange={() => []}
+        disabled={false}
+      />
+
       <h3>Header</h3>
-      <Header isHomePage={false} />
+      <Header />
 
       <h3>Popup Message</h3>
       <div className="components__horizontal">
