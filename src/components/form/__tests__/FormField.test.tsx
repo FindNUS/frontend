@@ -1,6 +1,6 @@
 import React from "react";
 import { render, screen } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
+// import userEvent from "@testing-library/user-event";
 import FormField from "../FormField";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -57,14 +57,14 @@ describe("Form field component", () => {
     expect(textareaEl).not.toHaveClass("form-field__input");
   });
 
-  it("label class is updated when textbox is clicked", () => {
-    render(generateEl(false));
+  // it("label class is updated when textbox is clicked", () => {
+  //   render(generateEl(false));
 
-    const inputEl = screen.getByRole("textbox");
+  //   const inputEl = screen.getByRole("textbox");
 
-    userEvent.click(inputEl);
-    const labelEl = screen.getByText("formfield label");
+  //   userEvent.click(inputEl);
+  //   const labelEl = screen.getByText("formfield label");
 
-    expect(labelEl).toHaveClass("form-field__label form-field__label--focus");
-  });
+  //   expect(labelEl).toHaveClass("form-field__label form-field__label--focus");
+  // });
 });
