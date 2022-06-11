@@ -29,6 +29,8 @@ const FormField: React.FC<FormFieldProps> = function (props: FormFieldProps) {
 
   const textareaProps = {
     onChange,
+    isFocus,
+    onFocusChange: handleFocusChange,
   };
 
   return (

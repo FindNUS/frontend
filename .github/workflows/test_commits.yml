@@ -1,0 +1,44 @@
+# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
+
+name: Continuous Integration
+
+on:
+  push:
+    branches:
+      - "main"
+      - "dev"
+      - "feature/*"
+      - "release/*"
+  pull_request:
+    branches:
+      - "main"
+      - "dev"
+    types:
+      - "opened"
+      - "edited"
+      - "synchronize"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    name: "Test application"
+
+    strategy:
+      matrix:
+        node-version: [16.13]
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Test application
+        run: npm test
