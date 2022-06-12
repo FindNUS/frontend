@@ -1,10 +1,9 @@
-import React, { useState } from "react";
+import React from "react";
+import { useNavigate } from "react-router-dom";
 import ButtonSubmit from "../../components/buttons/ButtonSubmit";
 import FormField from "../../components/form/FormField";
-import PopupMessage from "../../components/PopupMessage";
-import { ENDPOINT_ITEM_FOUND } from "../../constants";
+import { ROUTE_SUBMIT_ITEM_POST } from "../../constants";
 import { useAppDispatch } from "../../hooks";
-import useAxiosPost from "../../hooks/useAxiosPost";
 import {
   setSubmitDate,
   setSubmitDescription,
@@ -15,84 +14,15 @@ import {
 } from "./submitItemSlice";
 import UploadDragDrop from "./UploadDragDrop";
 
-interface SchemaSubmitFoundItem {
-  Name: string;
-  Date: string;
-  Location: string;
-  Category: string;
-  Contact_method: string;
-  Contact_details: string;
-  Item_details: string;
-  Image_base64: string;
-}
-
-const processFoundItemForAPI = (data: {
-  name: string;
-  date: Date;
-  location: string;
-  category: string;
-  contactMethod: string;
-  contactDetails: string;
-  itemDetails: string;
-  base64URL: string;
-}) => {
-  return {
-    Name: data.name,
-    Date: data.date.toISOString(),
-    Location: data.location,
-    Category: data.category,
-    Contact_method: data.contactMethod,
-    Contact_details: data.contactDetails,
-    Item_details: data.itemDetails,
-    Image_base64: data.base64URL,
-  };
-};
-
-const headers = {
-  "Content-Type": "application/json",
-};
-
-const DUMMY_PAYLOAD = {
-  name: "Water Bottle",
-  date: new Date("2019-08-24T14:15:22Z"),
-  location: "E4A DSA Lab",
-  category: "Cards",
-  contactMethod: "Telegram",
-  contactDetails: "FindNUS",
-  itemDetails: "Blue, with a sticker and broken handle",
-  base64URL: "string",
-};
-
 const ItemSubmissionForm: React.FC = function () {
   const dispatch = useAppDispatch();
-  const [postData, setPostData] = useState<SchemaSubmitFoundItem>({
-    Name: "",
-    Date: "",
-    Location: "",
-    Category: "",
-    Contact_method: "",
-    Contact_details: "",
-    Item_details: "",
-    Image_base64: "",
-  });
-
-  const [result, postToAPI] = useAxiosPost({
-    url: ENDPOINT_ITEM_FOUND,
-    headers: JSON.stringify(headers),
-    payload: JSON.stringify(postData),
-  });
-
-  const {
-    error: submitError,
-    isLoading: isSubmitting,
-    data: submitResponse,
-  } = result;
+  const navigate = useNavigate();
 
   const handleSubmitForm = (ev: React.FormEvent) => {
     ev.preventDefault();
-    setPostData(() => processFoundItemForAPI(DUMMY_PAYLOAD));
-    console.log(postData);
-    postToAPI();
+    // Convert image to base64
+    // update base64 url in state
+    navigate(ROUTE_SUBMIT_ITEM_POST);
   };
 
   const handleDescriptionChange = (ev: React.FormEvent) => {
@@ -122,17 +52,6 @@ const ItemSubmissionForm: React.FC = function () {
   return (
     <form className="submit-item__form" onSubmit={handleSubmitForm}>
       <div className="submit-item__form--fields">
-        {isSubmitting && (
-          <PopupMessage status="loading" message="Submitting item..." />
-        )}
-        {submitError && !isSubmitting && !submitResponse && (
-          <PopupMessage
-            status="error"
-            message={`
-              Item submission failed: ${submitError.message}
-            `}
-          />
-        )}
         <FormField
           onChange={handleDescriptionChange}
           labelContent="Item Description"
@@ -161,9 +80,7 @@ const ItemSubmissionForm: React.FC = function () {
           type="textarea"
           disabled={false}
         />
-        {!isSubmitting && (
-          <ButtonSubmit className="btn btn--primary" text="Submit" />
-        )}
+        <ButtonSubmit className="btn btn--primary" text="Submit" />
       </div>
       <UploadDragDrop
         className="submit-item__form--upload"
