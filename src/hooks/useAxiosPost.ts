@@ -1,41 +1,31 @@
-import { useCallback, useState } from "react";
+import { useState, useEffect } from "react";
 import axios, { AxiosError, AxiosResponse } from "axios";
 
-interface PostDataType {
+interface PostConfigObjType {
   url: string;
-  headers: string;
   payload: string;
 }
 
-interface PostResult {
-  data: AxiosResponse | null;
-  error: AxiosError | null;
-  isLoading: boolean;
-}
+const useAxiosPost = (configObj: PostConfigObjType) => {
+  const [response, setResponse] = useState<AxiosResponse>();
+  const [error, setError] = useState<AxiosError>();
+  const [loading, setLoading] = useState(true);
 
-const useAxiosPost = (data: PostDataType) => {
-  const [result, setResult] = useState<PostResult>({
-    data: null,
-    error: null,
-    isLoading: false,
-  });
+  const { url, payload } = configObj;
 
-  const { url, headers, payload } = data;
-
-  const postData = useCallback(() => {
-    setResult((prevState) => ({ ...prevState, isLoading: true }));
-
+  const fetchData = () => {
     axios
-      .post(url, JSON.parse(headers), JSON.parse(payload))
-      .then((res) => {
-        setResult({ data: res.data, isLoading: false, error: null });
-      })
-      .catch((error) => {
-        setResult({ data: null, isLoading: false, error });
-      });
-  }, [url, headers, payload]);
+      .post(url, JSON.parse(payload))
+      .then((res) => setResponse(res))
+      .catch((err) => setError(err))
+      .finally(() => setLoading(false));
+  };
 
-  return [result, postData] as const; // infers [result, typeof postData] instead of (result | typeof postData)[];
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  return [response, error, loading] as const;
 };
 
 export default useAxiosPost;
