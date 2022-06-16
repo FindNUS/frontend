@@ -6,11 +6,14 @@ import { ROUTE_SUBMIT_ITEM_POST } from "../../constants";
 import { useAppDispatch } from "../../hooks";
 import {
   setSubmitDate,
-  setSubmitDescription,
+  setSubmitName,
   setSubmitLocation,
   setSubmitAdditionalDetails,
   setSubmitContactDetails,
   setSubmitImageURL,
+  setSubmitContactMethod,
+  setSubmitCategory,
+  generateSubmitPayload,
 } from "./submitItemSlice";
 import UploadDragDrop from "./UploadDragDrop";
 
@@ -20,14 +23,17 @@ const ItemSubmissionForm: React.FC = function () {
 
   const handleSubmitForm = (ev: React.FormEvent) => {
     ev.preventDefault();
-    // Convert image to base64
+    // TODO: Convert image to base64
     // update base64 url in state
+    const RED_DOT_BASE64 =
+      "iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==";
+    dispatch(generateSubmitPayload(RED_DOT_BASE64));
     navigate(ROUTE_SUBMIT_ITEM_POST);
   };
 
   const handleDescriptionChange = (ev: React.FormEvent) => {
     const { value } = ev.target as HTMLInputElement;
-    dispatch(setSubmitDescription(value));
+    dispatch(setSubmitName(value));
   };
   const handleLocationChange = (ev: React.FormEvent) => {
     const { value } = ev.target as HTMLInputElement;
@@ -35,7 +41,7 @@ const ItemSubmissionForm: React.FC = function () {
   };
   const handleDateChange = (ev: React.FormEvent) => {
     const { value } = ev.target as HTMLInputElement;
-    dispatch(setSubmitDate(value));
+    dispatch(setSubmitDate(new Date(value).toISOString()));
   };
   const handleAdditionalDetailsChange = (ev: React.FormEvent) => {
     const { value } = ev.target as HTMLInputElement;
@@ -48,6 +54,14 @@ const ItemSubmissionForm: React.FC = function () {
   const handleImageURLChange = async (url: string) => {
     dispatch(setSubmitImageURL(url));
   };
+  const handleContactMethodChange = (ev: React.FormEvent) => {
+    const { value } = ev.target as HTMLInputElement;
+    dispatch(setSubmitContactMethod(value));
+  };
+  const handleCategoryChange = (ev: React.FormEvent) => {
+    const { value } = ev.target as HTMLInputElement;
+    dispatch(setSubmitCategory(value));
+  };
 
   return (
     <form className="submit-item__form" onSubmit={handleSubmitForm}>
@@ -59,6 +73,11 @@ const ItemSubmissionForm: React.FC = function () {
         />
         {/* TODO: Add dropdown for item category */}
         <FormField
+          onChange={handleCategoryChange}
+          labelContent="Category"
+          disabled={false}
+        />
+        <FormField
           onChange={handleLocationChange}
           labelContent="Location"
           disabled={false}
@@ -67,6 +86,11 @@ const ItemSubmissionForm: React.FC = function () {
           onChange={handleDateChange}
           labelContent="Date"
           type="date"
+          disabled={false}
+        />
+        <FormField
+          onChange={handleContactMethodChange}
+          labelContent="Contact Method (optional)"
           disabled={false}
         />
         <FormField
