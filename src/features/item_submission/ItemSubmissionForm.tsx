@@ -10,7 +10,7 @@ import {
   setSubmitLocation,
   setSubmitAdditionalDetails,
   setSubmitContactDetails,
-  setSubmitImageURL,
+  setSubmitImageState,
   setSubmitContactMethod,
   setSubmitCategory,
   generateSubmitPayload,
@@ -20,14 +20,9 @@ import UploadDragDrop from "./UploadDragDrop";
 const ItemSubmissionForm: React.FC = function () {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-
   const handleSubmitForm = (ev: React.FormEvent) => {
     ev.preventDefault();
-    // TODO: Convert image to base64
-    // update base64 url in state
-    const RED_DOT_BASE64 =
-      "iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==";
-    dispatch(generateSubmitPayload(RED_DOT_BASE64));
+    dispatch(generateSubmitPayload());
     navigate(ROUTE_SUBMIT_ITEM_POST);
   };
 
@@ -52,7 +47,13 @@ const ItemSubmissionForm: React.FC = function () {
     dispatch(setSubmitContactDetails(value));
   };
   const handleImageURLChange = async (url: string) => {
-    dispatch(setSubmitImageURL(url));
+    dispatch(
+      setSubmitImageState({
+        type: "URL",
+        data: url,
+        isLoading: false,
+      })
+    );
   };
   const handleContactMethodChange = (ev: React.FormEvent) => {
     const { value } = ev.target as HTMLInputElement;

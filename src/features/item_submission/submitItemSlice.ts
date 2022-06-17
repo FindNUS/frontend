@@ -8,9 +8,22 @@ interface SubmitItemState {
   contactMethod: string;
   date: string;
   name: string;
-  imageURL: string;
+  image: ImageState;
   location: string;
   payload?: PayloadFoundItem;
+}
+
+interface ImageState {
+  url: string | undefined;
+  result: string | undefined;
+  loading: boolean;
+  error: string | undefined;
+}
+
+interface SubmitImageAction {
+  type: "URL" | "ERROR" | "LOADING" | "RESULT";
+  isLoading: boolean;
+  data: string | undefined;
 }
 
 interface PayloadFoundItem {
@@ -31,7 +44,12 @@ const initialSubmitItemState: SubmitItemState = {
   contactMethod: "",
   date: "",
   name: "",
-  imageURL: "",
+  image: {
+    url: undefined,
+    loading: false,
+    result: undefined,
+    error: undefined,
+  },
   location: "",
 };
 
@@ -79,7 +97,36 @@ export const submitItemSlice = createSlice({
       state.additionalDetails = action.payload;
     },
     setSubmitImageURL(state, action: PayloadAction<string>) {
-      state.imageURL = action.payload;
+      state.image.url = action.payload;
+    },
+    setSubmitImageState(state, action: PayloadAction<SubmitImageAction>) {
+      const { type, isLoading, data } = action.payload;
+      switch (type) {
+        case "LOADING":
+          state.image = {
+            ...state.image,
+            loading: isLoading,
+          };
+          break;
+        case "URL":
+          state.image = {
+            ...state.image,
+            url: data,
+          };
+          break;
+        case "ERROR":
+          state.image = {
+            ...state.image,
+            error: data,
+          };
+          break;
+        case "RESULT":
+          state.image = {
+            ...state.image,
+            result: data,
+          };
+          break;
+      }
     },
     setSubmitCategory(state, action: PayloadAction<string>) {
       state.category = action.payload;
@@ -87,7 +134,7 @@ export const submitItemSlice = createSlice({
     setSubmitContactMethod(state, action: PayloadAction<string>) {
       state.contactMethod = action.payload;
     },
-    generateSubmitPayload(state, action: PayloadAction<string>) {
+    generateSubmitPayload(state) {
       const {
         category,
         name,
@@ -98,7 +145,7 @@ export const submitItemSlice = createSlice({
         additionalDetails,
       } = state;
 
-      const { payload: imageBase64 } = action;
+      const imageBase64 = state.image.result ?? "";
 
       state.payload = processFoundItemForAPI({
         category,
@@ -120,7 +167,7 @@ export const {
   setSubmitDate,
   setSubmitContactDetails,
   setSubmitAdditionalDetails,
-  setSubmitImageURL,
+  setSubmitImageState,
   setSubmitCategory,
   setSubmitContactMethod,
   generateSubmitPayload,
@@ -134,12 +181,12 @@ export const selectSubmitContactDetails = (state: RootState) =>
   state.submitItem.contactDetails;
 export const selectSubmitAdditionalDetails = (state: RootState) =>
   state.submitItem.additionalDetails;
-export const selectSubmitImageURL = (state: RootState) =>
-  state.submitItem.imageURL;
+export const selectSubmitImageState = (state: RootState) =>
+  state.submitItem.image;
 export const selectSubmitCategory = (state: RootState) =>
   state.submitItem.category;
 export const selectSubmitContactMethod = (state: RootState) =>
-  state.submitItem.imageURL;
+  state.submitItem.contactMethod;
 export const selectSubmitPayload = (state: RootState) =>
   state.submitItem.payload;
 export default submitItemSlice.reducer;
