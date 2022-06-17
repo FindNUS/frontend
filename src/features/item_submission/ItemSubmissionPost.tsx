@@ -1,22 +1,30 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import PopupMessage from "../../components/PopupMessage";
-import { ENDPOINT_ITEM_FOUND } from "../../constants";
-import { useAppSelector } from "../../hooks";
+import { ENDPOINT_ITEM_FOUND, ROUTE_HOME } from "../../constants";
+import { useAppDispatch, useAppSelector } from "../../hooks";
 import useAxiosPost from "../../hooks/useAxiosPost";
-import { selectSubmitPayload } from "./submitItemSlice";
+import { clearSubmitInputs, selectSubmitPayload } from "./submitItemSlice";
 
 const ItemSubmissionPost: React.FC = function () {
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const payload = useAppSelector(selectSubmitPayload) || {};
   const [response, error, loading] = useAxiosPost({
     url: ENDPOINT_ITEM_FOUND,
     payload: JSON.stringify(payload),
   });
 
-  // TODO: Redirect on success to appropriate page
+  useEffect(() => {
+    if (!loading && response?.status === 200) {
+      navigate(ROUTE_HOME);
+    }
+    // clear previous inputs from store
+    dispatch(clearSubmitInputs());
+  }, [response, loading]);
 
   return (
     <div className="submit-item__form">
-      {response && JSON.stringify(response.data)}
       {loading && (
         <PopupMessage status="loading" message="Submitting item..." />
       )}

@@ -158,6 +158,17 @@ export const submitItemSlice = createSlice({
         ...(imageBase64 !== "" && { imageBase64 }),
       });
     },
+    clearSubmitInputs(state) {
+      state.additionalDetails = initialSubmitItemState.additionalDetails;
+      state.category = initialSubmitItemState.category;
+      state.contactDetails = initialSubmitItemState.contactDetails;
+      state.contactMethod = initialSubmitItemState.contactMethod;
+      state.date = initialSubmitItemState.date;
+      state.image = initialSubmitItemState.image;
+      state.location = initialSubmitItemState.location;
+      state.name = initialSubmitItemState.name;
+      state.payload = initialSubmitItemState.payload;
+    },
   },
 });
 
@@ -171,6 +182,7 @@ export const {
   setSubmitCategory,
   setSubmitContactMethod,
   generateSubmitPayload,
+  clearSubmitInputs,
 } = submitItemSlice.actions;
 
 export const selectSubmitName = (state: RootState) => state.submitItem.name;
