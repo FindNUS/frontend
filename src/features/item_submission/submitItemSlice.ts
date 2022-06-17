@@ -60,11 +60,11 @@ const processFoundItemForAPI = (data: {
   category: string;
   contactMethod?: string;
   contactDetails?: string;
-  itemDetails?: string;
   additionalDetails?: string;
-  base64URL?: string;
+  imageBase64?: string;
 }) => {
-  const { contactDetails, contactMethod, itemDetails, base64URL } = data;
+  const { contactDetails, contactMethod, additionalDetails, imageBase64 } =
+    data;
   return {
     Name: data.name,
     Date: data.date,
@@ -72,8 +72,8 @@ const processFoundItemForAPI = (data: {
     Category: data.category,
     ...(contactMethod !== "" && { Contact_method: contactMethod }),
     ...(contactDetails !== "" && { Contact_details: contactDetails }),
-    ...(itemDetails !== "" && { Item_details: itemDetails }),
-    ...(base64URL !== "" && { Image_base64: base64URL }),
+    ...(additionalDetails !== "" && { Item_details: additionalDetails }),
+    ...(imageBase64 !== "" && { Image_base64: imageBase64 }),
   };
 };
 
