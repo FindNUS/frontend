@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import PopupMessage from "../../components/PopupMessage";
-import { ENDPOINT_ITEM_FOUND, ROUTE_HOME } from "../../constants";
+import { ENDPOINT_ITEM, ROUTE_HOME } from "../../constants";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import useAxiosPost from "../../hooks/useAxiosPost";
 import { clearSubmitInputs, selectSubmitPayload } from "./submitItemSlice";
@@ -11,7 +11,7 @@ const ItemSubmissionPost: React.FC = function () {
   const navigate = useNavigate();
   const payload = useAppSelector(selectSubmitPayload) || {};
   const [response, error, loading] = useAxiosPost({
-    url: ENDPOINT_ITEM_FOUND,
+    url: ENDPOINT_ITEM,
     payload: JSON.stringify(payload),
   });
 
