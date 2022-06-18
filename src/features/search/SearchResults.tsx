@@ -62,11 +62,7 @@ const SearchResults: React.FC = function () {
   const query = useAppSelector(selectQuery);
   const queryResults = useAppSelector(selectQueryResults);
   const url = `${API_BASE_URL}/debug/getDemoItem?name=${query}`;
-  const {
-    response,
-    error,
-    loading: isLoading,
-  } = useAxiosGet({ url, headers: "{}" });
+  const [response, error, isLoading] = useAxiosGet({ url, headers: "{}" });
 
   useEffect(() => {
     if (isLoading) {

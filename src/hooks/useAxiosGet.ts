@@ -31,7 +31,7 @@ const useAxiosGet = (configObj: GetConfigObjType) => {
     fetchData();
   }, []);
 
-  return { response, error, loading };
+  return [response, error, loading] as const;
 };
 
 export default useAxiosGet;
