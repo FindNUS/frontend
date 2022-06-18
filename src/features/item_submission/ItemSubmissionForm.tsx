@@ -1,8 +1,13 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import ButtonSubmit from "../../components/buttons/ButtonSubmit";
+import DropdownButton from "../../components/form/DropdownButton";
 import FormField from "../../components/form/FormField";
-import { ROUTE_SUBMIT_ITEM_POST } from "../../constants";
+import {
+  ROUTE_SUBMIT_ITEM_POST,
+  SUBMIT_FOUND_CATEGORIES,
+  SUBMIT_FOUND_CONTACT_METHODS,
+} from "../../constants";
 import { useAppDispatch } from "../../hooks";
 import {
   setSubmitDate,
@@ -72,11 +77,11 @@ const ItemSubmissionForm: React.FC = function () {
           labelContent="Item Description"
           disabled={false}
         />
-        {/* TODO: Add dropdown for item category */}
-        <FormField
+        <DropdownButton
+          dropdownName="submit-category"
+          dropdownID="submit-category"
+          options={SUBMIT_FOUND_CATEGORIES}
           onChange={handleCategoryChange}
-          labelContent="Category"
-          disabled={false}
         />
         <FormField
           onChange={handleLocationChange}
@@ -89,10 +94,11 @@ const ItemSubmissionForm: React.FC = function () {
           type="date"
           disabled={false}
         />
-        <FormField
+        <DropdownButton
+          dropdownName="contact-method"
+          dropdownID="contact-method"
+          options={SUBMIT_FOUND_CONTACT_METHODS}
           onChange={handleContactMethodChange}
-          labelContent="Contact Method (optional)"
-          disabled={false}
         />
         <FormField
           onChange={handleContactDetailsChange}
