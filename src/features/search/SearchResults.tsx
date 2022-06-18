@@ -24,7 +24,7 @@ export type searchResultsType = ReturnType<typeof parseSearchResults>;
 interface searchItemType {
   name: string;
   id: string;
-  date: Date;
+  date: string;
   location: string;
   category: string;
   imageUrl: string;
@@ -33,7 +33,7 @@ interface searchItemType {
 /**
  * Parses the raw string data and converts it into an object
  * @param response The raw JSON data from API GET
- * @returns Object with the date instance
+ * @returns Object with camelCase keys
  */
 const parseSearchResults = (response: rawSearchResultsType) => {
   return response.map((item) => {
@@ -49,7 +49,7 @@ const parseSearchResults = (response: rawSearchResultsType) => {
     return {
       name,
       id,
-      date: new Date(date),
+      date,
       location,
       category,
       imageUrl,
@@ -100,7 +100,7 @@ const SearchResults: React.FC = function () {
                   <ItemCard
                     name={name}
                     id={id}
-                    date={date}
+                    date={new Date(date)}
                     location={location}
                     category={category}
                     imageUrl={imageUrl}
