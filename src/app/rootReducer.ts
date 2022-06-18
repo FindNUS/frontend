@@ -6,6 +6,7 @@ import { firestoreReducer } from "redux-firestore";
 import authReducer from "../features/auth/authSlice";
 import loginReducer from "../features/auth/loginSlice";
 import searchReducer from "../features/search/searchSlice";
+import submitItemReducer from "../features/item_submission/submitItemSlice";
 
 const rootReducer = combineReducers({
   firebase: firebaseReducer,
@@ -13,6 +14,7 @@ const rootReducer = combineReducers({
   auth: authReducer,
   login: loginReducer,
   search: searchReducer,
+  submitItem: submitItemReducer,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;
