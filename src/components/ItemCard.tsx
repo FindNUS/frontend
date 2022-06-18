@@ -2,6 +2,7 @@ import React from "react";
 import Card from "./Card";
 import LocationOnRoundedIcon from "@mui/icons-material/LocationOnRounded";
 import AccessTimeRoundedIcon from "@mui/icons-material/AccessTimeRounded";
+import ImageNotSupportedIcon from "@mui/icons-material/ImageNotSupported";
 
 interface ItemCardProps {
   category: string;
@@ -16,7 +17,14 @@ const ItemCard: React.FC<ItemCardProps> = function (props: ItemCardProps) {
   const { imageUrl, name, location, date } = props;
   return (
     <Card className="item-card">
-      <img src={imageUrl} className="item-card__image" alt={name} />
+      {imageUrl && (
+        <img src={imageUrl} className="item-card__image" alt={name} />
+      )}
+      {!imageUrl && (
+        <div className="item-card__image item-card__image--undefined">
+          <ImageNotSupportedIcon fontSize="inherit" color="inherit" />
+        </div>
+      )}
       <div className="item-card__contents">
         <span className="item-card__name">{name}</span>
         <div className="item-card__location">
