@@ -6,7 +6,7 @@ const Home: React.FC = function () {
   return (
     <div className="home">
       <Header isHomePage={true} />
-      <section className="body">
+      <section className="home__body">
         <h1 className="home__header">Lost something? Start here.</h1>
         <SearchBar prompt="Search for an item" />
       </section>
