@@ -24,7 +24,7 @@ import {
 import SubmitItemPage from "./pages/SubmitItemPage";
 import ItemSubmissionPost from "./features/item_submission/ItemSubmissionPost";
 import ItemSubmissionForm from "./features/item_submission/ItemSubmissionForm";
-import SearchContainer from "./pages/SearchContainer";
+import SearchContainer from "./features/search/SearchContainer";
 
 function App() {
   const isLoggedIn = useAppSelector(selectAuthIsLoggedIn);
