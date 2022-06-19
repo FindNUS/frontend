@@ -1,4 +1,5 @@
 export const QUERY_SEARCH_ITEM_ID = "item";
+export const QUERY_SEARCH_IS_PEEK = "peek";
 
 export interface LNFItem {
   id: string;

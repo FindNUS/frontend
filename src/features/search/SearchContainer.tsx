@@ -1,36 +1,19 @@
 import React from "react";
 import SearchFilter from "./SearchFilter";
 import SearchResults from "./SearchResults";
-import { useAppSelector } from "../../hooks";
-import {
-  selectQuery,
-  selectQueryResults,
-  selectSearchLoading,
-} from "./searchSlice";
-import PageTitle from "../../components/PageTitle";
 
-const SearchContainer: React.FC = function () {
-  const query = useAppSelector(selectQuery);
-  const queryResults = useAppSelector(selectQueryResults);
-  const queryLoading = useAppSelector(selectSearchLoading);
+interface SearchContainerProps {
+  isPeek?: boolean;
+}
+
+const SearchContainer: React.FC<SearchContainerProps> = function (
+  props: SearchContainerProps
+) {
   return (
-    <>
-      <PageTitle
-        title="Search Results"
-        message={
-          queryLoading
-            ? ""
-            : `Showing ${queryResults.length} ${
-                queryResults.length === 1 ? "result" : "results"
-              } for "${query}"`
-        }
-      />
-
-      <div className="search-container">
-        <SearchFilter />
-        <SearchResults />
-      </div>
-    </>
+    <div className="search-container">
+      <SearchFilter />
+      <SearchResults isPeek={props.isPeek} />
+    </div>
   );
 };
 
