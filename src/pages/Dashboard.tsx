@@ -7,8 +7,8 @@ const Dashboard: React.FC = function () {
   const { currentUser } = auth;
 
   return (
-    <div className="dashboard">
-      <Header isHomePage={false} />
+    <div className="dashboard background background--main">
+      <Header />
       <section className="dashboard-body">
         <h2 className="text-white-shadow">Dashboard</h2>
         <span className="dashboard-body__message">

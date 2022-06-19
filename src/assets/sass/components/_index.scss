@@ -1,0 +1,32 @@
+@forward "./button";
+@forward "./card";
+@forward "./dropdown";
+@forward "./fileupload";
+@forward "./formfield";
+@forward "./itemcard";
+@forward "./link";
+@forward "./lnfitem";
+@forward "./logo";
+@forward "./noimage";
+@forward "./pagetitle";
+@forward "./popupmsg";
+@forward "./search";
+@forward "./viewitem";
+
+.components {
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: baseline;
+  background-color: #ccc;
+
+  & > * {
+    margin-bottom: 1rem;
+  }
+
+  &__horizontal {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+  }
+}

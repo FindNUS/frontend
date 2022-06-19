@@ -1,0 +1,29 @@
+@use "../abstracts/variables" as *;
+
+.file-upload {
+  height: 100%;
+  padding: 2rem;
+  background-color: rgba($color: $colour-white, $alpha: 0.6);
+  border: 6px dashed $colour-grey-dark-medium;
+
+  &__contents {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    height: 100%;
+  }
+
+  &__image {
+    width: 100%;
+    max-width: $file-upload-max-width;
+  }
+
+  &:hover {
+    cursor: pointer;
+  }
+  &__icon {
+    font-size: 10rem;
+  }
+}

@@ -1,0 +1,11 @@
+export const ROUTE_COMPONENTS = "/components";
+export const ROUTE_DASHBOARD = "/dashboard";
+export const ROUTE_HOME = "/";
+export const ROUTE_LOGIN = "/login";
+export const ROUTE_SEARCH = "/search";
+export const ROUTE_VIEW_ITEM = `/view`;
+export const ROUTE_SUBMIT_ITEM = "/submit-item";
+export const ROUTE_SUBMIT_ITEM_INNER_FORM = "form";
+export const ROUTE_SUBMIT_ITEM_INNER_POST = "post";
+export const ROUTE_SUBMIT_ITEM_FORM = `${ROUTE_SUBMIT_ITEM}/${ROUTE_SUBMIT_ITEM_INNER_FORM}`;
+export const ROUTE_SUBMIT_ITEM_POST = `${ROUTE_SUBMIT_ITEM}/${ROUTE_SUBMIT_ITEM_INNER_POST}`;

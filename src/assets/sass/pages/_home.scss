@@ -1,0 +1,26 @@
+@use "../abstracts/variables" as *;
+
+.home {
+  &__header {
+    color: $colour-white;
+    padding-bottom: 5rem;
+    font-size: 6rem;
+  }
+
+  &__body {
+    height: calc(90vh - $header-height);
+    display: flex;
+    flex-direction: column;
+    row-gap: 2.5rem;
+    justify-content: center;
+    align-items: center;
+    padding-bottom: 6rem;
+  }
+
+  &__message {
+    font-weight: bold;
+    color: $colour-white;
+    text-align: center;
+    animation: floatUpDown 2s ease-in-out infinite;
+  }
+}

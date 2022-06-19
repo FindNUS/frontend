@@ -1,0 +1,43 @@
+@use "../abstracts/variables" as *;
+
+.search {
+  &-container {
+    margin-top: 2rem;
+    padding: 0 $pages-padding;
+    display: flex;
+    gap: 4rem;
+  }
+
+  &-filter {
+    flex-grow: 1;
+    background-color: $colour-white;
+    border-radius: $rounded-edge;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+
+    width: 100%;
+    max-width: 40rem;
+    height: min-content;
+
+    &__dropdown {
+      padding: 0.6rem 1.5rem;
+      width: 100%;
+      font-family: "dosis";
+      font-size: inherit;
+      font-weight: bold;
+      background-color: $colour-white;
+      border: 2px solid $colour-grey-dark-medium;
+      border-radius: $rounded-edge;
+    }
+  }
+
+  &__loading,
+  &__error {
+    color: $colour-grey-dark-medium;
+    background-color: $colour-white;
+    border-radius: $rounded-edge;
+    padding: 2rem;
+  }
+}

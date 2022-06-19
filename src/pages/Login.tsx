@@ -4,8 +4,8 @@ import LoginForm from "../features/auth/LoginForm";
 
 const Login: React.FC = function () {
   return (
-    <div className="login">
-      <Header isHomePage={false} />
+    <div className="login background background--main">
+      <Header />
       <section className="login__container">
         <div className="login__message">
           <h1 className="text-white-shadow">Welcome</h1>

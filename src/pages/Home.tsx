@@ -1,17 +1,23 @@
 import React from "react";
 import SearchBar from "../features/search/SearchBar";
-import ButtonFound from "../components/buttons/ButtonFound";
 import Header from "../components/header/Header";
+import SearchContainer from "../features/search/SearchContainer";
+import KeyboardDoubleArrowDownIcon from "@mui/icons-material/KeyboardDoubleArrowDown";
 
 const Home: React.FC = function () {
   return (
-    <div className="home">
+    <div className="home background background--main">
       <Header isHomePage={true} />
-      <section className="body">
+      <section className="home__body">
         <h1 className="home__header">Lost something? Start here.</h1>
         <SearchBar prompt="Search for an item" />
-        <ButtonFound />
       </section>
+      <div className="home__message text-white-shadow">
+        <KeyboardDoubleArrowDownIcon fontSize="large" />
+        <span>Scroll down to view recent items</span>
+        <KeyboardDoubleArrowDownIcon fontSize="large" />
+      </div>
+      <SearchContainer isPeek={true} />
     </div>
   );
 };

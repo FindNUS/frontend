@@ -1,0 +1,33 @@
+@use "../abstracts/variables" as *;
+
+.lnf-item {
+  display: flex;
+  gap: 2rem;
+
+  &__descriptor {
+    font-weight: 500;
+    padding-right: 1rem;
+  }
+
+  &__image {
+    min-width: 40rem;
+    max-width: 60rem;
+    min-height: 40rem;
+    padding: 2rem;
+    object-fit: cover;
+  }
+
+  &__details {
+    width: 100%;
+    flex-grow: 1;
+    padding-left: 1rem;
+
+    &--header {
+      margin-bottom: 0.8rem;
+    }
+
+    &:not(:last-child) {
+      margin-bottom: 0.8rem;
+    }
+  }
+}
