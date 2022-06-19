@@ -11,15 +11,6 @@
     border-radius: $card-border-radius $card-border-radius 0 0;
     object-fit: cover;
     padding: 1rem 1.5rem 0 1.5rem;
-
-    &--undefined {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background-color: $colour-grey;
-      color: $colour-disabled;
-      font-size: 8rem;
-    }
   }
 
   &__contents {
