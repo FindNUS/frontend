@@ -3,9 +3,12 @@ import ItemCard from "../../components/ItemCard";
 import useAxiosGet from "../../hooks/useAxiosGet";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import {
-  API_BASE_URL,
+  ENDPOINT_DEBUG_GET_DEMO_ITEM,
+  ENDPOINT_PEEK,
+  PEEK_DEFAULT_LIMIT,
+  QUERY_SEARCH_IS_PEEK,
   QUERY_SEARCH_ITEM_ID,
-  ROUTE_SEARCH_VIEW_ITEM,
+  ROUTE_VIEW_ITEM,
 } from "../../constants";
 import {
   selectQuery,
@@ -62,12 +65,21 @@ const parseSearchResults = (response: rawSearchResultsType) => {
   });
 };
 
-const SearchResults: React.FC = function () {
+interface SearchResultsProps {
+  isPeek?: boolean;
+}
+
+const SearchResults: React.FC<SearchResultsProps> = function (
+  props: SearchResultsProps
+) {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const query = useAppSelector(selectQuery);
   const queryResults = useAppSelector(selectQueryResults);
-  const url = `${API_BASE_URL}/debug/getDemoItem?name=${query}`;
+  const isPeek = props.isPeek ?? false;
+  const url = isPeek
+    ? `${ENDPOINT_PEEK}?limit=${PEEK_DEFAULT_LIMIT}`
+    : `${ENDPOINT_DEBUG_GET_DEMO_ITEM}?name=${query}`;
   const [response, error, isLoading] = useAxiosGet({ url, headers: "{}" });
 
   useEffect(() => {
@@ -88,7 +100,9 @@ const SearchResults: React.FC = function () {
   const handleItemClick = (ev: React.MouseEvent) => {
     const item = ev.currentTarget;
     const id = item.getAttribute("data-id");
-    navigate(`${ROUTE_SEARCH_VIEW_ITEM}?${QUERY_SEARCH_ITEM_ID}=${id}`);
+    navigate(
+      `${ROUTE_VIEW_ITEM}?${QUERY_SEARCH_ITEM_ID}=${id}&${QUERY_SEARCH_IS_PEEK}=${isPeek}`
+    );
   };
 
   return (

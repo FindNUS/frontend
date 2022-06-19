@@ -7,7 +7,7 @@ const Dashboard: React.FC = function () {
   const { currentUser } = auth;
 
   return (
-    <div className="dashboard">
+    <div className="dashboard background background--main">
       <Header />
       <section className="dashboard-body">
         <h2 className="text-white-shadow">Dashboard</h2>
