@@ -1,0 +1,19 @@
+@use "../abstracts/variables" as *;
+
+.background {
+  width: 100%;
+  min-height: 100vh;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-position: center;
+  background-size: cover;
+  padding: $pages-padding;
+
+  &--main {
+    background-image: linear-gradient(
+        rgba(0, 0, 0, $bg-filter-alpha),
+        rgba(0, 0, 0, $bg-filter-alpha)
+      ),
+      url("../../img/background.jpg");
+  }
+}

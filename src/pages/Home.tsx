@@ -6,7 +6,7 @@ import KeyboardDoubleArrowDownIcon from "@mui/icons-material/KeyboardDoubleArrow
 
 const Home: React.FC = function () {
   return (
-    <div className="home">
+    <div className="home background background--main">
       <Header isHomePage={true} />
       <section className="home__body">
         <h1 className="home__header">Lost something? Start here.</h1>

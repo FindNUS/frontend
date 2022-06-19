@@ -14,7 +14,7 @@ const SearchPage: React.FC = function () {
   const queryResults = useAppSelector(selectQueryResults);
   const queryLoading = useAppSelector(selectSearchLoading);
   return (
-    <div className="search-page">
+    <div className="search-page background background--main">
       <Header />
       <PageTitle
         title="Search Results"
