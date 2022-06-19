@@ -8,7 +8,7 @@ import {
   PEEK_DEFAULT_LIMIT,
   QUERY_SEARCH_IS_PEEK,
   QUERY_SEARCH_ITEM_ID,
-  ROUTE_SEARCH_VIEW_ITEM,
+  ROUTE_VIEW_ITEM,
 } from "../../constants";
 import {
   selectQuery,
@@ -76,7 +76,8 @@ const SearchResults: React.FC<SearchResultsProps> = function (
   const navigate = useNavigate();
   const query = useAppSelector(selectQuery);
   const queryResults = useAppSelector(selectQueryResults);
-  const url = props.isPeek
+  const isPeek = props.isPeek ?? false;
+  const url = isPeek
     ? `${ENDPOINT_PEEK}?limit=${PEEK_DEFAULT_LIMIT}`
     : `${ENDPOINT_DEBUG_GET_DEMO_ITEM}?name=${query}`;
   const [response, error, isLoading] = useAxiosGet({ url, headers: "{}" });
@@ -100,7 +101,7 @@ const SearchResults: React.FC<SearchResultsProps> = function (
     const item = ev.currentTarget;
     const id = item.getAttribute("data-id");
     navigate(
-      `${ROUTE_SEARCH_VIEW_ITEM}?${QUERY_SEARCH_ITEM_ID}=${id}&${QUERY_SEARCH_IS_PEEK}=true`
+      `${ROUTE_VIEW_ITEM}?${QUERY_SEARCH_ITEM_ID}=${id}&${QUERY_SEARCH_IS_PEEK}=${isPeek}`
     );
   };
 

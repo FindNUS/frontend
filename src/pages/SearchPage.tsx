@@ -1,6 +1,5 @@
 import React from "react";
 import Header from "../components/header/Header";
-import { Outlet } from "react-router-dom";
 import { useAppSelector } from "../hooks";
 import {
   selectQuery,
@@ -8,6 +7,7 @@ import {
   selectSearchLoading,
 } from "../features/search/searchSlice";
 import PageTitle from "../components/PageTitle";
+import SearchContainer from "../features/search/SearchContainer";
 
 const SearchPage: React.FC = function () {
   const query = useAppSelector(selectQuery);
@@ -26,7 +26,7 @@ const SearchPage: React.FC = function () {
               } for "${query}"`
         }
       />
-      <Outlet />
+      <SearchContainer />
     </div>
   );
 };

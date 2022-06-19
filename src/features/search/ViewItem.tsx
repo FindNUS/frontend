@@ -14,7 +14,7 @@ import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import processItemResponseFromAPI from "../../utils/processItemResponseFromAPI";
 import LostAndFoundItem from "./LostAndFoundItem";
 
-const ViewSearchResult: React.FC = function () {
+const ViewItem: React.FC = function () {
   const [searchParams] = useSearchParams();
   const itemId = searchParams.get(QUERY_SEARCH_ITEM_ID);
   const url = `${ENDPOINT_ITEM}?Id=${itemId}`;
@@ -50,4 +50,4 @@ const ViewSearchResult: React.FC = function () {
   );
 };
 
-export default ViewSearchResult;
+export default ViewItem;
