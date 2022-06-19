@@ -3,7 +3,7 @@ import ItemCard from "../../components/ItemCard";
 import useAxiosGet from "../../hooks/useAxiosGet";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import {
-  API_BASE_URL,
+  ENDPOINT_DEBUG_GET_DEMO_ITEM,
   QUERY_SEARCH_ITEM_ID,
   ROUTE_SEARCH_VIEW_ITEM,
 } from "../../constants";
@@ -67,7 +67,7 @@ const SearchResults: React.FC = function () {
   const navigate = useNavigate();
   const query = useAppSelector(selectQuery);
   const queryResults = useAppSelector(selectQueryResults);
-  const url = `${API_BASE_URL}/debug/getDemoItem?name=${query}`;
+  const url = `${ENDPOINT_DEBUG_GET_DEMO_ITEM}?name=${query}`;
   const [response, error, isLoading] = useAxiosGet({ url, headers: "{}" });
 
   useEffect(() => {
