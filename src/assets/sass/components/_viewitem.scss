@@ -1,0 +1,17 @@
+@use "../abstracts/variables" as *;
+
+.view-item {
+  &__container {
+    width: 100%;
+    padding: $pages-padding;
+    border-radius: $rounded-edge;
+    background-color: $colour-white;
+  }
+
+  &__back {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    margin-bottom: 2rem;
+  }
+}

@@ -2,13 +2,18 @@ import React, { useEffect } from "react";
 import ItemCard from "../../components/ItemCard";
 import useAxiosGet from "../../hooks/useAxiosGet";
 import { useAppDispatch, useAppSelector } from "../../hooks";
-import { API_BASE_URL } from "../../constants";
+import {
+  API_BASE_URL,
+  QUERY_SEARCH_ITEM_ID,
+  ROUTE_SEARCH_VIEW_ITEM,
+} from "../../constants";
 import {
   selectQuery,
   selectQueryResults,
   setQueryResults,
   setSearchLoading,
 } from "./searchSlice";
+import { useNavigate } from "react-router-dom";
 
 type rawSearchResultsType = {
   Name: string;
@@ -24,7 +29,7 @@ export type searchResultsType = ReturnType<typeof parseSearchResults>;
 interface searchItemType {
   name: string;
   id: string;
-  date: Date;
+  date: string;
   location: string;
   category: string;
   imageUrl: string;
@@ -33,7 +38,7 @@ interface searchItemType {
 /**
  * Parses the raw string data and converts it into an object
  * @param response The raw JSON data from API GET
- * @returns Object with the date instance
+ * @returns Object with camelCase keys
  */
 const parseSearchResults = (response: rawSearchResultsType) => {
   return response.map((item) => {
@@ -49,7 +54,7 @@ const parseSearchResults = (response: rawSearchResultsType) => {
     return {
       name,
       id,
-      date: new Date(date),
+      date,
       location,
       category,
       imageUrl,
@@ -59,14 +64,11 @@ const parseSearchResults = (response: rawSearchResultsType) => {
 
 const SearchResults: React.FC = function () {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const query = useAppSelector(selectQuery);
   const queryResults = useAppSelector(selectQueryResults);
   const url = `${API_BASE_URL}/debug/getDemoItem?name=${query}`;
-  const {
-    response,
-    error,
-    loading: isLoading,
-  } = useAxiosGet({ url, headers: "{}" });
+  const [response, error, isLoading] = useAxiosGet({ url, headers: "{}" });
 
   useEffect(() => {
     if (isLoading) {
@@ -83,6 +85,12 @@ const SearchResults: React.FC = function () {
     dispatch(setSearchLoading(false));
   }, [isLoading]);
 
+  const handleItemClick = (ev: React.MouseEvent) => {
+    const item = ev.currentTarget;
+    const id = item.getAttribute("data-id");
+    navigate(`${ROUTE_SEARCH_VIEW_ITEM}?${QUERY_SEARCH_ITEM_ID}=${id}`);
+  };
+
   return (
     <section className="search-results-container">
       <div className="search-results">
@@ -96,11 +104,16 @@ const SearchResults: React.FC = function () {
             {queryResults.map((item: searchItemType) => {
               const { name, id, date, location, category, imageUrl } = item;
               return (
-                <li className="search-results__item" key={id}>
+                <li
+                  className="search-results__item"
+                  key={id}
+                  onClick={handleItemClick}
+                  data-id={id}
+                >
                   <ItemCard
                     name={name}
                     id={id}
-                    date={date}
+                    date={new Date(date)}
                     location={location}
                     category={category}
                     imageUrl={imageUrl}

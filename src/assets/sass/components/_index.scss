@@ -5,10 +5,13 @@
 @forward "./formfield";
 @forward "./itemcard";
 @forward "./link";
+@forward "./lnfitem";
 @forward "./logo";
+@forward "./noimage";
 @forward "./pagetitle";
 @forward "./popupmsg";
 @forward "./search";
+@forward "./viewitem";
 
 .components {
   padding: 2rem;

@@ -1,0 +1,10 @@
+@use "../abstracts/variables" as *;
+
+.no-image {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: $colour-grey;
+  color: $colour-disabled;
+  font-size: 8rem;
+}
