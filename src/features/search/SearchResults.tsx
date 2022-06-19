@@ -4,6 +4,7 @@ import useAxiosGet from "../../hooks/useAxiosGet";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import {
   ENDPOINT_DEBUG_GET_DEMO_ITEM,
+  ENDPOINT_PEEK,
   QUERY_SEARCH_ITEM_ID,
   ROUTE_SEARCH_VIEW_ITEM,
 } from "../../constants";
@@ -62,12 +63,20 @@ const parseSearchResults = (response: rawSearchResultsType) => {
   });
 };
 
-const SearchResults: React.FC = function () {
+interface SearchResultsProps {
+  isPeek?: boolean;
+}
+
+const SearchResults: React.FC<SearchResultsProps> = function (
+  props: SearchResultsProps
+) {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const query = useAppSelector(selectQuery);
   const queryResults = useAppSelector(selectQueryResults);
-  const url = `${ENDPOINT_DEBUG_GET_DEMO_ITEM}?name=${query}`;
+  const url = props.isPeek
+    ? ENDPOINT_PEEK
+    : `${ENDPOINT_DEBUG_GET_DEMO_ITEM}?name=${query}`;
   const [response, error, isLoading] = useAxiosGet({ url, headers: "{}" });
 
   useEffect(() => {

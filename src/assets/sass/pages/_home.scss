@@ -29,4 +29,11 @@
     align-items: center;
     padding-bottom: 6rem;
   }
+
+  &__message {
+    font-weight: bold;
+    color: $colour-white;
+    text-align: center;
+    animation: floatUpDown 2s ease-in-out infinite;
+  }
 }
