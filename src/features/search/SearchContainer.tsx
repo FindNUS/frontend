@@ -1,13 +1,13 @@
 import React from "react";
 import SearchFilter from "./SearchFilter";
-import SearchResults from "../features/search/SearchResults";
-import { useAppSelector } from "../hooks";
+import SearchResults from "./SearchResults";
+import { useAppSelector } from "../../hooks";
 import {
   selectQuery,
   selectQueryResults,
   selectSearchLoading,
-} from "../features/search/searchSlice";
-import PageTitle from "../components/PageTitle";
+} from "./searchSlice";
+import PageTitle from "../../components/PageTitle";
 
 const SearchContainer: React.FC = function () {
   const query = useAppSelector(selectQuery);
