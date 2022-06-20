@@ -8,7 +8,7 @@ import {
   SUBMIT_FOUND_CATEGORIES,
   SUBMIT_FOUND_CONTACT_METHODS,
 } from "../../constants";
-import { useAppDispatch } from "../../hooks";
+import { useAppDispatch, useAppSelector } from "../../hooks";
 import {
   setSubmitDate,
   setSubmitName,
@@ -19,12 +19,15 @@ import {
   setSubmitContactMethod,
   setSubmitCategory,
   generateSubmitPayload,
+  selectSubmitInput,
 } from "./submitItemSlice";
 import UploadDragDrop from "./UploadDragDrop";
 
 const ItemSubmissionForm: React.FC = function () {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const formInput = useAppSelector(selectSubmitInput);
+
   const handleSubmitForm = (ev: React.FormEvent) => {
     ev.preventDefault();
     dispatch(generateSubmitPayload());
@@ -82,6 +85,7 @@ const ItemSubmissionForm: React.FC = function () {
           dropdownID="submit-category"
           options={SUBMIT_FOUND_CATEGORIES}
           onChange={handleCategoryChange}
+          selected={formInput.category}
         />
         <FormField
           onChange={handleLocationChange}
@@ -99,6 +103,7 @@ const ItemSubmissionForm: React.FC = function () {
           dropdownID="contact-method"
           options={SUBMIT_FOUND_CONTACT_METHODS}
           onChange={handleContactMethodChange}
+          selected={formInput.contactMethod}
         />
         <FormField
           onChange={handleContactDetailsChange}

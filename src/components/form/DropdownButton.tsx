@@ -7,6 +7,7 @@ interface DropdownButtonProps {
   dropdownID: string;
   options: DropdownOption[];
   onChange: (ev: React.FormEvent) => void;
+  selected: string;
 }
 
 const DropdownButton: React.FC<DropdownButtonProps> = function (
@@ -19,6 +20,7 @@ const DropdownButton: React.FC<DropdownButtonProps> = function (
       id={dropdownID}
       className="dropdown"
       onChange={onChange}
+      value={props.selected}
     >
       {options.map((item) => {
         return (
