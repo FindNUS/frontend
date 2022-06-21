@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../../app/rootReducer";
+import { DROPDOWN_DEFAULT_KEY } from "../../constants";
 import processFoundItemForAPI from "../../utils/processFoundItemForAPI";
 
 interface SubmitItemState {
@@ -40,9 +41,9 @@ interface PayloadFoundItem {
 
 const initialSubmitItemState: SubmitItemState = {
   additionalDetails: "",
-  category: "",
+  category: DROPDOWN_DEFAULT_KEY,
   contactDetails: "",
-  contactMethod: "",
+  contactMethod: DROPDOWN_DEFAULT_KEY,
   date: "",
   name: "",
   image: {

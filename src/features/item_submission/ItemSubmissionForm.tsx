@@ -4,6 +4,8 @@ import ButtonSubmit from "../../components/buttons/ButtonSubmit";
 import DropdownButton from "../../components/form/DropdownButton";
 import FormField from "../../components/form/FormField";
 import {
+  DROPDOWN_DEFAULT_KEY,
+  CONTACT_METHOD_NUS_SECURITY_KEY,
   ROUTE_SUBMIT_ITEM_POST,
   SUBMIT_FOUND_CATEGORIES,
   SUBMIT_FOUND_CONTACT_METHODS,
@@ -105,11 +107,15 @@ const ItemSubmissionForm: React.FC = function () {
           onChange={handleContactMethodChange}
           selected={formInput.contactMethod}
         />
-        <FormField
-          onChange={handleContactDetailsChange}
-          labelContent="Contact details (optional)"
-          disabled={false}
-        />
+        {/* Enable contact details as required */}
+        {formInput.contactMethod !== DROPDOWN_DEFAULT_KEY &&
+          formInput.contactMethod !== CONTACT_METHOD_NUS_SECURITY_KEY && (
+            <FormField
+              onChange={handleContactDetailsChange}
+              labelContent="Contact details"
+              disabled={false}
+            />
+          )}
         <FormField
           onChange={handleAdditionalDetailsChange}
           labelContent="Additional details"
