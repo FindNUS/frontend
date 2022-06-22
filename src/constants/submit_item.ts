@@ -98,9 +98,35 @@ export const FORM_FIELD_STATUS_SUBMIT: RequiredField[] = [
 ];
 
 const currentDate = new Date();
-export const SUBMISSION_DATE_RANGE = 24 * 60 * 60 * 1000 * (30 * 6); // miliseconds per day * days
+const SUBMISSION_DATE_DAYS = 180; // days
+export const SUBMISSION_DATE_RANGE = 24 * 60 * 60 * 1000 * SUBMISSION_DATE_DAYS; // miliseconds per day * days
 export const OLDEST_ALLOWED_DATE = new Date(
   currentDate.setTime(currentDate.getTime() - SUBMISSION_DATE_RANGE)
 );
 
 export const E164_STANDARD_REGEX = /^\+?[1-9]\d{1,14}$/;
+
+// Errors
+export const FORM_FIELD_ERROR_NON_NUMERIC =
+  "Enter at least one alphabet (must not be purely numeric)";
+export const FORM_FIELD_ERROR_PHONE = "Enter valid contact details";
+export const FORM_FIELD_ERROR_DATE = `Enter a valid date (Less than ${SUBMISSION_DATE_DAYS} days from today)`;
+export const FORM_FIELD_ERROR_CATEGORY = "Choose a category";
+
+export const FORM_FIELD_ERRORS = [
+  {
+    key: FORM_FIELD_IDENTIFIER_NAME,
+    value: FORM_FIELD_ERROR_NON_NUMERIC,
+  },
+  { key: FORM_FIELD_IDENTIFIER_CATEGORY, value: FORM_FIELD_ERROR_CATEGORY },
+  { key: FORM_FIELD_IDENTIFIER_DATE, value: FORM_FIELD_ERROR_DATE },
+  { key: FORM_FIELD_IDENTIFIER_LOCATION, value: FORM_FIELD_ERROR_NON_NUMERIC },
+  {
+    key: FORM_FIELD_IDENTIFIER_ADD_DETAILS,
+    value: FORM_FIELD_ERROR_NON_NUMERIC,
+  },
+  {
+    key: FORM_FIELD_IDENTIFIER_CONTACT_DETAILS,
+    value: FORM_FIELD_ERROR_PHONE,
+  },
+];

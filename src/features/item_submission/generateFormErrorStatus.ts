@@ -1,5 +1,10 @@
 import { RequiredField } from "../../constants";
 
+export interface FormError {
+  identifier: string;
+  error: boolean;
+}
+
 /**
  * Determine whether the form inputs have errors
  * @param status The array containing the identifier, required and completed

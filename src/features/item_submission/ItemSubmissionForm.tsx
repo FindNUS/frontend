@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ButtonSubmit from "../../components/buttons/ButtonSubmit";
 import DropdownButton from "../../components/form/DropdownButton";
@@ -21,8 +21,10 @@ import {
   ROUTE_SUBMIT_ITEM_POST,
   SUBMIT_FOUND_CATEGORIES,
   SUBMIT_FOUND_CONTACT_METHODS,
+  FORM_FIELD_ERRORS,
 } from "../../constants";
 import { useAppDispatch, useAppSelector } from "../../hooks";
+import getArrayObjectValueFromKey from "../../utils/getArrayObjectValueFromKey";
 import generateFormErrorStatus from "./generateFormErrorStatus";
 import {
   setSubmitDate,
@@ -45,6 +47,7 @@ const ItemSubmissionForm: React.FC = function () {
   const navigate = useNavigate();
   const formInput = useAppSelector(selectSubmitInput);
   const formInputStatus = useAppSelector(selectSubmitFormInputStatus);
+  const [attemptedSubmit, setAttemptedSubmit] = useState(false);
 
   /**
    * Helper function to update form field corresponding to identifier in store.
@@ -157,6 +160,7 @@ const ItemSubmissionForm: React.FC = function () {
       (acc, status) => acc || status.error,
       false
     );
+    setAttemptedSubmit(true);
     if (formHasErrors) return;
 
     dispatch(generateSubmitPayload());
@@ -201,6 +205,46 @@ const ItemSubmissionForm: React.FC = function () {
     dispatch(setSubmitCategory(value));
   };
 
+  const errors = generateFormErrorStatus(formInputStatus);
+  const getInputValueByIdentifier = (identifier: string) => {
+    switch (identifier) {
+      case FORM_FIELD_IDENTIFIER_NAME:
+        return formInput.name;
+      case FORM_FIELD_IDENTIFIER_CATEGORY:
+        return formInput.category;
+      case FORM_FIELD_IDENTIFIER_DATE:
+        return formInput.date;
+      case FORM_FIELD_IDENTIFIER_LOCATION:
+        return formInput.location;
+      case FORM_FIELD_IDENTIFIER_ADD_DETAILS:
+        return formInput.additionalDetails;
+      case FORM_FIELD_IDENTIFIER_CONTACT_METHOD:
+        return formInput.contactMethod;
+      case FORM_FIELD_IDENTIFIER_CONTACT_DETAILS:
+        return formInput.contactDetails;
+    }
+  };
+
+  const generateFormError = (identifier: string) => {
+    const value = getInputValueByIdentifier(identifier);
+    // prevent error display on form load
+    switch (identifier) {
+      case FORM_FIELD_IDENTIFIER_CATEGORY:
+      case FORM_FIELD_IDENTIFIER_CONTACT_METHOD:
+        if (value === DROPDOWN_DEFAULT_KEY && !attemptedSubmit)
+          return undefined;
+        break;
+      default:
+        if (value === "" && !attemptedSubmit) return undefined;
+    }
+
+    return {
+      status: errors.filter((error) => error.identifier === identifier)[0]
+        .error,
+      error: getArrayObjectValueFromKey(FORM_FIELD_ERRORS, identifier),
+    };
+  };
+
   return (
     <form className="submit-item__form" onSubmit={handleSubmitForm}>
       <div className="submit-item__form--fields">
@@ -208,6 +252,7 @@ const ItemSubmissionForm: React.FC = function () {
           onChange={handleDescriptionChange}
           labelContent="Item Description"
           disabled={false}
+          isInvalid={generateFormError(FORM_FIELD_IDENTIFIER_NAME)}
         />
         <DropdownButton
           dropdownName="submit-category"
@@ -215,17 +260,20 @@ const ItemSubmissionForm: React.FC = function () {
           options={SUBMIT_FOUND_CATEGORIES}
           onChange={handleCategoryChange}
           selected={formInput.category}
+          isInvalid={generateFormError(FORM_FIELD_IDENTIFIER_CATEGORY)}
         />
         <FormField
           onChange={handleLocationChange}
           labelContent="Location"
           disabled={false}
+          isInvalid={generateFormError(FORM_FIELD_IDENTIFIER_LOCATION)}
         />
         <FormField
           onChange={handleDateChange}
           labelContent="Date"
           type="date"
           disabled={false}
+          isInvalid={generateFormError(FORM_FIELD_IDENTIFIER_DATE)}
         />
         <DropdownButton
           dropdownName="contact-method"
@@ -241,6 +289,9 @@ const ItemSubmissionForm: React.FC = function () {
               onChange={handleContactDetailsChange}
               labelContent="Contact details"
               disabled={false}
+              isInvalid={generateFormError(
+                FORM_FIELD_IDENTIFIER_CONTACT_DETAILS
+              )}
             />
           )}
         <FormField
@@ -248,6 +299,7 @@ const ItemSubmissionForm: React.FC = function () {
           labelContent="Additional details"
           type="textarea"
           disabled={false}
+          isInvalid={generateFormError(FORM_FIELD_IDENTIFIER_ADD_DETAILS)}
         />
         <ButtonSubmit className="btn btn--primary" text="Submit" />
       </div>
