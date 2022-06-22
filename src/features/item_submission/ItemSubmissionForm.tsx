@@ -23,6 +23,7 @@ import {
   SUBMIT_FOUND_CONTACT_METHODS,
 } from "../../constants";
 import { useAppDispatch, useAppSelector } from "../../hooks";
+import generateFormErrorStatus from "./generateFormErrorStatus";
 import {
   setSubmitDate,
   setSubmitName,
@@ -152,20 +153,11 @@ const ItemSubmissionForm: React.FC = function () {
     updateFormInputStatus();
 
     // return if inputs are not valid
-    const formIsValid = formInputStatus
-      .map((input) => {
-        const { completed, required } = input;
-        // input is required by default
-        if (required && !completed) return false;
-        // input is not required by default but must be filled in (contact details)
-        if (!required && completed !== undefined && !completed) return false;
-        // input is optional
-        if (!required && completed === undefined) return true;
-        // input is valid
-        return true;
-      })
-      .reduce((acc, status) => acc && status, true);
-    if (!formIsValid) return;
+    const formHasErrors = generateFormErrorStatus(formInputStatus).reduce(
+      (acc, status) => acc || status.error,
+      false
+    );
+    if (formHasErrors) return;
 
     dispatch(generateSubmitPayload());
     navigate(ROUTE_SUBMIT_ITEM_POST);
