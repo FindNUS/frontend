@@ -6,15 +6,42 @@ const DashboardProfile: React.FC = function () {
   const { currentUser } = auth;
   return (
     <section className="dashboard-body">
-      <span className="dashboard-body__message">
-        This is a protected page. Only authenticated users can access this page
-      </span>
-      <span className="dashboard-body__message">
-        You are currently logged in as: {currentUser?.phoneNumber}
-      </span>
-      <span className="dashboard-body__message">
-        Your unique ID: {currentUser?.uid}
-      </span>
+      {currentUser?.metadata.lastSignInTime && (
+        <div className="dashboard-body__message">
+          <span className="dashboard-body__message--descriptor">
+            Last logged in at:&nbsp;
+          </span>
+          {currentUser?.metadata.lastSignInTime}
+        </div>
+      )}
+      <div className="dashboard-body__message">
+        <span className="dashboard-body__message--descriptor">
+          Currently logged in as:&nbsp;
+        </span>
+        {currentUser?.phoneNumber}
+      </div>
+      {currentUser?.displayName && (
+        <div className="dashboard-body__message">
+          <span className="dashboard-body__message--descriptor">
+            Name:&nbsp;
+          </span>
+          {currentUser?.displayName}
+        </div>
+      )}
+      {currentUser?.email && (
+        <div className="dashboard-body__message">
+          <span className="dashboard-body__message--descriptor">
+            Email:&nbsp;
+          </span>
+          {currentUser?.email}
+        </div>
+      )}
+      <div className="dashboard-body__message">
+        <span className="dashboard-body__message--descriptor">
+          Unique ID:&nbsp;
+        </span>
+        {currentUser?.uid}
+      </div>
     </section>
   );
 };
