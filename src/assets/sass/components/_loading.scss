@@ -1,0 +1,8 @@
+@use "../abstracts/variables" as *;
+
+.loading {
+  color: $colour-grey-dark-medium;
+  background-color: $colour-white;
+  border-radius: $rounded-edge;
+  padding: 2rem;
+}

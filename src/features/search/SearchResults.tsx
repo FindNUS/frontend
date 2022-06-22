@@ -17,6 +17,7 @@ import {
   setSearchLoading,
 } from "./searchSlice";
 import { useNavigate } from "react-router-dom";
+import Loading from "../../components/Loading";
 
 type rawSearchResultsType = {
   Name: string;
@@ -108,11 +109,7 @@ const SearchResults: React.FC<SearchResultsProps> = function (
   return (
     <section className="search-results-container">
       <div className="search-results">
-        {isLoading && (
-          <div className="search__loading">
-            <h2>Loading...</h2>
-          </div>
-        )}
+        {isLoading && <Loading />}
         {!isLoading && !error && (
           <ul className="search-results__list">
             {queryResults.map((item: searchItemType) => {
