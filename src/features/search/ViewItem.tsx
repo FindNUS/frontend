@@ -18,7 +18,7 @@ const ViewItem: React.FC = function () {
   const [searchParams] = useSearchParams();
   const itemId = searchParams.get(QUERY_SEARCH_ITEM_ID);
   const url = `${ENDPOINT_ITEM}?Id=${itemId}`;
-  const [response, error, loading] = useAxiosGet({ url, headers: "{}" });
+  const [response, error, loading] = useAxiosGet({ url });
   const [item, setItem] = useState<LNFItem>();
   const navigate = useNavigate();
   const fromPeek = searchParams.get(QUERY_SEARCH_IS_PEEK) === "true";

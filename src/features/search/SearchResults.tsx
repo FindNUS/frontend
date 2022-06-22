@@ -80,7 +80,7 @@ const SearchResults: React.FC<SearchResultsProps> = function (
   const url = isPeek
     ? `${ENDPOINT_PEEK}?limit=${PEEK_DEFAULT_LIMIT}`
     : `${ENDPOINT_DEBUG_GET_DEMO_ITEM}?name=${query}`;
-  const [response, error, isLoading] = useAxiosGet({ url, headers: "{}" });
+  const [response, error, isLoading] = useAxiosGet({ url });
 
   useEffect(() => {
     if (isLoading) {
