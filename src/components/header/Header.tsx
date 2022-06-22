@@ -9,7 +9,7 @@ import {
   ROUTE_DASHBOARD_HOME,
   ROUTE_HOME,
   ROUTE_LOGIN,
-  ROUTE_SUBMIT_ITEM,
+  ROUTE_SUBMIT_ITEM_FORM,
 } from "../../constants";
 
 interface HeaderProps {
@@ -32,7 +32,7 @@ const Header: React.FC<HeaderProps> = function (props: HeaderProps) {
         <ul className="nav__list">
           {!isHomePage && <NavItem to={ROUTE_HOME} text="Home" />}
           {!isSubmitPage && (
-            <NavItem to={ROUTE_SUBMIT_ITEM} text="Submit an item" />
+            <NavItem to={ROUTE_SUBMIT_ITEM_FORM} text="Submit an item" />
           )}
           {!isLoggedIn && <NavItem to={ROUTE_LOGIN} text="Login" />}
           {isLoggedIn && <NavItem to={ROUTE_DASHBOARD_HOME} text="Dashboard" />}

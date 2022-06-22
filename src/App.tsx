@@ -13,6 +13,10 @@ import {
   ROUTE_LOGIN,
   ROUTE_SEARCH,
   ROUTE_SUBMIT_ITEM,
+  ROUTE_SUBMIT_ITEM_FORM,
+  ROUTE_SUBMIT_ITEM_INNER_FORM,
+  ROUTE_SUBMIT_ITEM_INNER_POST,
+  ROUTE_VIEW_ITEM,
 } from "./constants";
 
 // Components
@@ -25,7 +29,9 @@ import DashboardProfile from "./pages/dashboard/DashboardProfile";
 import DashboardItems from "./pages/dashboard/DashboardItems";
 import DashboardManage from "./pages/dashboard/DashboardManage";
 import SubmitItemPage from "./pages/SubmitItemPage";
-import "./app/App.scss";
+import ItemSubmissionPost from "./features/item_submission/ItemSubmissionPost";
+import ItemSubmissionForm from "./features/item_submission/ItemSubmissionForm";
+import ViewPage from "./pages/ViewPage";
 
 function App() {
   const isLoggedIn = useAppSelector(selectAuthIsLoggedIn);
@@ -60,8 +66,22 @@ function App() {
           </Route>
         )}
         <Route path={ROUTE_SEARCH} element={<SearchPage />} />
+        <Route path={ROUTE_VIEW_ITEM} element={<ViewPage />} />
         <Route path={ROUTE_COMPONENTS} element={<ComponentsView />} />
-        <Route path={ROUTE_SUBMIT_ITEM} element={<SubmitItemPage />} />
+        <Route path={ROUTE_SUBMIT_ITEM} element={<SubmitItemPage />}>
+          <Route
+            path={ROUTE_SUBMIT_ITEM_INNER_FORM}
+            element={<ItemSubmissionForm />}
+          />
+          <Route
+            path={ROUTE_SUBMIT_ITEM_INNER_POST}
+            element={<ItemSubmissionPost />}
+          />
+          <Route
+            path="*"
+            element={<Navigate to={ROUTE_SUBMIT_ITEM_FORM} replace />}
+          />
+        </Route>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>

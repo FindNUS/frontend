@@ -1,0 +1,24 @@
+@use "../abstracts/variables" as *;
+
+.dropdown {
+  &-container {
+    width: 100%;
+  }
+
+  width: 100%;
+  margin-top: 0.9rem;
+  padding: 0 2rem;
+  height: 4rem;
+  border: 2px solid $colour-grey-dark-medium;
+  border-radius: 10px;
+  font-family: "dosis";
+  font-size: 1.6rem;
+  font-weight: bold;
+  background-color: $colour-white;
+  color: $colour-grey-dark-medium;
+
+  &:focus {
+    outline: none;
+    border: 2.2px solid $colour-tertiary;
+  }
+}

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import PopupMessage from "../PopupMessage";
 import FormInput from "./FormInput";
 import TextArea from "./TextArea";
 
@@ -8,12 +9,13 @@ interface FormFieldProps {
   disabled: boolean;
   inputRef?: React.RefObject<HTMLInputElement>;
   type?: string;
+  isInvalid?: { status: boolean; error: string };
 }
 
 const FormField: React.FC<FormFieldProps> = function (props: FormFieldProps) {
   const [isFocus, setIsFocus] = useState(false);
   const handleFocusChange = () => setIsFocus((prevState) => !prevState);
-  const { inputRef, onChange } = props;
+  const { inputRef, onChange, isInvalid } = props;
   const type = props.type ?? "text";
   const disabled = props.disabled ?? false;
   const isTextArea = props.type === "textarea";
@@ -29,20 +31,27 @@ const FormField: React.FC<FormFieldProps> = function (props: FormFieldProps) {
 
   const textareaProps = {
     onChange,
+    isFocus,
+    onFocusChange: handleFocusChange,
   };
 
   return (
-    <div className="form-field">
-      <label
-        className={`form-field__label ${
-          isFocus ? "form-field__label--focus" : ""
-        }`}
-      >
-        {props.labelContent}
-      </label>
+    <div className="form-field-container">
+      {isInvalid?.status && (
+        <PopupMessage status="error" message={isInvalid.error} />
+      )}
+      <div className="form-field">
+        <label
+          className={`form-field__label ${
+            isFocus ? "form-field__label--focus" : ""
+          }`}
+        >
+          {props.labelContent}
+        </label>
 
-      {!isTextArea && <FormInput {...inputProps} />}
-      {isTextArea && <TextArea {...textareaProps} />}
+        {!isTextArea && <FormInput {...inputProps} />}
+        {isTextArea && <TextArea {...textareaProps} />}
+      </div>
     </div>
   );
 };
