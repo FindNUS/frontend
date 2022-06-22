@@ -1,9 +1,13 @@
 @use "../abstracts/variables" as *;
 
 .dropdown {
-  margin-top: 0.6rem;
-  padding: 0 2rem;
+  &-container {
+    width: 100%;
+  }
+
   width: 100%;
+  margin-top: 0.9rem;
+  padding: 0 2rem;
   height: 4rem;
   border: 2px solid $colour-grey-dark-medium;
   border-radius: 10px;

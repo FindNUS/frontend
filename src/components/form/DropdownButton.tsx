@@ -1,6 +1,7 @@
 import React from "react";
 import { nanoid } from "nanoid";
 import { DropdownOption } from "../../constants";
+import PopupMessage from "../PopupMessage";
 
 interface DropdownButtonProps {
   dropdownName: string;
@@ -8,28 +9,34 @@ interface DropdownButtonProps {
   options: DropdownOption[];
   onChange: (ev: React.FormEvent) => void;
   selected: string;
+  isInvalid?: { status: boolean; error: string };
 }
 
 const DropdownButton: React.FC<DropdownButtonProps> = function (
   props: DropdownButtonProps
 ) {
-  const { options, dropdownName, dropdownID, onChange } = props;
+  const { options, dropdownName, dropdownID, onChange, isInvalid } = props;
   return (
-    <select
-      name={dropdownName}
-      id={dropdownID}
-      className="dropdown"
-      onChange={onChange}
-      value={props.selected}
-    >
-      {options.map((item) => {
-        return (
-          <option value={item.key} key={nanoid()}>
-            {item.value}
-          </option>
-        );
-      })}
-    </select>
+    <div className="dropdown-container">
+      {isInvalid?.status && (
+        <PopupMessage status="error" message={isInvalid.error} />
+      )}
+      <select
+        name={dropdownName}
+        id={dropdownID}
+        className="dropdown"
+        onChange={onChange}
+        value={props.selected}
+      >
+        {options.map((item) => {
+          return (
+            <option value={item.key} key={nanoid()}>
+              {item.value}
+            </option>
+          );
+        })}
+      </select>
+    </div>
   );
 };
 
