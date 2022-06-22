@@ -1,5 +1,10 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../../app/rootReducer";
+import {
+  RequiredField,
+  FORM_FIELD_STATUS_SUBMIT,
+  DROPDOWN_DEFAULT_KEY,
+} from "../../constants";
 import processFoundItemForAPI from "../../utils/processFoundItemForAPI";
 
 interface SubmitItemState {
@@ -12,6 +17,7 @@ interface SubmitItemState {
   image: ImageState;
   location: string;
   payload?: PayloadFoundItem;
+  formInputStatus: RequiredField[];
 }
 
 interface ImageState {
@@ -40,9 +46,9 @@ interface PayloadFoundItem {
 
 const initialSubmitItemState: SubmitItemState = {
   additionalDetails: "",
-  category: "",
+  category: DROPDOWN_DEFAULT_KEY,
   contactDetails: "",
-  contactMethod: "",
+  contactMethod: DROPDOWN_DEFAULT_KEY,
   date: "",
   name: "",
   image: {
@@ -52,6 +58,7 @@ const initialSubmitItemState: SubmitItemState = {
     error: undefined,
   },
   location: "",
+  formInputStatus: FORM_FIELD_STATUS_SUBMIT,
 };
 
 export const submitItemSlice = createSlice({
@@ -146,6 +153,19 @@ export const submitItemSlice = createSlice({
       state.name = initialSubmitItemState.name;
       state.payload = initialSubmitItemState.payload;
     },
+    setSubmitFormInputStatus(
+      state,
+      action: PayloadAction<{
+        identifier: string;
+        completed: boolean | undefined;
+      }>
+    ) {
+      const { payload: instruction } = action;
+      state.formInputStatus.forEach((field) => {
+        if (field.identifier !== instruction.identifier) return;
+        return (field.completed = instruction.completed);
+      });
+    },
   },
 });
 
@@ -160,8 +180,10 @@ export const {
   setSubmitContactMethod,
   generateSubmitPayload,
   clearSubmitInputs,
+  setSubmitFormInputStatus,
 } = submitItemSlice.actions;
 
+export const selectSubmitInput = (state: RootState) => state.submitItem;
 export const selectSubmitName = (state: RootState) => state.submitItem.name;
 export const selectSubmitLocation = (state: RootState) =>
   state.submitItem.location;
@@ -178,4 +200,6 @@ export const selectSubmitContactMethod = (state: RootState) =>
   state.submitItem.contactMethod;
 export const selectSubmitPayload = (state: RootState) =>
   state.submitItem.payload;
+export const selectSubmitFormInputStatus = (state: RootState) =>
+  state.submitItem.formInputStatus;
 export default submitItemSlice.reducer;
