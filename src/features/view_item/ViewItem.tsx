@@ -8,6 +8,8 @@ import {
   LNFItem,
   QUERY_SEARCH_IS_PEEK,
   ROUTE_HOME,
+  QUERY_SEARCH_DASHBOARD,
+  ROUTE_DASHBOARD_ITEMS,
 } from "../../constants";
 import useAxiosGet from "../../hooks/useAxiosGet";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
@@ -15,15 +17,21 @@ import processItemResponseFromAPI from "../../utils/processItemResponseFromAPI";
 import LostAndFoundItem from "./LostAndFoundItem";
 
 const ViewItem: React.FC = function () {
+  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const itemId = searchParams.get(QUERY_SEARCH_ITEM_ID);
   const url = `${ENDPOINT_ITEM}?Id=${itemId}`;
   const [response, error, loading] = useAxiosGet({ url });
   const [item, setItem] = useState<LNFItem>();
-  const navigate = useNavigate();
+
   const fromPeek = searchParams.get(QUERY_SEARCH_IS_PEEK) === "true";
-  const prevPage = fromPeek ? ROUTE_HOME : ROUTE_SEARCH;
-  const handleBack = () => navigate(prevPage);
+  const fromDashboard = searchParams.get(QUERY_SEARCH_DASHBOARD) === "true";
+
+  const handleBack = () => {
+    if (fromPeek) return navigate(ROUTE_HOME);
+    if (fromDashboard) return navigate(ROUTE_DASHBOARD_ITEMS);
+    navigate(ROUTE_SEARCH);
+  };
 
   useEffect(() => {
     const data = response?.data as APIItemGET | undefined;
@@ -36,7 +44,8 @@ const ViewItem: React.FC = function () {
       <div className="view-item__back" onClick={handleBack}>
         <ChevronLeftIcon fontSize="large" />
         {fromPeek && <span>Return to home</span>}
-        {!fromPeek && <span>Return to search results</span>}
+        {fromDashboard && <span>Return to dashboard</span>}
+        {!fromPeek && !fromDashboard && <span>Return to search results</span>}
       </div>
       {item && <LostAndFoundItem {...item} />}
       {loading && <h3>Loading...</h3>}
