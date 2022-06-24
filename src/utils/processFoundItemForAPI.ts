@@ -1,4 +1,4 @@
-import { FormFoundItem } from "../constants";
+import { DROPDOWN_DEFAULT_KEY, FormFoundItem } from "../constants";
 
 const processFoundItemForAPI = (data: FormFoundItem) => {
   const { contactDetails, contactMethod, additionalDetails, imageBase64 } =
@@ -8,7 +8,9 @@ const processFoundItemForAPI = (data: FormFoundItem) => {
     Date: data.date,
     Location: data.location,
     Category: data.category,
-    ...(contactMethod !== "" && { Contact_method: contactMethod }),
+    ...(contactMethod !== DROPDOWN_DEFAULT_KEY && {
+      Contact_method: contactMethod,
+    }),
     ...(contactDetails !== "" && { Contact_details: contactDetails }),
     ...(additionalDetails !== "" && { Item_details: additionalDetails }),
     ...(imageBase64 !== "" && { Image_base64: imageBase64 }),

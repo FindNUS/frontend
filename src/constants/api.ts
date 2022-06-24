@@ -7,6 +7,8 @@ export const ENDPOINT_ITEM = `${API_BASE_URL}/item`;
 export const ENDPOINT_PEEK = `${API_BASE_URL}/item/peek`;
 export const ENDPOINT_SEARCH = `${API_BASE_URL}/search`;
 
+export const UNKNOWN_VALUE = "Unknown";
+
 export interface FormFoundItem {
   name: string;
   date: string;
