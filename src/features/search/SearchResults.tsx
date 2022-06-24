@@ -3,8 +3,8 @@ import ItemCard from "../../components/ItemCard";
 import useAxiosGet from "../../hooks/useAxiosGet";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import {
-  ENDPOINT_DEBUG_GET_DEMO_ITEM,
   ENDPOINT_PEEK,
+  ENDPOINT_SEARCH,
   PEEK_DEFAULT_LIMIT,
   QUERY_SEARCH_IS_PEEK,
   QUERY_SEARCH_ITEM_ID,
@@ -79,7 +79,7 @@ const SearchResults: React.FC<SearchResultsProps> = function (
   const isPeek = props.isPeek ?? false;
   const url = isPeek
     ? `${ENDPOINT_PEEK}?limit=${PEEK_DEFAULT_LIMIT}`
-    : `${ENDPOINT_DEBUG_GET_DEMO_ITEM}?name=${query}`;
+    : `${ENDPOINT_SEARCH}?query=${query}`;
   const [response, error, isLoading] = useAxiosGet({ url, headers: "{}" });
 
   useEffect(() => {

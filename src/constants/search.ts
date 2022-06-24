@@ -1,6 +1,8 @@
 export const QUERY_SEARCH_ITEM_ID = "item";
 export const QUERY_SEARCH_IS_PEEK = "peek";
 
+export const SEARCH_BAR_PROMPT = "Search by keywords or location";
+
 export interface LNFItem {
   id: string;
   name: string;
