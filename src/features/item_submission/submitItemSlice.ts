@@ -5,7 +5,9 @@ import {
   FORM_FIELD_STATUS_SUBMIT,
   DROPDOWN_DEFAULT_KEY,
 } from "../../constants";
-import processFoundItemForAPI from "../../utils/processFoundItemForAPI";
+import processSubmitItemForAPI, {
+  APIItemType,
+} from "../../utils/processSubmitItemForAPI";
 
 interface SubmitItemState {
   additionalDetails: string;
@@ -16,7 +18,7 @@ interface SubmitItemState {
   name: string;
   image: ImageState;
   location: string;
-  payload?: PayloadFoundItem;
+  payload?: APIItemType;
   formInputStatus: RequiredField[];
 }
 
@@ -31,17 +33,6 @@ interface SubmitImageAction {
   type: "URL" | "ERROR" | "LOADING" | "RESULT";
   isLoading: boolean;
   data: string | undefined;
-}
-
-interface PayloadFoundItem {
-  Name: string;
-  Date: string;
-  Location: string;
-  Category: string;
-  Contact_method?: string;
-  Contact_details?: string;
-  Item_details?: string;
-  Image_base64?: string;
 }
 
 const initialSubmitItemState: SubmitItemState = {
@@ -59,6 +50,17 @@ const initialSubmitItemState: SubmitItemState = {
   },
   location: "",
   formInputStatus: FORM_FIELD_STATUS_SUBMIT,
+  payload: {
+    Name: "",
+    Date: "",
+    Location: "",
+    Category: "",
+    Contact_details: "",
+    Contact_method: "",
+    Image_base64: "",
+    Item_details: "",
+    User_id: "",
+  },
 };
 
 export const submitItemSlice = createSlice({
@@ -118,7 +120,7 @@ export const submitItemSlice = createSlice({
     setSubmitContactMethod(state, action: PayloadAction<string>) {
       state.contactMethod = action.payload;
     },
-    generateSubmitPayload(state) {
+    generateSubmitPayload(state, action: PayloadAction<string | undefined>) {
       const {
         category,
         name,
@@ -129,9 +131,12 @@ export const submitItemSlice = createSlice({
         additionalDetails,
       } = state;
 
+      const userID = action.payload;
       const imageBase64 = state.image.result ?? "";
 
-      state.payload = processFoundItemForAPI({
+      state.payload = initialSubmitItemState.payload;
+
+      state.payload = processSubmitItemForAPI({
         category,
         name,
         date,
@@ -140,6 +145,7 @@ export const submitItemSlice = createSlice({
         ...(contactMethod !== "" && { contactMethod }),
         ...(additionalDetails !== "" && { additionalDetails }),
         ...(imageBase64 !== "" && { imageBase64 }),
+        ...(userID && { userID }),
       });
     },
     clearSubmitInputs(state) {
@@ -151,6 +157,7 @@ export const submitItemSlice = createSlice({
       state.image = initialSubmitItemState.image;
       state.location = initialSubmitItemState.location;
       state.name = initialSubmitItemState.name;
+      state.formInputStatus = initialSubmitItemState.formInputStatus;
       state.payload = initialSubmitItemState.payload;
     },
     setSubmitFormInputStatus(
