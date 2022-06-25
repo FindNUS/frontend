@@ -5,7 +5,6 @@ import { useAppSelector } from "../../hooks";
 import { selectAuthIsLoggedIn } from "../../features/auth/authSlice";
 import useFirebaseLogout from "../../hooks/useFirebaseLogout";
 import {
-  ROUTE_DASHBOARD,
   ROUTE_DASHBOARD_HOME,
   ROUTE_HOME,
   ROUTE_LOGIN,
