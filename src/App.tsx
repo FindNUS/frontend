@@ -13,9 +13,10 @@ import {
   ROUTE_LOGIN,
   ROUTE_SEARCH,
   ROUTE_SUBMIT_ITEM,
-  ROUTE_SUBMIT_ITEM_FORM,
   ROUTE_SUBMIT_ITEM_INNER_FORM,
   ROUTE_SUBMIT_ITEM_INNER_POST,
+  ROUTE_SUBMIT_ITEM_INNER_TYPE,
+  ROUTE_SUBMIT_ITEM_TYPE,
   ROUTE_VIEW_ITEM,
 } from "./constants";
 
@@ -32,6 +33,7 @@ import SubmitItemPage from "./pages/SubmitItemPage";
 import ItemSubmissionPost from "./features/item_submission/ItemSubmissionPost";
 import ItemSubmissionForm from "./features/item_submission/ItemSubmissionForm";
 import ViewPage from "./pages/ViewPage";
+import ItemSubmissionType from "./features/item_submission/ItemSubmissionType";
 
 function App() {
   const isLoggedIn = useAppSelector(selectAuthIsLoggedIn);
@@ -78,8 +80,12 @@ function App() {
             element={<ItemSubmissionPost />}
           />
           <Route
+            path={ROUTE_SUBMIT_ITEM_INNER_TYPE}
+            element={<ItemSubmissionType />}
+          />
+          <Route
             path="*"
-            element={<Navigate to={ROUTE_SUBMIT_ITEM_FORM} replace />}
+            element={<Navigate to={ROUTE_SUBMIT_ITEM_TYPE} replace />}
           />
         </Route>
         <Route path="*" element={<Navigate to="/" replace />} />
