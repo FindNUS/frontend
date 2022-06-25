@@ -1,6 +1,6 @@
 import React from "react";
 
-const SearchFilter: React.FC = function () {
+const PreviewFilter: React.FC = function () {
   return (
     <section className="search-filter">
       <h4>Filter Items</h4>
@@ -24,4 +24,4 @@ const SearchFilter: React.FC = function () {
   );
 };
 
-export default SearchFilter;
+export default PreviewFilter;

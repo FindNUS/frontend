@@ -1,0 +1,30 @@
+@use "../../abstracts/variables" as *;
+
+.dashboard-nav {
+  background-color: rgba(220, 220, 220, $translucent-alpha);
+  border-radius: $rounded-edge;
+  height: min-content;
+
+  &__list {
+    list-style: none;
+  }
+
+  &__item {
+    padding: 1.5rem 2rem;
+
+    &:first-child {
+      border-radius: $rounded-edge $rounded-edge 0 0;
+    }
+
+    &:last-child {
+      border-radius: 0 0 $rounded-edge $rounded-edge;
+    }
+
+    &--current {
+      background-color: $colour-tertiary;
+      font-weight: bold;
+      color: $colour-white;
+      border-radius: inherit;
+    }
+  }
+}
