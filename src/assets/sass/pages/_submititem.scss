@@ -25,4 +25,15 @@
       max-width: $file-upload-max-width;
     }
   }
+
+  &__type {
+    margin: 0 $pages-padding;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    padding: 2rem;
+    align-items: stretch;
+    background-color: $colour-white;
+    border-radius: $rounded-edge;
+  }
 }
