@@ -24,6 +24,10 @@
       height: auto;
       max-width: $file-upload-max-width;
     }
+
+    &--back {
+      width: 100%;
+    }
   }
 
   &__type {

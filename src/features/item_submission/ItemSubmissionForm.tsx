@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import BackButtonText from "../../components/buttons/BackButtonText";
 import ButtonSubmit from "../../components/buttons/ButtonSubmit";
 import DropdownButton from "../../components/form/DropdownButton";
 import FormField from "../../components/form/FormField";
@@ -22,6 +23,7 @@ import {
   SUBMIT_FOUND_CATEGORIES,
   SUBMIT_FOUND_CONTACT_METHODS,
   FORM_FIELD_ERRORS,
+  ROUTE_SUBMIT_ITEM_TYPE,
 } from "../../constants";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import getArrayObjectValueFromKey from "../../utils/getArrayObjectValueFromKey";
@@ -245,9 +247,16 @@ const ItemSubmissionForm: React.FC = function () {
     };
   };
 
+  const handleBack = () => navigate(ROUTE_SUBMIT_ITEM_TYPE);
+
   return (
     <form className="submit-item__form" onSubmit={handleSubmitForm}>
       <div className="submit-item__form--fields">
+        <BackButtonText
+          message="Select item type"
+          onClick={handleBack}
+          className="submit-item__form--back"
+        />
         <FormField
           onChange={handleDescriptionChange}
           labelContent="Item Description"
