@@ -39,7 +39,7 @@ const DashboardNav: React.FC = function () {
             Items
           </Link>
         </li>
-        <li
+        {/* <li
           className={`dashboard-nav__item ${
             currentPath === "manage" ? "dashboard-nav__item--current" : ""
           }`}
@@ -47,7 +47,7 @@ const DashboardNav: React.FC = function () {
           <Link to={ROUTE_DASHBOARD_MANAGE} className="link--wrapper">
             Manage
           </Link>
-        </li>
+        </li> */}
       </ul>
     </section>
   );

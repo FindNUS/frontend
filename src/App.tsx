@@ -7,7 +7,7 @@ import {
   ROUTE_DASHBOARD,
   ROUTE_DASHBOARD_HOME,
   ROUTE_DASHBOARD_INNER_ITEMS,
-  ROUTE_DASHBOARD_INNER_MANAGE,
+  // ROUTE_DASHBOARD_INNER_MANAGE,
   ROUTE_DASHBOARD_INNER_PROFILE,
   ROUTE_HOME,
   ROUTE_LOGIN,
@@ -27,7 +27,7 @@ import SearchPage from "./pages/SearchPage";
 import Dashboard from "./pages/Dashboard";
 import DashboardProfile from "./features/dashboard/DashboardProfile";
 import DashboardItems from "./features/dashboard/DashboardItems";
-import DashboardManage from "./features/dashboard/DashboardManage";
+// import DashboardManage from "./features/dashboard/DashboardManage";
 import SubmitItemPage from "./pages/SubmitItemPage";
 import ItemSubmissionPost from "./features/item_submission/ItemSubmissionPost";
 import ItemSubmissionForm from "./features/item_submission/ItemSubmissionForm";
@@ -55,10 +55,10 @@ function App() {
               path={ROUTE_DASHBOARD_INNER_ITEMS}
               element={<DashboardItems />}
             />
-            <Route
+            {/* <Route
               path={ROUTE_DASHBOARD_INNER_MANAGE}
               element={<DashboardManage />}
-            />
+            /> */}
             <Route
               path="*"
               element={<Navigate to={ROUTE_DASHBOARD_HOME} replace />}
