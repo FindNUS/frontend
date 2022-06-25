@@ -50,6 +50,14 @@ const ItemSubmissionForm: React.FC = function () {
   const formInput = useAppSelector(selectSubmitInput);
   const formInputStatus = useAppSelector(selectSubmitFormInputStatus);
   const [attemptedSubmit, setAttemptedSubmit] = useState(false);
+  const [searchParams] = useSearchParams();
+  const submitType = searchParams.get(QUERY_SUBMIT_TYPE_KEY);
+  const auth = getAuth();
+
+  // Redirect as failsafe to prevent
+  auth.onAuthStateChanged(() => {
+    if (submitType === QUERY_SUBMIT_TYPE_VALUE_LOST) navigate(ROUTE_HOME);
+  });
 
   /**
    * Helper function to update form field corresponding to identifier in store.
