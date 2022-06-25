@@ -3,6 +3,7 @@ import SearchBar from "../features/search/SearchBar";
 import Header from "../components/header/Header";
 import KeyboardDoubleArrowDownIcon from "@mui/icons-material/KeyboardDoubleArrowDown";
 import PeekContainer from "../features/preview_items/PeekContainer";
+import { SEARCH_BAR_PROMPT } from "../constants";
 
 const Home: React.FC = function () {
   return (
@@ -10,7 +11,7 @@ const Home: React.FC = function () {
       <Header isHomePage={true} />
       <section className="home__body">
         <h1 className="home__header">Lost something? Start here.</h1>
-        <SearchBar prompt="Search for an item" />
+        <SearchBar prompt={SEARCH_BAR_PROMPT} />
       </section>
       <div className="home__message text-white-shadow">
         <KeyboardDoubleArrowDownIcon fontSize="large" />
