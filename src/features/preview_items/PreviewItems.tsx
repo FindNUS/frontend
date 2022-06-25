@@ -119,6 +119,11 @@ const PreviewItems: React.FC<PreviewItemsProps> = function (
     <section className="search-results-container">
       <div className="search-results">
         {isLoading && <Loading />}
+        {!isLoading && !error && queryResults.length === 0 && (
+          <h4>
+            No items found. {dashboard && "Submit a lost item to see it here."}
+          </h4>
+        )}
         {!isLoading && !error && (
           <ul className="search-results__list">
             {queryResults.map((item: previewItemType) => {

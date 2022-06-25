@@ -15,17 +15,22 @@ import useAxiosGet from "../../hooks/useAxiosGet";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import processItemResponseFromAPI from "../../utils/processItemResponseFromAPI";
 import LostAndFoundItem from "./LostAndFoundItem";
+import { getAuth } from "firebase/auth";
 
 const ViewItem: React.FC = function () {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const itemId = searchParams.get(QUERY_SEARCH_ITEM_ID);
-  const url = `${ENDPOINT_ITEM}?Id=${itemId}`;
-  const [response, error, loading] = useAxiosGet({ url });
-  const [item, setItem] = useState<LNFItem>();
-
   const fromPeek = searchParams.get(QUERY_SEARCH_IS_PEEK) === "true";
   const fromDashboard = searchParams.get(QUERY_SEARCH_DASHBOARD) === "true";
+
+  const auth = getAuth();
+  const url = fromDashboard
+    ? `${ENDPOINT_ITEM}?Id=${itemId}&User_id=${auth.currentUser?.uid}`
+    : `${ENDPOINT_ITEM}?Id=${itemId}`;
+
+  const [response, error, loading] = useAxiosGet({ url });
+  const [item, setItem] = useState<LNFItem>();
 
   const handleBack = () => {
     if (fromPeek) return navigate(ROUTE_HOME);
