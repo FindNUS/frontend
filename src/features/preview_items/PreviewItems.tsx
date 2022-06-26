@@ -3,9 +3,10 @@ import ItemCard from "../../components/ItemCard";
 import useAxiosGet from "../../hooks/useAxiosGet";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import {
-  ENDPOINT_DEBUG_GET_DEMO_ITEM,
   ENDPOINT_PEEK,
+  ENDPOINT_SEARCH,
   PEEK_DEFAULT_LIMIT,
+  QUERY_SEARCH_DASHBOARD,
   QUERY_SEARCH_IS_PEEK,
   QUERY_SEARCH_ITEM_ID,
   ROUTE_VIEW_ITEM,
@@ -15,10 +16,11 @@ import {
   selectQueryResults,
   setQueryResults,
   setSearchLoading,
-} from "./searchSlice";
+} from "../search/searchSlice";
 import { useNavigate } from "react-router-dom";
+import Loading from "../../components/Loading";
 
-type rawSearchResultsType = {
+type rawPreviewItemsType = {
   Name: string;
   Id: string;
   Date: string;
@@ -27,9 +29,9 @@ type rawSearchResultsType = {
   Image_url: string;
 }[];
 
-export type searchResultsType = ReturnType<typeof parseSearchResults>;
+export type PreviewItemsType = ReturnType<typeof parsePreviewItems>;
 
-interface searchItemType {
+interface previewItemType {
   name: string;
   id: string;
   date: string;
@@ -43,7 +45,7 @@ interface searchItemType {
  * @param response The raw JSON data from API GET
  * @returns Object with camelCase keys
  */
-const parseSearchResults = (response: rawSearchResultsType) => {
+const parsePreviewItems = (response: rawPreviewItemsType) => {
   return response.map((item) => {
     const {
       Name: name,
@@ -65,22 +67,28 @@ const parseSearchResults = (response: rawSearchResultsType) => {
   });
 };
 
-interface SearchResultsProps {
+interface PreviewItemsProps {
   isPeek?: boolean;
+  dashboard?: boolean;
+  url?: string;
 }
 
-const SearchResults: React.FC<SearchResultsProps> = function (
-  props: SearchResultsProps
+const PreviewItems: React.FC<PreviewItemsProps> = function (
+  props: PreviewItemsProps
 ) {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const query = useAppSelector(selectQuery);
   const queryResults = useAppSelector(selectQueryResults);
   const isPeek = props.isPeek ?? false;
-  const url = isPeek
-    ? `${ENDPOINT_PEEK}?limit=${PEEK_DEFAULT_LIMIT}`
-    : `${ENDPOINT_DEBUG_GET_DEMO_ITEM}?name=${query}`;
-  const [response, error, isLoading] = useAxiosGet({ url, headers: "{}" });
+  const dashboard = !!props.dashboard;
+  const url =
+    props.url ||
+    (isPeek
+      ? `${ENDPOINT_PEEK}?limit=${PEEK_DEFAULT_LIMIT}`
+      : `${ENDPOINT_SEARCH}?query=${query}`);
+
+  const [response, error, isLoading] = useAxiosGet({ url });
 
   useEffect(() => {
     if (isLoading) {
@@ -92,7 +100,7 @@ const SearchResults: React.FC<SearchResultsProps> = function (
       dispatch(setQueryResults([]));
       return;
     }
-    const items = parseSearchResults(response.data);
+    const items = parsePreviewItems(response.data);
     dispatch(setQueryResults(items));
     dispatch(setSearchLoading(false));
   }, [isLoading]);
@@ -101,21 +109,24 @@ const SearchResults: React.FC<SearchResultsProps> = function (
     const item = ev.currentTarget;
     const id = item.getAttribute("data-id");
     navigate(
-      `${ROUTE_VIEW_ITEM}?${QUERY_SEARCH_ITEM_ID}=${id}&${QUERY_SEARCH_IS_PEEK}=${isPeek}`
+      `${ROUTE_VIEW_ITEM}?${QUERY_SEARCH_ITEM_ID}=${id}&${QUERY_SEARCH_IS_PEEK}=${isPeek}&${QUERY_SEARCH_DASHBOARD}=${dashboard}`
     );
   };
+
+  const errorMessage = error?.response as { data: string };
 
   return (
     <section className="search-results-container">
       <div className="search-results">
-        {isLoading && (
-          <div className="search__loading">
-            <h2>Loading...</h2>
-          </div>
+        {isLoading && <Loading />}
+        {!isLoading && !error && queryResults.length === 0 && (
+          <h4>
+            No items found. {dashboard && "Submit a lost item to see it here."}
+          </h4>
         )}
         {!isLoading && !error && (
           <ul className="search-results__list">
-            {queryResults.map((item: searchItemType) => {
+            {queryResults.map((item: previewItemType) => {
               const { name, id, date, location, category, imageUrl } = item;
               return (
                 <li
@@ -140,7 +151,7 @@ const SearchResults: React.FC<SearchResultsProps> = function (
         {error && (
           <div className="search__error">
             <h2>Error</h2>
-            <span>{error.message}</span>
+            <span>{JSON.stringify(errorMessage.data)}</span>
           </div>
         )}
       </div>
@@ -148,4 +159,4 @@ const SearchResults: React.FC<SearchResultsProps> = function (
   );
 };
 
-export default SearchResults;
+export default PreviewItems;

@@ -1,11 +1,11 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../../app/rootReducer";
-import { searchResultsType } from "./SearchResults";
+import { PreviewItemsType } from "../preview_items/PreviewItems";
 
 interface SearchState {
   query: string;
   isLoading: boolean;
-  queryResults: searchResultsType | [];
+  queryResults: PreviewItemsType | [];
 }
 const initialSearchState: SearchState = {
   query: "",
@@ -20,7 +20,7 @@ const searchSlice = createSlice({
     setQuery(state, action: PayloadAction<string>) {
       state.query = action.payload;
     },
-    setQueryResults(state, action: PayloadAction<searchResultsType>) {
+    setQueryResults(state, action: PayloadAction<PreviewItemsType>) {
       state.queryResults = action.payload;
     },
     setSearchLoading(state, action: PayloadAction<boolean>) {

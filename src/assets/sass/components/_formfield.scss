@@ -1,7 +1,10 @@
 @use "../abstracts/variables" as *;
 
 .form-field {
-  margin-top: 1.2rem;
+  &-container {
+    width: 100%;
+  }
+  margin-top: 1.5rem;
   position: relative;
   width: 100%;
 

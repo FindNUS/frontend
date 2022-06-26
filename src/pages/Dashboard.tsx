@@ -1,27 +1,18 @@
 import React from "react";
-import { getAuth } from "firebase/auth";
 import Header from "../components/header/Header";
+import PageTitle from "../components/PageTitle";
+import DashboardNav from "../features/dashboard/DashboardNav";
+import { Outlet } from "react-router-dom";
 
 const Dashboard: React.FC = function () {
-  const auth = getAuth();
-  const { currentUser } = auth;
-
   return (
     <div className="dashboard background background--main">
       <Header />
-      <section className="dashboard-body">
-        <h2 className="text-white-shadow">Dashboard</h2>
-        <span className="dashboard-body__message">
-          This is a protected page. Only authenticated users can access this
-          page
-        </span>
-        <span className="dashboard-body__message">
-          You are currently logged in as: {currentUser?.phoneNumber}
-        </span>
-        <span className="dashboard-body__message">
-          Your unique ID: {currentUser?.uid}
-        </span>
-      </section>
+      <PageTitle title="Dashboard" />
+      <div className="dashboard-contents">
+        <DashboardNav />
+        <Outlet />
+      </div>
     </div>
   );
 };

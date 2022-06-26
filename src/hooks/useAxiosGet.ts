@@ -3,15 +3,15 @@ import axios, { AxiosError, AxiosResponse } from "axios";
 
 interface GetConfigObjType {
   url: string;
-  headers: string;
+  headers?: string;
 }
 
 const useAxiosGet = (configObj: GetConfigObjType) => {
   const [response, setResponse] = useState<AxiosResponse>();
   const [error, setError] = useState<AxiosError>();
   const [loading, setloading] = useState(true);
-
-  const { url, headers } = configObj;
+  const { url } = configObj;
+  const headers = configObj.headers ?? "{}";
 
   const fetchData = () => {
     axios

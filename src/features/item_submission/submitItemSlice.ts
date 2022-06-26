@@ -1,6 +1,13 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../../app/rootReducer";
-import processFoundItemForAPI from "../../utils/processFoundItemForAPI";
+import {
+  RequiredField,
+  FORM_FIELD_STATUS_SUBMIT,
+  DROPDOWN_DEFAULT_KEY,
+} from "../../constants";
+import processSubmitItemForAPI, {
+  APIItemType,
+} from "../../utils/processSubmitItemForAPI";
 
 interface SubmitItemState {
   additionalDetails: string;
@@ -11,7 +18,8 @@ interface SubmitItemState {
   name: string;
   image: ImageState;
   location: string;
-  payload?: PayloadFoundItem;
+  payload?: APIItemType;
+  formInputStatus: RequiredField[];
 }
 
 interface ImageState {
@@ -27,22 +35,11 @@ interface SubmitImageAction {
   data: string | undefined;
 }
 
-interface PayloadFoundItem {
-  Name: string;
-  Date: string;
-  Location: string;
-  Category: string;
-  Contact_method?: string;
-  Contact_details?: string;
-  Item_details?: string;
-  Image_base64?: string;
-}
-
 const initialSubmitItemState: SubmitItemState = {
   additionalDetails: "",
-  category: "",
+  category: DROPDOWN_DEFAULT_KEY,
   contactDetails: "",
-  contactMethod: "",
+  contactMethod: DROPDOWN_DEFAULT_KEY,
   date: "",
   name: "",
   image: {
@@ -52,6 +49,18 @@ const initialSubmitItemState: SubmitItemState = {
     error: undefined,
   },
   location: "",
+  formInputStatus: FORM_FIELD_STATUS_SUBMIT,
+  payload: {
+    Name: "",
+    Date: "",
+    Location: "",
+    Category: "",
+    Contact_details: "",
+    Contact_method: "",
+    Image_base64: "",
+    Item_details: "",
+    User_id: "",
+  },
 };
 
 export const submitItemSlice = createSlice({
@@ -111,7 +120,7 @@ export const submitItemSlice = createSlice({
     setSubmitContactMethod(state, action: PayloadAction<string>) {
       state.contactMethod = action.payload;
     },
-    generateSubmitPayload(state) {
+    generateSubmitPayload(state, action: PayloadAction<string | undefined>) {
       const {
         category,
         name,
@@ -122,9 +131,12 @@ export const submitItemSlice = createSlice({
         additionalDetails,
       } = state;
 
+      const userID = action.payload;
       const imageBase64 = state.image.result ?? "";
 
-      state.payload = processFoundItemForAPI({
+      state.payload = initialSubmitItemState.payload;
+
+      state.payload = processSubmitItemForAPI({
         category,
         name,
         date,
@@ -133,6 +145,7 @@ export const submitItemSlice = createSlice({
         ...(contactMethod !== "" && { contactMethod }),
         ...(additionalDetails !== "" && { additionalDetails }),
         ...(imageBase64 !== "" && { imageBase64 }),
+        ...(userID && { userID }),
       });
     },
     clearSubmitInputs(state) {
@@ -144,7 +157,21 @@ export const submitItemSlice = createSlice({
       state.image = initialSubmitItemState.image;
       state.location = initialSubmitItemState.location;
       state.name = initialSubmitItemState.name;
+      state.formInputStatus = initialSubmitItemState.formInputStatus;
       state.payload = initialSubmitItemState.payload;
+    },
+    setSubmitFormInputStatus(
+      state,
+      action: PayloadAction<{
+        identifier: string;
+        completed: boolean | undefined;
+      }>
+    ) {
+      const { payload: instruction } = action;
+      state.formInputStatus.forEach((field) => {
+        if (field.identifier !== instruction.identifier) return;
+        return (field.completed = instruction.completed);
+      });
     },
   },
 });
@@ -160,8 +187,10 @@ export const {
   setSubmitContactMethod,
   generateSubmitPayload,
   clearSubmitInputs,
+  setSubmitFormInputStatus,
 } = submitItemSlice.actions;
 
+export const selectSubmitInput = (state: RootState) => state.submitItem;
 export const selectSubmitName = (state: RootState) => state.submitItem.name;
 export const selectSubmitLocation = (state: RootState) =>
   state.submitItem.location;
@@ -178,4 +207,6 @@ export const selectSubmitContactMethod = (state: RootState) =>
   state.submitItem.contactMethod;
 export const selectSubmitPayload = (state: RootState) =>
   state.submitItem.payload;
+export const selectSubmitFormInputStatus = (state: RootState) =>
+  state.submitItem.formInputStatus;
 export default submitItemSlice.reducer;

@@ -1,6 +1,6 @@
 import React from "react";
 import Header from "../components/header/Header";
-import ViewItem from "../features/search/ViewItem";
+import ViewItem from "../features/view_item/ViewItem";
 
 const ViewPage: React.FC = function () {
   return (
