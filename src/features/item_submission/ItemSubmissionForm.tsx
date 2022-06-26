@@ -1,5 +1,7 @@
+import { getAuth } from "firebase/auth";
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import BackButtonText from "../../components/buttons/BackButtonText";
 import ButtonSubmit from "../../components/buttons/ButtonSubmit";
 import DropdownButton from "../../components/form/DropdownButton";
 import FormField from "../../components/form/FormField";
@@ -22,6 +24,10 @@ import {
   SUBMIT_FOUND_CATEGORIES,
   SUBMIT_FOUND_CONTACT_METHODS,
   FORM_FIELD_ERRORS,
+  ROUTE_SUBMIT_ITEM_TYPE,
+  QUERY_SUBMIT_TYPE_KEY,
+  QUERY_SUBMIT_TYPE_VALUE_LOST,
+  ROUTE_HOME,
 } from "../../constants";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import getArrayObjectValueFromKey from "../../utils/getArrayObjectValueFromKey";
@@ -48,6 +54,15 @@ const ItemSubmissionForm: React.FC = function () {
   const formInput = useAppSelector(selectSubmitInput);
   const formInputStatus = useAppSelector(selectSubmitFormInputStatus);
   const [attemptedSubmit, setAttemptedSubmit] = useState(false);
+  const [searchParams] = useSearchParams();
+  const submitType = searchParams.get(QUERY_SUBMIT_TYPE_KEY);
+  const auth = getAuth();
+
+  useEffect(() => {
+    if (auth.currentUser) return; // currently logged in
+    // user is logged out, redirect to home page
+    if (submitType === QUERY_SUBMIT_TYPE_VALUE_LOST) navigate(ROUTE_HOME);
+  }, [auth.currentUser]);
 
   /**
    * Helper function to update form field corresponding to identifier in store.
@@ -163,7 +178,8 @@ const ItemSubmissionForm: React.FC = function () {
     setAttemptedSubmit(true);
     if (formHasErrors) return;
 
-    dispatch(generateSubmitPayload());
+    const userID = auth.currentUser?.uid;
+    dispatch(generateSubmitPayload(userID));
     navigate(ROUTE_SUBMIT_ITEM_POST);
   };
 
@@ -245,9 +261,16 @@ const ItemSubmissionForm: React.FC = function () {
     };
   };
 
+  const handleBack = () => navigate(ROUTE_SUBMIT_ITEM_TYPE);
+
   return (
     <form className="submit-item__form" onSubmit={handleSubmitForm}>
       <div className="submit-item__form--fields">
+        <BackButtonText
+          message="Select item type"
+          onClick={handleBack}
+          className="submit-item__form--back"
+        />
         <FormField
           onChange={handleDescriptionChange}
           labelContent="Item Description"

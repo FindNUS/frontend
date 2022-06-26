@@ -12,10 +12,10 @@ import {
   ROUTE_DASHBOARD_ITEMS,
 } from "../../constants";
 import useAxiosGet from "../../hooks/useAxiosGet";
-import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import processItemResponseFromAPI from "../../utils/processItemResponseFromAPI";
 import LostAndFoundItem from "./LostAndFoundItem";
 import { getAuth } from "firebase/auth";
+import BackButtonText from "../../components/buttons/BackButtonText";
 
 const ViewItem: React.FC = function () {
   const navigate = useNavigate();
@@ -46,12 +46,27 @@ const ViewItem: React.FC = function () {
 
   return (
     <div className="view-item__container">
-      <div className="view-item__back" onClick={handleBack}>
-        <ChevronLeftIcon fontSize="large" />
-        {fromPeek && <span>Return to home</span>}
-        {fromDashboard && <span>Return to dashboard</span>}
-        {!fromPeek && !fromDashboard && <span>Return to search results</span>}
-      </div>
+      {fromPeek && (
+        <BackButtonText
+          className="view-item__back"
+          onClick={handleBack}
+          message="Return to home"
+        />
+      )}
+      {fromDashboard && (
+        <BackButtonText
+          className="view-item__back"
+          onClick={handleBack}
+          message="Return to dashboard"
+        />
+      )}
+      {!fromPeek && !fromDashboard && (
+        <BackButtonText
+          className="view-item__back"
+          onClick={handleBack}
+          message="Return to search results"
+        />
+      )}
       {item && <LostAndFoundItem {...item} />}
       {loading && <h3>Loading...</h3>}
       {error && (

@@ -1,3 +1,11 @@
+export const QUERY_SUBMIT_TYPE_KEY = "type";
+export const QUERY_SUBMIT_TYPE_VALUE_FOUND = "found";
+export const QUERY_SUBMIT_TYPE_VALUE_LOST = "lost";
+
+export const TITLE_SUBMIT_DEFAULT = "Submit an Item";
+export const TITLE_SUBMIT_FOUND = "Submit Found Item";
+export const TITLE_SUBMIT_LOST = "Submit Lost Item";
+
 export const IMGUR_IMAGE_FORMATS = [
   "JPEG",
   "JPG",

@@ -9,7 +9,7 @@ export const ENDPOINT_SEARCH = `${API_BASE_URL}/search`;
 
 export const UNKNOWN_VALUE = "Unknown";
 
-export interface FormFoundItem {
+export interface FormSubmitItem {
   name: string;
   date: string;
   location: string;
@@ -18,6 +18,7 @@ export interface FormFoundItem {
   contactDetails?: string;
   additionalDetails?: string;
   imageBase64?: string;
+  userID?: string;
 }
 
 export interface APIItemGET {
