@@ -58,10 +58,11 @@ const ItemSubmissionForm: React.FC = function () {
   const submitType = searchParams.get(QUERY_SUBMIT_TYPE_KEY);
   const auth = getAuth();
 
-  // Redirect as failsafe to prevent
-  auth.onAuthStateChanged(() => {
+  useEffect(() => {
+    if (auth.currentUser) return; // currently logged in
+    // user is logged out, redirect to home page
     if (submitType === QUERY_SUBMIT_TYPE_VALUE_LOST) navigate(ROUTE_HOME);
-  });
+  }, [auth.currentUser]);
 
   /**
    * Helper function to update form field corresponding to identifier in store.
