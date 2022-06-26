@@ -13,7 +13,8 @@ const useAxiosGet = (configObj: GetConfigObjType) => {
   const { url } = configObj;
   const headers = configObj.headers ?? "{}";
 
-  const fetchData = () => {
+  const fetchData = (url: string) => {
+    setloading(true);
     axios
       .get(url, JSON.parse(headers))
       .then((res: AxiosResponse) => {
@@ -28,8 +29,8 @@ const useAxiosGet = (configObj: GetConfigObjType) => {
   };
 
   useEffect(() => {
-    fetchData();
-  }, []);
+    fetchData(url);
+  }, [url]);
 
   return [response, error, loading] as const;
 };

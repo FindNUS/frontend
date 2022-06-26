@@ -3,12 +3,14 @@ import ItemCard from "../../components/ItemCard";
 import useAxiosGet from "../../hooks/useAxiosGet";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import {
+  DROPDOWN_DEFAULT_KEY,
   ENDPOINT_PEEK,
   ENDPOINT_SEARCH,
   PEEK_DEFAULT_LIMIT,
   QUERY_SEARCH_DASHBOARD,
   QUERY_SEARCH_IS_PEEK,
   QUERY_SEARCH_ITEM_ID,
+  QUERY_VIEW_ITEM_CATEGORY,
   ROUTE_VIEW_ITEM,
 } from "../../constants";
 import {
@@ -17,7 +19,7 @@ import {
   setQueryResults,
   setSearchLoading,
 } from "../search/searchSlice";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import Loading from "../../components/Loading";
 
 type rawPreviewItemsType = {
@@ -80,12 +82,18 @@ const PreviewItems: React.FC<PreviewItemsProps> = function (
   const navigate = useNavigate();
   const query = useAppSelector(selectQuery);
   const queryResults = useAppSelector(selectQueryResults);
+  const [searchParams] = useSearchParams();
+  const filterCategory = searchParams.get(QUERY_VIEW_ITEM_CATEGORY);
+  const isValidFilter =
+    filterCategory && filterCategory !== DROPDOWN_DEFAULT_KEY;
   const isPeek = props.isPeek ?? false;
   const dashboard = !!props.dashboard;
   const url =
     props.url ||
     (isPeek
-      ? `${ENDPOINT_PEEK}?limit=${PEEK_DEFAULT_LIMIT}`
+      ? `${ENDPOINT_PEEK}?limit=${PEEK_DEFAULT_LIMIT}${
+          isValidFilter ? `&category=${filterCategory}` : ""
+        }`
       : `${ENDPOINT_SEARCH}?query=${query}`);
 
   const [response, error, isLoading] = useAxiosGet({ url });
@@ -101,9 +109,18 @@ const PreviewItems: React.FC<PreviewItemsProps> = function (
       return;
     }
     const items = parsePreviewItems(response.data);
-    dispatch(setQueryResults(items));
+
+    if (!isPeek && isValidFilter)
+      // manual item filtering by category for search results
+      dispatch(
+        setQueryResults(
+          items.filter((item) => item.category === filterCategory)
+        )
+      );
+    else dispatch(setQueryResults(items));
+
     dispatch(setSearchLoading(false));
-  }, [isLoading]);
+  }, [isLoading, response, filterCategory]);
 
   const handleItemClick = (ev: React.MouseEvent) => {
     const item = ev.currentTarget;
