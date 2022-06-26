@@ -17,10 +17,6 @@ assignees: ''
 4. See error
 
 
-**Expected behaviour**
-A clear and concise description of what you expected to happen.
-
-
 **What's the expected result?**
 
 
