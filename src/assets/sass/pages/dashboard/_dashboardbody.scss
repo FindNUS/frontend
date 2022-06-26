@@ -1,0 +1,18 @@
+@use "../../abstracts/variables" as *;
+
+.dashboard-body {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 2rem;
+  width: calc(100% - 2 * $pages-padding);
+  background-color: rgba(220, 220, 220, $translucent-alpha);
+  border-radius: $rounded-edge;
+
+  &__message {
+    &--descriptor {
+      font-weight: 500;
+    }
+  }
+}

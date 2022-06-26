@@ -7,7 +7,9 @@ export const ENDPOINT_ITEM = `${API_BASE_URL}/item`;
 export const ENDPOINT_PEEK = `${API_BASE_URL}/item/peek`;
 export const ENDPOINT_SEARCH = `${API_BASE_URL}/search`;
 
-export interface FormFoundItem {
+export const UNKNOWN_VALUE = "Unknown";
+
+export interface FormSubmitItem {
   name: string;
   date: string;
   location: string;
@@ -16,6 +18,7 @@ export interface FormFoundItem {
   contactDetails?: string;
   additionalDetails?: string;
   imageBase64?: string;
+  userID?: string;
 }
 
 export interface APIItemGET {

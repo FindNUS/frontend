@@ -1,18 +1,12 @@
 import React from "react";
-import SearchFilter from "./SearchFilter";
-import SearchResults from "./SearchResults";
+import PreviewFilter from "../preview_items/PreviewFilter";
+import PreviewItems from "../preview_items/PreviewItems";
 
-interface SearchContainerProps {
-  isPeek?: boolean;
-}
-
-const SearchContainer: React.FC<SearchContainerProps> = function (
-  props: SearchContainerProps
-) {
+const SearchContainer: React.FC = function () {
   return (
     <div className="search-container">
-      <SearchFilter />
-      <SearchResults isPeek={props.isPeek} />
+      <PreviewFilter />
+      <PreviewItems />
     </div>
   );
 };

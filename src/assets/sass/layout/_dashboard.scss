@@ -1,0 +1,7 @@
+@use "../abstracts/variables" as *;
+
+.dashboard-contents {
+  display: flex;
+  gap: 2rem;
+  margin: 0 $pages-padding;
+}

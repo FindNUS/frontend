@@ -3,17 +3,18 @@ import axios, { AxiosError, AxiosResponse } from "axios";
 
 interface GetConfigObjType {
   url: string;
-  headers: string;
+  headers?: string;
 }
 
 const useAxiosGet = (configObj: GetConfigObjType) => {
   const [response, setResponse] = useState<AxiosResponse>();
   const [error, setError] = useState<AxiosError>();
   const [loading, setloading] = useState(true);
+  const { url } = configObj;
+  const headers = configObj.headers ?? "{}";
 
-  const { url, headers } = configObj;
-
-  const fetchData = () => {
+  const fetchData = (url: string) => {
+    setloading(true);
     axios
       .get(url, JSON.parse(headers))
       .then((res: AxiosResponse) => {
@@ -28,8 +29,8 @@ const useAxiosGet = (configObj: GetConfigObjType) => {
   };
 
   useEffect(() => {
-    fetchData();
-  }, []);
+    fetchData(url);
+  }, [url]);
 
   return [response, error, loading] as const;
 };
