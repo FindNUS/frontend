@@ -106,8 +106,12 @@ export const FORM_FIELD_STATUS_SUBMIT: RequiredField[] = [
 ];
 
 const currentDate = new Date();
+const BROWSER_TIMEZONE_OFFSET = currentDate.getTimezoneOffset();
+const ONE_MINUTE_MILISECONDS = 60000;
+export const TIME_OFFSET = BROWSER_TIMEZONE_OFFSET * ONE_MINUTE_MILISECONDS;
 const SUBMISSION_DATE_DAYS = 180; // days
-export const SUBMISSION_DATE_RANGE = 24 * 60 * 60 * 1000 * SUBMISSION_DATE_DAYS; // miliseconds per day * days
+export const SUBMISSION_DATE_RANGE =
+  24 * 60 * ONE_MINUTE_MILISECONDS * SUBMISSION_DATE_DAYS; // miliseconds per day * days
 export const OLDEST_ALLOWED_DATE = new Date(
   currentDate.setTime(currentDate.getTime() - SUBMISSION_DATE_RANGE)
 );
