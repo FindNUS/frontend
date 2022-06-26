@@ -28,6 +28,7 @@ import {
   QUERY_SUBMIT_TYPE_KEY,
   QUERY_SUBMIT_TYPE_VALUE_LOST,
   ROUTE_HOME,
+  TIME_OFFSET,
 } from "../../constants";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import getArrayObjectValueFromKey from "../../utils/getArrayObjectValueFromKey";
@@ -193,7 +194,10 @@ const ItemSubmissionForm: React.FC = function () {
   };
   const handleDateChange = (ev: React.FormEvent) => {
     const { value } = ev.target as HTMLInputElement;
-    dispatch(setSubmitDate(new Date(value).toISOString()));
+    const initialDate = new Date(value);
+    const timezoneAdjustedTime = initialDate.getTime() + TIME_OFFSET;
+    const timezoneAdjustedDate = new Date(timezoneAdjustedTime).toISOString();
+    dispatch(setSubmitDate(timezoneAdjustedDate));
   };
   const handleAdditionalDetailsChange = (ev: React.FormEvent) => {
     const { value } = ev.target as HTMLInputElement;
