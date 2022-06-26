@@ -6,7 +6,7 @@
 
 [![FindNUS Homepage](https://i.imgur.com/gaKicrb.png)](https://findnus.netlify.app)
 
-### [Demo](https://findnus.netlify.app)
+### [[Demo](https://findnus.netlify.app)] [[Docs](https://findnus.github.io/)]
 
 FindNUS is a lost and found item management system which aims to supplement existing NUS lost and found system in National University of Singapore (NUS) by reducing the barriers for item finders to submit an item online. As such, item losters are more likely to find an item which they have lost on top of items which only make it to the security personnel.
 
@@ -14,6 +14,10 @@ FindNUS is a lost and found item management system which aims to supplement exis
 ## Getting Started
 
 A demo of this application can be accessed at https://findnus.netlify.app
+
+The demo backend is available at https://findnus.herokuapp.com
+
+For more information and documentation, please visit https://findnus.github.io/
 
 __Installation__ 
 
@@ -49,17 +53,36 @@ __Launch the app__
 - Protected routing
 - API call for item search (Keywords: Water bottle, Laptop, Mouse, Matric card, CS1231 Notes, Airpods, Lanyard with card)
 
-__Remarks__
+### Milestone 2
 
-- Non-functional components: Filter, found item submission
-- Known problems: On login page, <kbd>Enter</kbd> only works for getting OTP. Pressing <kbd>Enter</kbd> to verify OTP will cause page refresh.
+__New features:__
 
+- Item search by keywords or location
+- Item peeking on home page (view recently submitted items by descending date)
+- Item filtering by category for both search and peek
+- User dashboard: View user-uploaded (lost) items, profile
+- Item submission logic (both found and lost items): Drag and drop to upload image, dropdown menu to select various fields
+- Form field validation for item
+
+__Existing features:__
+
+- SMS login
+- App routing
+- Protected routing
+
+__Remarks:__
+
+- Known issues with form field date validation (Invalid date error on item submit at 12am)
 
 ## App Directory
 
-| Route         | Page                        | Remarks                                                    |
-| ------------- | --------------------------- | ---------------------------------------------------------- |
-| `/`           | Main page                   |                                                            |
-| `/login`      | User authentication         |                                                            |
-| `/dashboard`  | User profile                | Protected route, user must be authenticated to access page |
-| `/components` | Overview of components used | For development use                                        |
+| Route                | Page                                 | Remarks                                   |
+| -------------------- | ------------------------------------ | ----------------------------------------- |
+| `/`                  | Main page                            |                                           |
+| `/submit-item/type`  | Select submit item type              | Submit either lost or found item          |
+| `/submit-item/form`  | Form to submit item                  | Query `type=lost` requires authentication |
+| `/view`              | View detailed information about item | Redirects from home, search and dashboard |
+| `/login`             | User authentication                  |                                           |
+| `/dashboard/profile` | User profile                         | Requires authentication                   |
+| `/dashboard/items`   | User-uploaded items                  | Requires authentication                   |
+| `/components`        | Overview of components used          | For development use                       |
