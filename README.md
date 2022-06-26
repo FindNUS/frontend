@@ -65,10 +65,6 @@ __Existing features:__
 - App routing
 - Protected routing
 
-__Remarks:__
-
-- Known issues with form field date validation (Invalid date error on item submit at 12am)
-
 
 ## App Directory
 
