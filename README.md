@@ -39,11 +39,6 @@ __Launch the app__
 - Run `npm start` to initialise the local server
 
 
-## Features
-
-- Search for items via keyword
-- Authenticate users via phone number
-
 ## Frontend Timeline
 
 ### Milestone 1
@@ -73,6 +68,7 @@ __Existing features:__
 __Remarks:__
 
 - Known issues with form field date validation (Invalid date error on item submit at 12am)
+
 
 ## App Directory
 
