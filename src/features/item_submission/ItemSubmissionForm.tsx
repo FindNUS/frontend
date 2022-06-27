@@ -32,6 +32,7 @@ import {
 } from "../../constants";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import getArrayObjectValueFromKey from "../../utils/getArrayObjectValueFromKey";
+import { selectAuthIsLoggedIn } from "../auth/authSlice";
 import generateFormErrorStatus from "./generateFormErrorStatus";
 import {
   setSubmitDate,
@@ -58,6 +59,7 @@ const ItemSubmissionForm: React.FC = function () {
   const [searchParams] = useSearchParams();
   const submitType = searchParams.get(QUERY_SUBMIT_TYPE_KEY);
   const auth = getAuth();
+  const isLoggedIn = useAppSelector(selectAuthIsLoggedIn);
 
   useEffect(() => {
     if (auth.currentUser) return; // currently logged in
@@ -179,8 +181,13 @@ const ItemSubmissionForm: React.FC = function () {
     setAttemptedSubmit(true);
     if (formHasErrors) return;
 
-    const userID = auth.currentUser?.uid;
-    dispatch(generateSubmitPayload(userID));
+    if (isLoggedIn) {
+      const userID = auth.currentUser?.uid;
+      dispatch(generateSubmitPayload(userID));
+    } else {
+      dispatch(generateSubmitPayload());
+    }
+
     navigate(ROUTE_SUBMIT_ITEM_POST);
   };
 
