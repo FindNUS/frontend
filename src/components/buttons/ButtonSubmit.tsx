@@ -3,18 +3,15 @@ import React from "react";
 interface ButtonSubmitProps {
   className: string;
   text: string;
-  onClick?: (ev: React.MouseEvent) => void;
 }
 
 const ButtonSubmit: React.FC<ButtonSubmitProps> = function (
   props: ButtonSubmitProps
 ) {
-  const btnProps = {
-    className: props.className,
-    ...(props.onClick && { onClick: props.onClick }),
-  };
+  const { className } = props;
+
   return (
-    <button type="submit" {...btnProps}>
+    <button type="submit" className={className}>
       {props.text}
     </button>
   );
