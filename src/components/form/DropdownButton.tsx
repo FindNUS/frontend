@@ -17,7 +17,7 @@ const DropdownButton: React.FC<DropdownButtonProps> = function (
 ) {
   const { options, dropdownName, dropdownID, onChange, isInvalid } = props;
   return (
-    <div className="dropdown-container">
+    <div className="dropdown-container" data-testid="dropdown-container">
       {isInvalid?.status && (
         <PopupMessage status="error" message={isInvalid.error} />
       )}
@@ -27,10 +27,15 @@ const DropdownButton: React.FC<DropdownButtonProps> = function (
         className="dropdown"
         onChange={onChange}
         value={props.selected}
+        data-testid="dropdown-select"
       >
         {options.map((item) => {
           return (
-            <option value={item.key} key={nanoid()}>
+            <option
+              value={item.key}
+              key={nanoid()}
+              data-testid="dropdown-option"
+            >
               {item.value}
             </option>
           );

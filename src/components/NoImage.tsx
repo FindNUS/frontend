@@ -7,7 +7,10 @@ interface NoImageProps {
 
 const NoImage: React.FC<NoImageProps> = function (props: NoImageProps) {
   return (
-    <div className={`no-image ${props.className}`}>
+    <div
+      className={`no-image ${props.className}`}
+      data-testid="noimage-wrapper"
+    >
       <ImageNotSupportedIcon fontSize="inherit" color="inherit" />
     </div>
   );

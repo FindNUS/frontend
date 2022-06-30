@@ -7,7 +7,7 @@ interface LoadingProps {
 
 const Loading: React.FC<LoadingProps> = function (props: LoadingProps) {
   return (
-    <div className={`${props.className}`}>
+    <div className={`${props.className}`} data-testid="loading-wrapper">
       <PopupMessage status="loading" message="Loading..." />
     </div>
   );

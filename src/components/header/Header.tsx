@@ -24,7 +24,7 @@ const Header: React.FC<HeaderProps> = function (props: HeaderProps) {
   const logout = useFirebaseLogout();
 
   return (
-    <header className="header">
+    <header className="header" data-testid="header">
       <Logo />
       <nav className="nav">
         <ul className="nav__list">
