@@ -6,6 +6,7 @@ import {
   selectQueryResults,
   selectSearchLoading,
 } from "../features/search/searchSlice";
+import { selectAuthIsLoggedIn } from "../features/auth/authSlice";
 import PageTitle from "../components/PageTitle";
 import SearchContainer from "../features/search/SearchContainer";
 
@@ -13,9 +14,11 @@ const SearchPage: React.FC = function () {
   const query = useAppSelector(selectQuery);
   const queryResults = useAppSelector(selectQueryResults);
   const queryLoading = useAppSelector(selectSearchLoading);
+  const isLoggedIn = useAppSelector(selectAuthIsLoggedIn);
+
   return (
     <div className="search-page background background--main">
-      <Header />
+      <Header isLoggedIn={isLoggedIn} />
       <PageTitle
         title="Search Results"
         message={

@@ -35,7 +35,7 @@ function ComponentsView() {
       />
 
       <h3>Header</h3>
-      <Header />
+      <Header isLoggedIn={false} />
 
       <h3>Popup Message</h3>
       <div className="components__horizontal">
