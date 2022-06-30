@@ -6,7 +6,7 @@ import ButtonFound from "../components/buttons/ButtonFound";
 import SearchBar from "../features/search/SearchBar";
 import Header from "../components/header/Header";
 import PopupMessage from "../components/PopupMessage";
-import ItemCard from "../components/ItemCard";
+import ItemCard from "../features/preview_items/ItemCard";
 import FormField from "../components/form/FormField";
 
 function ComponentsView() {
