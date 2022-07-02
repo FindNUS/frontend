@@ -4,6 +4,7 @@ import { MemoryRouter } from "react-router-dom";
 import NavItem from "../NavItem";
 
 const dummyText = "Lorem ipsum";
+const dummyId = dummyText.toLowerCase().split(" ").join("-");
 const linkDest = "/login";
 
 const generateEl = (
@@ -56,5 +57,13 @@ describe("Nav item component", () => {
     const linkEl = screen.getByRole("link");
 
     expect(linkEl).toHaveAttribute("href", linkDest);
+  });
+
+  it("should render id attribute", () => {
+    render(generateEl(true, jest.fn()));
+
+    const navEl = screen.getByRole("listitem");
+
+    expect(navEl).toHaveAttribute("id", dummyId);
   });
 });
