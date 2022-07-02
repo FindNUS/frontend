@@ -1,14 +1,25 @@
 import store from "./store";
-import { initializeAuth, inMemoryPersistence } from "firebase/auth";
+import {
+  connectAuthEmulator,
+  initializeAuth,
+  inMemoryPersistence,
+} from "firebase/auth";
 
 // Firebase
 import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
-import { fbConfig } from "../constants";
+import {
+  DEPLOY_ENV,
+  fbConfig,
+  FIREBASE_AUTH_EMULATOR_PORT,
+  FIREBASE_FIREBASE_EMULATOR_PORT,
+  NODE_ENV,
+} from "../constants";
 
 // Firestore
 import { createFirestoreInstance } from "redux-firestore";
 import "firebase/compat/firestore";
+import { connectFirestoreEmulator } from "firebase/firestore";
 
 // react-redux-firebase config
 const rrfConfig = {
@@ -20,12 +31,24 @@ const rrfConfig = {
 const app = firebase.initializeApp(fbConfig);
 
 // Initialize other services on firebase instance
-firebase.firestore();
+const db = firebase.firestore();
 
 const auth = initializeAuth(app, {
   persistence: inMemoryPersistence,
   popupRedirectResolver: undefined,
 });
+
+if (DEPLOY_ENV === "test" || NODE_ENV === "test") {
+  connectAuthEmulator(auth, `http://localhost:${FIREBASE_AUTH_EMULATOR_PORT}`, {
+    disableWarnings: true,
+  });
+  connectFirestoreEmulator(
+    db,
+    "localhost",
+    +`${FIREBASE_FIREBASE_EMULATOR_PORT}`
+  );
+  auth.settings.appVerificationDisabledForTesting = true;
+}
 
 // Phone number sign-in setup
 auth.languageCode = "en";
