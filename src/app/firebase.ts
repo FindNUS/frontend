@@ -1,5 +1,5 @@
 import store from "./store";
-import { getAuth } from "firebase/auth";
+import { initializeAuth, inMemoryPersistence } from "firebase/auth";
 
 // Firebase
 import firebase from "firebase/compat/app";
@@ -17,13 +17,17 @@ const rrfConfig = {
 };
 
 // Initialize firebase instance
-firebase.initializeApp(fbConfig);
+const app = firebase.initializeApp(fbConfig);
 
 // Initialize other services on firebase instance
 firebase.firestore();
 
+const auth = initializeAuth(app, {
+  persistence: inMemoryPersistence,
+  popupRedirectResolver: undefined,
+});
+
 // Phone number sign-in setup
-const auth = getAuth();
 auth.languageCode = "en";
 
 export const rrfProps = {
@@ -32,3 +36,5 @@ export const rrfProps = {
   dispatch: store.dispatch,
   createFirestoreInstance,
 };
+
+export { auth as firebaseAuth };

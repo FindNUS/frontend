@@ -1,6 +1,6 @@
-import { getAuth } from "firebase/auth";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import { firebaseAuth } from "../../app/firebase";
 import BackButtonText from "../../components/buttons/BackButtonText";
 import ButtonSubmit from "../../components/buttons/ButtonSubmit";
 import DropdownButton from "../../components/form/DropdownButton";
@@ -58,14 +58,13 @@ const ItemSubmissionForm: React.FC = function () {
   const [attemptedSubmit, setAttemptedSubmit] = useState(false);
   const [searchParams] = useSearchParams();
   const submitType = searchParams.get(QUERY_SUBMIT_TYPE_KEY);
-  const auth = getAuth();
   const isLoggedIn = useAppSelector(selectAuthIsLoggedIn);
 
   useEffect(() => {
-    if (auth.currentUser) return; // currently logged in
+    if (firebaseAuth.currentUser) return; // currently logged in
     // user is logged out, redirect to home page
     if (submitType === QUERY_SUBMIT_TYPE_VALUE_LOST) navigate(ROUTE_HOME);
-  }, [auth.currentUser]);
+  }, [firebaseAuth.currentUser]);
 
   /**
    * Helper function to update form field corresponding to identifier in store.
@@ -182,7 +181,7 @@ const ItemSubmissionForm: React.FC = function () {
     if (formHasErrors) return;
 
     if (isLoggedIn) {
-      const userID = auth.currentUser?.uid;
+      const userID = firebaseAuth.currentUser?.uid;
       dispatch(generateSubmitPayload(userID));
     } else {
       dispatch(generateSubmitPayload());
