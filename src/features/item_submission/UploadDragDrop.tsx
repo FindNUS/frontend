@@ -5,7 +5,7 @@ import ImageIcon from "@mui/icons-material/Image";
 import ClearRoundedIcon from "@mui/icons-material/ClearRounded";
 import useConvertFileToBase64 from "../../hooks/useConvertFileToBase64";
 import { useAppDispatch } from "../../hooks";
-import { setSubmitImageState } from "./submitItemSlice";
+import { clearSubmitImage, setSubmitImageState } from "./submitItemSlice";
 
 interface UploadDragDropProps {
   className: string;
@@ -62,6 +62,7 @@ const UploadDragDrop: React.FC<UploadDragDropProps> = function (
   const handleClearImage = () => {
     setFile(undefined);
     setFileURL("");
+    dispatch(clearSubmitImage());
   };
 
   return (
