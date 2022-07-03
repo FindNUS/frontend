@@ -6,6 +6,7 @@ import {
   DROPDOWN_DEFAULT_KEY,
   ENDPOINT_PEEK,
   ENDPOINT_SEARCH,
+  IMGUR_THUMBNAIL_MEDUIM,
   PEEK_DEFAULT_LIMIT,
   QUERY_SEARCH_DASHBOARD,
   QUERY_SEARCH_IS_PEEK,
@@ -21,6 +22,7 @@ import {
 } from "../search/searchSlice";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import Loading from "../../components/Loading";
+import getImgurThumbnailUrl from "./getImgurThumbnailUrl";
 
 type rawPreviewItemsType = {
   Name: string;
@@ -144,7 +146,11 @@ const PreviewItems: React.FC<PreviewItemsProps> = function (
         {!isLoading && !error && (
           <ul className="search-results__list">
             {queryResults.map((item: previewItemType) => {
-              const { name, id, date, location, category, imageUrl } = item;
+              const { name, id, date, location, category } = item;
+              // set image to load thumbnail
+              const imageUrl: string | undefined = item.imageUrl
+                ? getImgurThumbnailUrl(item.imageUrl, IMGUR_THUMBNAIL_MEDUIM)
+                : "";
               return (
                 <li
                   className="search-results__item"
