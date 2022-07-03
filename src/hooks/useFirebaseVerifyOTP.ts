@@ -1,4 +1,3 @@
-import { useNavigate } from "react-router-dom";
 import { firebaseAuth } from "../app/firebase";
 import { setToken } from "../features/auth/authSlice";
 import {
@@ -34,8 +33,6 @@ const useFirebaseVerifyOTP = (props: useFirebaseVerifyOTPProps) => {
     confirmationResult,
   } = props;
 
-  const navigate = useNavigate();
-
   return async (receivedOTP: string) => {
     // Check if user has requested for OTP
     if (!confirmationResult) {
@@ -69,9 +66,6 @@ const useFirebaseVerifyOTP = (props: useFirebaseVerifyOTPProps) => {
       // Clear reCAPTCHA widget and destroy the current instance
       setAppVerifier(undefined);
       clearAppVerifier(appVerifier, recaptchaRef);
-
-      // Redirect user to home page
-      navigate("/");
     } catch (e) {
       // OTP Verification Error
       const error = e as Error;
