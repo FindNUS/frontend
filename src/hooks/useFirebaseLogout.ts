@@ -1,5 +1,9 @@
 import { useAppDispatch } from "./reduxHooks";
-import { setIsLoggedIn, setToken } from "../features/auth/authSlice";
+import {
+  setAuthIsFirstTime,
+  setIsLoggedIn,
+  setToken,
+} from "../features/auth/authSlice";
 import { useNavigate } from "react-router-dom";
 import {
   setLastRequested,
@@ -19,6 +23,7 @@ const useFirebaseLogout = () => {
     // Update auth slice
     dispatch(setIsLoggedIn(false));
     dispatch(setToken(""));
+    dispatch(setAuthIsFirstTime(false));
 
     // Update login slice
     dispatch(updateStatus(undefined));
