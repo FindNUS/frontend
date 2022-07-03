@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import ItemCard from "../../components/ItemCard";
+import ItemCard from "./ItemCard";
 import useAxiosGet from "../../hooks/useAxiosGet";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import {

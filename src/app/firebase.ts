@@ -1,13 +1,25 @@
 import store from "./store";
-import { getAuth } from "firebase/auth";
+import {
+  connectAuthEmulator,
+  initializeAuth,
+  inMemoryPersistence,
+} from "firebase/auth";
 
 // Firebase
 import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
+import {
+  DEPLOY_ENV,
+  fbConfig,
+  FIREBASE_AUTH_EMULATOR_PORT,
+  FIREBASE_FIREBASE_EMULATOR_PORT,
+  NODE_ENV,
+} from "../constants";
 
 // Firestore
 import { createFirestoreInstance } from "redux-firestore";
 import "firebase/compat/firestore";
+import { connectFirestoreEmulator } from "firebase/firestore";
 
 // react-redux-firebase config
 const rrfConfig = {
@@ -15,24 +27,30 @@ const rrfConfig = {
   useFirestoreForProfile: true,
 };
 
-const fbConfig = {
-  apiKey: process.env.REACT_APP_API_KEY,
-  authDomain: process.env.REACT_APP_AUTH_DOMAIN,
-  projectId: process.env.REACT_APP_PROJECT_ID,
-  storageBucket: process.env.REACT_APP_STORAGE_BUCKET,
-  messagingSenderId: process.env.REACT_APP_MESSAGING_SENDER_ID,
-  appId: process.env.REACT_APP_APP_ID,
-  measurementId: process.env.REACT_APP_MEASUREMENT_ID,
-};
-
 // Initialize firebase instance
-firebase.initializeApp(fbConfig);
+const app = firebase.initializeApp(fbConfig);
 
 // Initialize other services on firebase instance
-firebase.firestore();
+const db = firebase.firestore();
+
+const auth = initializeAuth(app, {
+  persistence: inMemoryPersistence,
+  popupRedirectResolver: undefined,
+});
+
+if (DEPLOY_ENV === "test" || NODE_ENV === "test") {
+  connectAuthEmulator(auth, `http://localhost:${FIREBASE_AUTH_EMULATOR_PORT}`, {
+    disableWarnings: true,
+  });
+  connectFirestoreEmulator(
+    db,
+    "localhost",
+    +`${FIREBASE_FIREBASE_EMULATOR_PORT}`
+  );
+  auth.settings.appVerificationDisabledForTesting = true;
+}
 
 // Phone number sign-in setup
-const auth = getAuth();
 auth.languageCode = "en";
 
 export const rrfProps = {
@@ -41,3 +59,5 @@ export const rrfProps = {
   dispatch: store.dispatch,
   createFirestoreInstance,
 };
+
+export { auth as firebaseAuth };

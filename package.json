@@ -24,7 +24,8 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
+    "test": "react-scripts test --testPathIgnorePatterns=.+e2e.test.tsx?",
+    "test:e2e": "react-scripts test --testPathPattern=.+e2e.test.tsx?$",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -60,5 +61,10 @@
     "eslint-plugin-react": "^7.29.4",
     "prettier": "2.6.2",
     "sass": "^1.51.0"
+  },
+  "jest": {
+    "transformIgnorePatterns": [
+      "node_modules/(?!@codemirror)/"
+    ]
   }
 }

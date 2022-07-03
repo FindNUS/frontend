@@ -14,8 +14,8 @@ import {
 import useAxiosGet from "../../hooks/useAxiosGet";
 import processItemResponseFromAPI from "../../utils/processItemResponseFromAPI";
 import LostAndFoundItem from "./LostAndFoundItem";
-import { getAuth } from "firebase/auth";
 import BackButtonText from "../../components/buttons/BackButtonText";
+import { firebaseAuth } from "../../app/firebase";
 
 const ViewItem: React.FC = function () {
   const navigate = useNavigate();
@@ -24,9 +24,8 @@ const ViewItem: React.FC = function () {
   const fromPeek = searchParams.get(QUERY_SEARCH_IS_PEEK) === "true";
   const fromDashboard = searchParams.get(QUERY_SEARCH_DASHBOARD) === "true";
 
-  const auth = getAuth();
   const url = fromDashboard
-    ? `${ENDPOINT_ITEM}?Id=${itemId}&User_id=${auth.currentUser?.uid}`
+    ? `${ENDPOINT_ITEM}?Id=${itemId}&User_id=${firebaseAuth.currentUser?.uid}`
     : `${ENDPOINT_ITEM}?Id=${itemId}`;
 
   const [response, error, loading] = useAxiosGet({ url });

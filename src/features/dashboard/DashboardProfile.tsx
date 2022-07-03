@@ -1,9 +1,8 @@
 import React from "react";
-import { getAuth } from "firebase/auth";
+import { firebaseAuth } from "../../app/firebase";
 
 const DashboardProfile: React.FC = function () {
-  const auth = getAuth();
-  const { currentUser } = auth;
+  const { currentUser } = firebaseAuth;
   return (
     <section className="dashboard-body">
       {currentUser?.metadata.lastSignInTime && (

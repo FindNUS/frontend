@@ -8,22 +8,23 @@ interface NavItemProps {
 }
 
 const NavItem: React.FC<NavItemProps> = function (props: NavItemProps) {
-  switch (props.to) {
-    case undefined:
-      return (
-        <li className="nav__item" onClick={props.onClick}>
-          {props.text}
-        </li>
-      );
-    default:
-      return (
-        <Link to={props.to} className="link--wrapper">
-          <li className="nav__item" onClick={props.onClick}>
-            {props.text}
-          </li>
-        </Link>
-      );
+  const { text, to, onClick } = props;
+  const id = text.toLowerCase().split(" ").join("-");
+  if (!to) {
+    return (
+      <li className="nav__item" onClick={onClick} id={id}>
+        {text}
+      </li>
+    );
   }
+
+  return (
+    <Link to={to} className="link--wrapper">
+      <li className="nav__item" onClick={onClick} id={id}>
+        {text}
+      </li>
+    </Link>
+  );
 };
 
 export default NavItem;

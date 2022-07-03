@@ -1,4 +1,3 @@
-import { getAuth } from "firebase/auth";
 import { useAppDispatch } from "./reduxHooks";
 import { setIsLoggedIn, setToken } from "../features/auth/authSlice";
 import { useNavigate } from "react-router-dom";
@@ -7,13 +6,13 @@ import {
   updateMessage,
   updateStatus,
 } from "../features/auth/loginSlice";
+import { firebaseAuth } from "../app/firebase";
 
 const useFirebaseLogout = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const auth = getAuth();
 
-  auth.onAuthStateChanged((user) => {
+  firebaseAuth.onAuthStateChanged((user) => {
     if (user) return; // Logged in
 
     // Logged out
@@ -29,7 +28,7 @@ const useFirebaseLogout = () => {
 
   // Logout then redirect user to home page
   return () => {
-    auth.signOut();
+    firebaseAuth.signOut();
     navigate("/");
   };
 };

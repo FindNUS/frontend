@@ -1,10 +1,5 @@
 import React, { useEffect } from "react";
-import {
-  RecaptchaVerifier,
-  getAuth,
-  Auth,
-  signInWithPhoneNumber,
-} from "firebase/auth";
+import { RecaptchaVerifier, Auth, signInWithPhoneNumber } from "firebase/auth";
 import {
   confirmationResultType,
   recaptchaType,
@@ -22,6 +17,7 @@ import {
   RECAPTCHA_CONTAINER_ELEMENT,
   RECAPTCHA_CONTAINER_ID,
 } from "../constants";
+import { firebaseAuth } from "../app/firebase";
 
 export type setAppVerifierType = React.Dispatch<
   React.SetStateAction<recaptchaType>
@@ -84,7 +80,6 @@ export const clearAppVerifier = (
  */
 const useFirebaseGetOTP = (props: useFirebaseGetOTPProps) => {
   const { setConfirmationResult, setAppVerifier, recaptchaRef } = props;
-  const auth = getAuth();
   const dispatch = useAppDispatch();
   const lastRequested = useAppSelector(selectLastRequested);
   const loginStatus = useAppSelector(selectLoginStatus);
@@ -101,7 +96,7 @@ const useFirebaseGetOTP = (props: useFirebaseGetOTPProps) => {
     // Re-render captcha container
     clearAppVerifier(undefined, recaptchaRef);
 
-    const appVerifier = setupAppVerifier(auth, setAppVerifier);
+    const appVerifier = setupAppVerifier(firebaseAuth, setAppVerifier);
 
     try {
       // TODO: Validate number input
@@ -142,7 +137,7 @@ const useFirebaseGetOTP = (props: useFirebaseGetOTPProps) => {
       dispatch(updateMessage("Requesting for OTP..."));
 
       const confirmationResult = await signInWithPhoneNumber(
-        auth,
+        firebaseAuth,
         phoneNumber,
         appVerifier
       );
