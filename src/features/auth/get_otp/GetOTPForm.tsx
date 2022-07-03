@@ -1,14 +1,16 @@
-import React from "react";
+import React, { useState } from "react";
 import FormField from "../../../components/form/FormField";
 import { useAppDispatch } from "../../../hooks";
 import { useFirebaseGetOTPProps } from "../../../hooks/useFirebaseGetOTP";
 import GetOTPButton from "./GetOTPButton";
 import { onChangeNumber } from "../loginSlice";
+import PopupMessage from "../../../components/PopupMessage";
 
 const GetOTPForm: React.FC<useFirebaseGetOTPProps> = function (
   props: useFirebaseGetOTPProps
 ) {
   const dispatch = useAppDispatch();
+  const [error, setError] = useState<string>();
 
   // Handle form input change
   /**
@@ -23,6 +25,7 @@ const GetOTPForm: React.FC<useFirebaseGetOTPProps> = function (
 
   return (
     <form className="login-form__phone">
+      {error && <PopupMessage status="error" message={error} />}
       <div className="form-field">
         <FormField
           labelContent="Phone Number"
@@ -30,7 +33,7 @@ const GetOTPForm: React.FC<useFirebaseGetOTPProps> = function (
           disabled={false}
         />
       </div>
-      <GetOTPButton {...props} />
+      <GetOTPButton {...props} setError={setError} />
     </form>
   );
 };
