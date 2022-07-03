@@ -4,20 +4,29 @@ import { selectNumber } from "../loginSlice";
 import useFirebaseGetOTP, {
   useFirebaseGetOTPProps,
 } from "../../../hooks/useFirebaseGetOTP";
+import verifyPhoneNumber from "./verifyPhoneNumber";
+import { AUTH_ERROR_INVALID_PHONE } from "../../../constants";
 
-const GetOTPButton: React.FC<useFirebaseGetOTPProps> = function (
-  props: useFirebaseGetOTPProps
+interface GetOTPButtonProps extends useFirebaseGetOTPProps {
+  setError: React.Dispatch<React.SetStateAction<string | undefined>>;
+}
+
+const GetOTPButton: React.FC<GetOTPButtonProps> = function (
+  props: GetOTPButtonProps
 ) {
   const inputNumber = useAppSelector(selectNumber);
   const getOTPFromFirebase = useFirebaseGetOTP({ ...props });
-
+  const { setError } = props;
   /**
    * Request for OTP through firebase authentication.
    * @param ev The DOM event triggerred by a mouse click.
    */
   const handleGetOTP = async (ev: React.MouseEvent<HTMLButtonElement>) => {
     ev.preventDefault();
-    getOTPFromFirebase(inputNumber);
+    const phoneNumber = verifyPhoneNumber(inputNumber);
+    if (!phoneNumber) return setError(AUTH_ERROR_INVALID_PHONE);
+    setError(undefined);
+    getOTPFromFirebase(phoneNumber);
   };
 
   return (
