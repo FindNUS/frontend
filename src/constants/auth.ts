@@ -7,3 +7,4 @@ export const COUNTRY_CODE_SG = "65";
 export const AUTH_ERROR_INVALID_PHONE =
   "Please enter an 8-digit Singapore mobile number or number with country code.";
 export const NEW_USER_THRESHOLD = 5000; // ms
+export const REGEX_FIRST_NAME = /^[A-Za-z]+['`]? ?[A-Za-z]*$/;

@@ -53,6 +53,10 @@
       }
     }
 
+    &__message {
+      text-align: center;
+    }
+
     &__phone,
     &__otp {
       display: flex;
@@ -63,7 +67,9 @@
 
     &__submit {
       display: flex;
-      justify-content: center;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
     }
   }
 }
