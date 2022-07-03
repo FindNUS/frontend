@@ -5,6 +5,27 @@
   padding: 2rem;
   background-color: rgba($color: $colour-white, $alpha: 0.6);
   border: 6px dashed $colour-grey-dark-medium;
+  position: relative;
+
+  &__clear {
+    position: absolute;
+    top: 2rem;
+    right: 2rem;
+
+    width: 4rem;
+    height: 4rem;
+    background-color: $colour-secondary;
+    border-radius: 50%;
+    color: $colour-white;
+    font-weight: bold;
+    font-size: 2.5rem;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+    cursor: pointer;
+  }
 
   &__contents {
     display: flex;
