@@ -50,6 +50,9 @@ if (DEPLOY_ENV === "test" || NODE_ENV === "test") {
   auth.settings.appVerificationDisabledForTesting = true;
 }
 
+if (DEPLOY_ENV === "development")
+  auth.settings.appVerificationDisabledForTesting = true;
+
 // Phone number sign-in setup
 auth.languageCode = "en";
 
