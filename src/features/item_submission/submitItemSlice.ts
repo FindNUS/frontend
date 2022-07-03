@@ -114,6 +114,9 @@ export const submitItemSlice = createSlice({
           break;
       }
     },
+    clearSubmitImage(state) {
+      state.image = initialSubmitItemState.image;
+    },
     setSubmitCategory(state, action: PayloadAction<string>) {
       state.category = action.payload;
     },
@@ -183,6 +186,7 @@ export const {
   setSubmitContactDetails,
   setSubmitAdditionalDetails,
   setSubmitImageState,
+  clearSubmitImage,
   setSubmitCategory,
   setSubmitContactMethod,
   generateSubmitPayload,

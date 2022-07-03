@@ -2,9 +2,10 @@ import React, { useEffect, useState } from "react";
 import { FileUploader } from "react-drag-drop-files";
 import { DRAG_DROP_MESSAGE, IMGUR_IMAGE_FORMATS } from "../../constants";
 import ImageIcon from "@mui/icons-material/Image";
+import ClearRoundedIcon from "@mui/icons-material/ClearRounded";
 import useConvertFileToBase64 from "../../hooks/useConvertFileToBase64";
 import { useAppDispatch } from "../../hooks";
-import { setSubmitImageState } from "./submitItemSlice";
+import { clearSubmitImage, setSubmitImageState } from "./submitItemSlice";
 
 interface UploadDragDropProps {
   className: string;
@@ -58,31 +59,44 @@ const UploadDragDrop: React.FC<UploadDragDropProps> = function (
     );
   }, [convertError]);
 
+  const handleClearImage = () => {
+    setFile(undefined);
+    setFileURL("");
+    dispatch(clearSubmitImage());
+  };
+
   return (
-    <FileUploader
-      handleChange={handleChange}
-      name="item-submission"
-      types={IMGUR_IMAGE_FORMATS}
-      classes={`file-upload ${className}`}
-      hoverTitle="Drop image here"
-      onDraggingStateChange={() => setIsHover((prev) => !prev)}
-    >
-      <div className="file-upload__contents">
-        {fileURL && (
-          <img
-            src={fileURL}
-            className="file-upload__image"
-            alt="Uploaded image"
-          />
-        )}
-        {!isHover && !file && (
-          <span className="file-upload__icon">
-            <ImageIcon fontSize="inherit" />
-          </span>
-        )}
-        {!isHover && !file && DRAG_DROP_MESSAGE}
-      </div>
-    </FileUploader>
+    <div className={`file-upload ${className}`}>
+      {file && (
+        <div className="file-upload__clear" onClick={handleClearImage}>
+          <ClearRoundedIcon fontSize="inherit" color="inherit" />
+        </div>
+      )}
+      <FileUploader
+        handleChange={handleChange}
+        name="item-submission"
+        types={IMGUR_IMAGE_FORMATS}
+        hoverTitle="Drop image here"
+        onDraggingStateChange={() => setIsHover((prev) => !prev)}
+      >
+        <div className="file-upload__contents">
+          {fileURL && (
+            <img
+              src={fileURL}
+              className="file-upload__image"
+              alt="Uploaded image"
+            />
+          )}
+
+          {!isHover && !file && (
+            <span className="file-upload__icon">
+              <ImageIcon fontSize="inherit" />
+            </span>
+          )}
+          {!isHover && !file && DRAG_DROP_MESSAGE}
+        </div>
+      </FileUploader>
+    </div>
   );
 };
 
