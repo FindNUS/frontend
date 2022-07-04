@@ -3,11 +3,17 @@ import DoneRoundedIcon from "@mui/icons-material/DoneRounded";
 import WarningAmberRoundedIcon from "@mui/icons-material/WarningAmberRounded";
 import ErrorOutlineRoundedIcon from "@mui/icons-material/ErrorOutlineRounded";
 import HourglassBottomRoundedIcon from "@mui/icons-material/HourglassBottomRounded";
-import { LoginStatus } from "../features/auth/LoginForm";
+
+export type PopupMessageStatus =
+  | "success"
+  | "warning"
+  | "error"
+  | "loading"
+  | undefined;
 
 export interface PopupMessageProps {
-  status: LoginStatus;
-  message: string;
+  status?: PopupMessageStatus;
+  message?: string;
 }
 
 const PopupMessage: React.FC<PopupMessageProps> = function (

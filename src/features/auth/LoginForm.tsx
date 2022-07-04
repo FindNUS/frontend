@@ -11,13 +11,6 @@ export type recaptchaType = RecaptchaVerifier | undefined;
 
 export type confirmationResultType = ConfirmationResult | undefined;
 
-export type LoginStatus =
-  | "success"
-  | "warning"
-  | "error"
-  | "loading"
-  | undefined;
-
 const LoginForm: React.FC = function () {
   const [confirmationResult, setConfirmationResult] =
     useState<confirmationResultType>(undefined);
