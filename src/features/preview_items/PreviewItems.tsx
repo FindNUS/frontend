@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import ItemCard from "./ItemCard";
-import useAxiosGet from "../../hooks/useAxiosGet";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import {
   DROPDOWN_DEFAULT_KEY,
@@ -23,6 +22,7 @@ import {
 import { useNavigate, useSearchParams } from "react-router-dom";
 import Loading from "../../components/Loading";
 import getImgurThumbnailUrl from "./getImgurThumbnailUrl";
+import useAxios from "../../hooks/useAxios";
 
 type rawPreviewItemsType = {
   Name: string;
@@ -98,7 +98,7 @@ const PreviewItems: React.FC<PreviewItemsProps> = function (
         }`
       : `${ENDPOINT_SEARCH}?query=${query}`);
 
-  const [response, error, isLoading] = useAxiosGet({ url });
+  const [response, error, isLoading] = useAxios({ method: "GET", url });
 
   useEffect(() => {
     if (isLoading) {

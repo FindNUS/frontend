@@ -11,7 +11,6 @@ import {
   QUERY_SEARCH_DASHBOARD,
   ROUTE_DASHBOARD_ITEMS,
 } from "../../constants";
-import useAxiosGet from "../../hooks/useAxiosGet";
 import processItemResponseFromAPI from "../../utils/processItemResponseFromAPI";
 import LostAndFoundItem from "./LostAndFoundItem";
 import BackButtonText from "../../components/buttons/BackButtonText";
@@ -20,6 +19,7 @@ import { useAppDispatch } from "../../hooks";
 import { updateViewStore } from "./viewItemSlice";
 import PopupMessage from "../../components/PopupMessage";
 import Loading from "../../components/Loading";
+import useAxios from "../../hooks/useAxios";
 
 const ViewItem: React.FC = function () {
   const dispatch = useAppDispatch();
@@ -35,7 +35,7 @@ const ViewItem: React.FC = function () {
     ? `${ENDPOINT_ITEM}?Id=${itemId}&User_id=${currentUser}`
     : `${ENDPOINT_ITEM}?Id=${itemId}`;
 
-  const [response, error, loading] = useAxiosGet({ url });
+  const [response, error, loading] = useAxios({ method: "GET", url });
   const [item, setItem] = useState<LNFItem>();
 
   // update viewItem store

@@ -3,22 +3,27 @@ import { useNavigate } from "react-router-dom";
 import PopupMessage from "../../components/PopupMessage";
 import { ENDPOINT_ITEM, ROUTE_HOME } from "../../constants";
 import { useAppDispatch, useAppSelector } from "../../hooks";
-import useAxiosPost from "../../hooks/useAxiosPost";
+import useAxios from "../../hooks/useAxios";
 import { clearSubmitInputs, selectSubmitPayload } from "./submitItemSlice";
 
 const ItemSubmissionPost: React.FC = function () {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const payload = useAppSelector(selectSubmitPayload) || {};
-  const [response, error, loading] = useAxiosPost({
+  console.log(payload);
+  const [response, error, loading] = useAxios({
+    method: "POST",
     url: ENDPOINT_ITEM,
-    payload: JSON.stringify(payload),
+    config: JSON.stringify(payload),
   });
 
   useEffect(() => {
+    if (!response) return;
+
     if (!loading && response?.status === 200) {
       navigate(ROUTE_HOME);
     }
+
     // clear previous inputs from store
     dispatch(clearSubmitInputs());
   }, [response, loading]);
