@@ -24,6 +24,6 @@ describe("No image component", () => {
 
     const wrapper = screen.getByTestId("noimage-wrapper");
 
-    expect(wrapper).toHaveClass(`no-image test`);
+    expect(wrapper).toHaveClass("no-image test");
   });
 });
