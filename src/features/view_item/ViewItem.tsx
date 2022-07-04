@@ -16,20 +16,40 @@ import processItemResponseFromAPI from "../../utils/processItemResponseFromAPI";
 import LostAndFoundItem from "./LostAndFoundItem";
 import BackButtonText from "../../components/buttons/BackButtonText";
 import { firebaseAuth } from "../../app/firebase";
+import { useAppDispatch } from "../../hooks";
+import { updateViewStore } from "./viewItemSlice";
+import PopupMessage from "../../components/PopupMessage";
+import Loading from "../../components/Loading";
 
 const ViewItem: React.FC = function () {
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const itemId = searchParams.get(QUERY_SEARCH_ITEM_ID);
   const fromPeek = searchParams.get(QUERY_SEARCH_IS_PEEK) === "true";
   const fromDashboard = searchParams.get(QUERY_SEARCH_DASHBOARD) === "true";
 
+  const currentUser = firebaseAuth.currentUser?.uid;
+
   const url = fromDashboard
-    ? `${ENDPOINT_ITEM}?Id=${itemId}&User_id=${firebaseAuth.currentUser?.uid}`
+    ? `${ENDPOINT_ITEM}?Id=${itemId}&User_id=${currentUser}`
     : `${ENDPOINT_ITEM}?Id=${itemId}`;
 
   const [response, error, loading] = useAxiosGet({ url });
   const [item, setItem] = useState<LNFItem>();
+
+  // update viewItem store
+  useEffect(() => {
+    const errorStatus = error ? "error" : undefined;
+    const message = error?.message;
+    dispatch(
+      updateViewStore({
+        isLoading: loading,
+        status: errorStatus,
+        message,
+      })
+    );
+  }, [loading, error]);
 
   const handleBack = () => {
     if (fromPeek) return navigate(ROUTE_HOME);
@@ -67,11 +87,10 @@ const ViewItem: React.FC = function () {
         />
       )}
       {item && <LostAndFoundItem {...item} />}
-      {loading && <h3>Loading...</h3>}
+      {loading && <Loading />}
       {error && (
         <div className="search__error">
-          <h2>Error</h2>
-          <span>{error.message}</span>
+          <PopupMessage status="error" message={error.message} />
         </div>
       )}
     </div>
