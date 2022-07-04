@@ -5,6 +5,7 @@
   },
   "extends": [
     "eslint:recommended",
+    "plugin:prettier/recommended",
     "plugin:react/recommended",
     "plugin:@typescript-eslint/recommended"
   ],
@@ -17,5 +18,17 @@
     "sourceType": "module"
   },
   "plugins": ["react", "@typescript-eslint"],
-  "rules": {}
+  "rules": {
+    "semi": ["error", "always"],
+    "quotes": ["error", "double"],
+    "prettier/prettier": ["error", {
+      "endOfLine": "crlf"
+    }]
+  },
+  "reportUnusedDisableDirectives": true,
+  "settings": {
+    "react": {
+      "version": "detect"
+    }
+  }
 }

@@ -26,7 +26,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test --testPathIgnorePatterns=.+e2e.test.tsx?",
     "test:e2e": "react-scripts test --testPathPattern=.+e2e.test.tsx?$",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "lint": "eslint --ignore-path .gitignore --ext .js,.ts,.jsx,.tsx ."
   },
   "eslintConfig": {
     "extends": [
@@ -58,6 +59,8 @@
     "@typescript-eslint/eslint-plugin": "^5.23.0",
     "@typescript-eslint/parser": "^5.23.0",
     "eslint": "^8.15.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-react": "^7.29.4",
     "prettier": "2.6.2",
     "sass": "^1.51.0"
