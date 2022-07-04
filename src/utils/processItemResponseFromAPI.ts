@@ -12,6 +12,7 @@ const processItemResponseFromAPI = (data: APIItemGET) => {
     Contact_details: contactDetails,
     Item_details: additionalDetails,
     Image_url: imageUrl,
+    User_id: userID,
   } = data;
 
   return {
@@ -26,6 +27,7 @@ const processItemResponseFromAPI = (data: APIItemGET) => {
     ...(contactDetails && { contactDetails }),
     ...(additionalDetails && { additionalDetails }),
     ...(imageUrl && { imageUrl }),
+    ...(userID && { userID }),
   };
 };
 
