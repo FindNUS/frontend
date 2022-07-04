@@ -15,10 +15,11 @@ import processItemResponseFromAPI from "../../utils/processItemResponseFromAPI";
 import LostAndFoundItem from "./LostAndFoundItem";
 import BackButtonText from "../../components/buttons/BackButtonText";
 import { firebaseAuth } from "../../app/firebase";
-import { useAppDispatch } from "../../hooks";
-import { updateViewStore } from "./viewItemSlice";
+import { useAppDispatch, useAppSelector } from "../../hooks";
+import { selectViewLoading, updateViewStore } from "./viewItemSlice";
 import PopupMessage from "../../components/PopupMessage";
 import Loading from "../../components/Loading";
+import ItemCRUDOptions from "./ItemCRUDOptions";
 import useAxios from "../../hooks/useAxios";
 
 const ViewItem: React.FC = function () {
@@ -63,31 +64,42 @@ const ViewItem: React.FC = function () {
     setItem(processItemResponseFromAPI(data));
   }, [response]);
 
+  // item CRUD
+  const itemBelongsToUser = currentUser && item && currentUser === item?.userID;
+  const loadingCRUD = useAppSelector(selectViewLoading);
+
   return (
     <div className="view-item__container">
-      {fromPeek && (
-        <BackButtonText
-          className="view-item__back"
-          onClick={handleBack}
-          message="Return to home"
-        />
-      )}
-      {fromDashboard && (
-        <BackButtonText
-          className="view-item__back"
-          onClick={handleBack}
-          message="Return to dashboard"
-        />
-      )}
-      {!fromPeek && !fromDashboard && (
-        <BackButtonText
-          className="view-item__back"
-          onClick={handleBack}
-          message="Return to search results"
-        />
-      )}
-      {item && <LostAndFoundItem {...item} />}
-      {loading && <Loading />}
+      <div className="view-item__actions">
+        {fromPeek && (
+          <BackButtonText
+            className="view-item__back"
+            onClick={handleBack}
+            message="Return to home"
+          />
+        )}
+        {fromDashboard && (
+          <BackButtonText
+            className="view-item__back"
+            onClick={handleBack}
+            message="Return to dashboard"
+          />
+        )}
+        {!fromPeek && !fromDashboard && (
+          <BackButtonText
+            className="view-item__back"
+            onClick={handleBack}
+            message="Return to search results"
+          />
+        )}
+
+        {itemBelongsToUser && (
+          <ItemCRUDOptions item={item} userID={currentUser} />
+        )}
+      </div>
+
+      {item && !loadingCRUD && <LostAndFoundItem {...item} />}
+      {(loading || loadingCRUD) && <Loading />}
       {error && (
         <div className="search__error">
           <PopupMessage status="error" message={error.message} />
