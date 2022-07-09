@@ -29,6 +29,8 @@ import {
   QUERY_SUBMIT_TYPE_VALUE_LOST,
   ROUTE_HOME,
   TIME_OFFSET,
+  QUERY_SUBMIT_TYPE_VALUE_EDIT,
+  ROUTE_DASHBOARD_ITEMS,
 } from "../../constants";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import getArrayObjectValueFromKey from "../../utils/getArrayObjectValueFromKey";
@@ -63,7 +65,11 @@ const ItemSubmissionForm: React.FC = function () {
   useEffect(() => {
     if (firebaseAuth.currentUser) return; // currently logged in
     // user is logged out, redirect to home page
-    if (submitType === QUERY_SUBMIT_TYPE_VALUE_LOST) navigate(ROUTE_HOME);
+    if (
+      submitType === QUERY_SUBMIT_TYPE_VALUE_LOST ||
+      submitType === QUERY_SUBMIT_TYPE_VALUE_EDIT
+    )
+      navigate(ROUTE_HOME);
   }, [firebaseAuth.currentUser]);
 
   /**
@@ -271,13 +277,18 @@ const ItemSubmissionForm: React.FC = function () {
     };
   };
 
-  const handleBack = () => navigate(ROUTE_SUBMIT_ITEM_TYPE);
+  const handleBack = () => {
+    if (submitType === "edit") return navigate(ROUTE_DASHBOARD_ITEMS);
+    navigate(ROUTE_SUBMIT_ITEM_TYPE);
+  };
 
   return (
     <form className="submit-item__form" onSubmit={handleSubmitForm}>
       <div className="submit-item__form--fields">
         <BackButtonText
-          message="Select item type"
+          message={
+            submitType === "edit" ? "Return to dashboard" : "Select item type"
+          }
           onClick={handleBack}
           className="submit-item__form--back"
         />
