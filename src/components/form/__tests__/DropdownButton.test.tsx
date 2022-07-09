@@ -1,6 +1,7 @@
 import React from "react";
 import { fireEvent, render, screen } from "@testing-library/react";
 import DropdownButton from "../DropdownButton";
+import { act } from "react-dom/test-utils";
 
 const testName = "dropdown";
 const testId = "dropdown";
@@ -10,25 +11,38 @@ const testOptions = [
   { key: "third", value: "option 3" },
 ];
 
-const generateEl = (
+const generateEl = ({
   handler = function () {
     return;
-  }
-) => (
+  },
+  defaultValue = "first",
+}) => (
   <form>
     <DropdownButton
       dropdownName={testName}
       dropdownID={testId}
       onChange={handler}
-      selected="first"
+      selected={defaultValue}
       options={testOptions}
     />
   </form>
 );
 
+let container: HTMLDivElement | null;
+
+beforeEach(() => {
+  container = document.createElement("div");
+  document.body.appendChild(container);
+});
+
+afterEach(() => {
+  document.body.removeChild(container as HTMLDivElement);
+  container = null;
+});
+
 describe("Dropdown button component", () => {
   it("has the correct class", () => {
-    render(generateEl());
+    render(generateEl({}));
 
     const container = screen.getByTestId("dropdown-container");
 
@@ -36,7 +50,7 @@ describe("Dropdown button component", () => {
   });
 
   it("renders attributes properly", () => {
-    render(generateEl());
+    render(generateEl({}));
 
     const dropdown = screen.getByTestId("dropdown-select");
 
@@ -46,7 +60,7 @@ describe("Dropdown button component", () => {
   });
 
   it("renders given list of elements", () => {
-    render(generateEl());
+    render(generateEl({}));
 
     const options = screen.getAllByTestId("dropdown-option");
 
@@ -60,22 +74,38 @@ describe("Dropdown button component", () => {
     });
   });
 
-  it("selects", () => {
-    render(generateEl());
+  it("selects and marks as edited", () => {
+    act(() => {
+      render(generateEl({}));
+    });
 
     const dropdown = screen.getByTestId("dropdown-select") as HTMLSelectElement;
-    fireEvent.click(dropdown, { target: { value: "second" } });
+    expect(dropdown.getAttribute("data-edited")).toStrictEqual("false");
 
+    act(() => {
+      fireEvent.change(dropdown, { target: { value: "second" } });
+    });
+
+    expect(dropdown.getAttribute("data-edited")).toStrictEqual("true");
     expect(dropdown).toHaveTextContent("option 2");
   });
 
   it("handles onClick function", () => {
     const mockOnClick = jest.fn();
-    render(generateEl(mockOnClick));
+    render(generateEl({ handler: mockOnClick }));
 
     const dropdown = screen.getByTestId("dropdown-select") as HTMLSelectElement;
     fireEvent.change(dropdown, { target: { value: "second" } });
 
     expect(mockOnClick).toBeCalledTimes(1);
+  });
+
+  it("renders with default value", () => {
+    act(() => {
+      render(generateEl({ defaultValue: "third" }));
+    });
+
+    const dropdown = screen.getByTestId("dropdown-select") as HTMLSelectElement;
+    expect(dropdown).toHaveTextContent("option 3");
   });
 });
