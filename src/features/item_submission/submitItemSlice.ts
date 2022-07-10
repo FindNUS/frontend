@@ -9,7 +9,7 @@ import processSubmitItemForAPI, {
   APIItemType,
 } from "../../utils/processSubmitItemForAPI";
 
-interface SubmitItemState {
+interface FormItemDetails {
   additionalDetails: string;
   category: string;
   contactDetails: string;
@@ -18,8 +18,21 @@ interface SubmitItemState {
   name: string;
   image: ImageState;
   location: string;
+}
+
+export interface DefaultItem extends FormItemDetails {
+  id: string;
+}
+
+interface SubmitItemState extends FormItemDetails {
   payload?: APIItemType;
   formInputStatus: RequiredField[];
+  defaultValue?: DefaultItem;
+  editPayload?: EditItemPayload;
+}
+
+interface EditItemPayload extends Partial<APIItemType> {
+  User_id?: string; // required
 }
 
 interface ImageState {
@@ -59,6 +72,17 @@ const initialSubmitItemState: SubmitItemState = {
     Contact_method: "",
     Image_base64: "",
     Item_details: "",
+    User_id: "",
+  },
+  editPayload: {
+    Name: undefined,
+    Date: undefined,
+    Location: undefined,
+    Category: undefined,
+    Contact_details: undefined,
+    Contact_method: undefined,
+    Image_base64: undefined,
+    Item_details: undefined,
     User_id: "",
   },
 };
@@ -151,6 +175,40 @@ export const submitItemSlice = createSlice({
         ...(userID && { userID }),
       });
     },
+    generateEditPayload(
+      state,
+      action: PayloadAction<{
+        userID: string;
+        editedFields: Partial<FormItemDetails>;
+      }>
+    ) {
+      const { editedFields, userID } = action.payload;
+      const {
+        category,
+        name,
+        date,
+        location,
+        contactDetails,
+        contactMethod,
+        additionalDetails,
+      } = editedFields;
+
+      const imageBase64 = state.image.result ?? "";
+
+      state.editPayload = initialSubmitItemState.editPayload;
+
+      state.editPayload = processSubmitItemForAPI({
+        ...(category !== DROPDOWN_DEFAULT_KEY && { category }),
+        ...(name && { name }),
+        ...(date && { date }),
+        ...(location && { location }),
+        ...(contactDetails && { contactDetails }),
+        ...(contactMethod !== DROPDOWN_DEFAULT_KEY && { contactMethod }),
+        ...(additionalDetails && { additionalDetails }),
+        ...(imageBase64 && { imageBase64 }),
+        userID,
+      });
+    },
     clearSubmitInputs(state) {
       state.additionalDetails = initialSubmitItemState.additionalDetails;
       state.category = initialSubmitItemState.category;
@@ -162,6 +220,7 @@ export const submitItemSlice = createSlice({
       state.name = initialSubmitItemState.name;
       state.formInputStatus = initialSubmitItemState.formInputStatus;
       state.payload = initialSubmitItemState.payload;
+      state.editPayload = initialSubmitItemState.editPayload;
     },
     setSubmitFormInputStatus(
       state,
@@ -175,6 +234,32 @@ export const submitItemSlice = createSlice({
         if (field.identifier !== instruction.identifier) return;
         return (field.completed = instruction.completed);
       });
+    },
+    setSubmitDefaultValue(
+      state,
+      action: PayloadAction<DefaultItem | undefined>
+    ) {
+      state.defaultValue = undefined;
+      state.defaultValue = action.payload;
+      if (!action.payload) return;
+      const {
+        name,
+        category,
+        additionalDetails,
+        date,
+        location,
+        contactMethod,
+        contactDetails,
+        image,
+      } = action.payload;
+      if (name) state.name = name;
+      if (category) state.category = category;
+      if (additionalDetails) state.additionalDetails = additionalDetails;
+      if (date) state.date = date;
+      if (location) state.location = location;
+      if (contactMethod) state.contactMethod = contactMethod;
+      if (contactDetails) state.contactDetails = contactDetails;
+      if (image) state.image = image;
     },
   },
 });
@@ -190,8 +275,10 @@ export const {
   setSubmitCategory,
   setSubmitContactMethod,
   generateSubmitPayload,
+  generateEditPayload,
   clearSubmitInputs,
   setSubmitFormInputStatus,
+  setSubmitDefaultValue,
 } = submitItemSlice.actions;
 
 export const selectSubmitInput = (state: RootState) => state.submitItem;
@@ -211,6 +298,10 @@ export const selectSubmitContactMethod = (state: RootState) =>
   state.submitItem.contactMethod;
 export const selectSubmitPayload = (state: RootState) =>
   state.submitItem.payload;
+export const selectSubmitEditPayload = (state: RootState) =>
+  state.submitItem.editPayload;
 export const selectSubmitFormInputStatus = (state: RootState) =>
   state.submitItem.formInputStatus;
+export const selectSubmitDefaultValue = (state: RootState) =>
+  state.submitItem.defaultValue;
 export default submitItemSlice.reducer;

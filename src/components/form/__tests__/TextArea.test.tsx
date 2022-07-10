@@ -2,6 +2,7 @@ import React from "react";
 import { render, screen } from "@testing-library/react";
 // import userEvent from "@testing-library/user-event";
 import TextArea from "../TextArea";
+import { act } from "react-dom/test-utils";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const dummyOnChange = (ev: React.FormEvent<HTMLTextAreaElement>) => {
@@ -13,13 +14,26 @@ const onFocusChange = () => {
   isFocus = !isFocus;
 };
 
-const generateEl = () => (
+const generateEl = (defaultValue?: string) => (
   <TextArea
     onChange={dummyOnChange}
     isFocus={isFocus}
     onFocusChange={onFocusChange}
+    defaultValue={defaultValue}
   />
 );
+
+let container: HTMLDivElement | null;
+
+beforeEach(() => {
+  container = document.createElement("div");
+  document.body.appendChild(container);
+});
+
+afterEach(() => {
+  document.body.removeChild(container as HTMLDivElement);
+  container = null;
+});
 
 describe("Text area component", () => {
   it("initial class name is correct", () => {
@@ -28,6 +42,15 @@ describe("Text area component", () => {
     const textarea = screen.getByRole("textbox");
 
     expect(textarea).toHaveClass("form-field__textarea");
+  });
+
+  it("renders with initial value", () => {
+    act(() => {
+      render(generateEl("hello world!"));
+    });
+
+    const textarea = screen.getByRole("textbox");
+    expect(textarea).toHaveValue("hello world!");
   });
 
   // it("focus class is added on focus", () => {

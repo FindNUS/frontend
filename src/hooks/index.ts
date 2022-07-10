@@ -1,2 +1,2 @@
 export * from "./reduxHooks";
-export * from "./useAxiosGet";
+export * from "./useAxios";
