@@ -5,11 +5,15 @@ import {
   ENDPOINT_ITEM,
   HTTPRequestMethods,
   LNFItem,
+  QUERY_SUBMIT_TYPE_KEY,
+  QUERY_SUBMIT_TYPE_VALUE_EDIT,
   ROUTE_DASHBOARD_ITEMS,
+  ROUTE_SUBMIT_ITEM_FORM,
 } from "../../constants";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import useAxios from "../../hooks/useAxios";
 import { selectAuthToken } from "../auth/authSlice";
+import { setSubmitDefaultValue } from "../item_submission/submitItemSlice";
 import { setViewLoading, updateViewStore } from "./viewItemSlice";
 
 interface ItemCRUDOptionsProps {
@@ -48,7 +52,44 @@ const ItemCRUDOptions: React.FC<ItemCRUDOptionsProps> = function (
   }, [loading, error]);
 
   const handleItemEdit = () => {
-    alert("Button is non-functional!");
+    const {
+      name,
+      date,
+      location,
+      category,
+      contactDetails,
+      contactMethod,
+      additionalDetails,
+      imageUrl,
+      id,
+    } = item;
+
+    const [itemDate, itemMonth, itemYear] = date.split("/");
+    const formFieldDate = `${itemYear}-${itemMonth}-${itemDate}`;
+
+    dispatch(setSubmitDefaultValue(undefined));
+    dispatch(
+      setSubmitDefaultValue({
+        name,
+        date: formFieldDate,
+        location,
+        category,
+        contactDetails: contactDetails ?? "",
+        contactMethod: contactMethod ?? "",
+        additionalDetails: additionalDetails ?? "",
+        image: {
+          url: imageUrl,
+          result: "success",
+          error: undefined,
+          loading: false,
+        },
+        id,
+      })
+    );
+
+    navigate(
+      `${ROUTE_SUBMIT_ITEM_FORM}?${QUERY_SUBMIT_TYPE_KEY}=${QUERY_SUBMIT_TYPE_VALUE_EDIT}`
+    );
   };
 
   const handleItemDelete = () => {

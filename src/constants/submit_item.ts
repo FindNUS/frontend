@@ -67,6 +67,7 @@ export const FORM_FIELD_IDENTIFIER_LOCATION = "location";
 export const FORM_FIELD_IDENTIFIER_ADD_DETAILS = "additional-details";
 export const FORM_FIELD_IDENTIFIER_CONTACT_METHOD = "contact-method";
 export const FORM_FIELD_IDENTIFIER_CONTACT_DETAILS = "contact-details";
+export const FORM_FIELD_IDENTIFIER_IMAGE = "image";
 
 export const STORE_UPDATE_DELAY = 500; // ms
 

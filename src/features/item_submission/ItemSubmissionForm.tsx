@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+import { User } from "firebase/auth";
+import React, { useEffect, useRef, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { firebaseAuth } from "../../app/firebase";
 import BackButtonText from "../../components/buttons/BackButtonText";
@@ -31,8 +32,10 @@ import {
   TIME_OFFSET,
   QUERY_SUBMIT_TYPE_VALUE_EDIT,
   ROUTE_DASHBOARD_ITEMS,
+  FORM_FIELD_IDENTIFIER_IMAGE,
 } from "../../constants";
 import { useAppDispatch, useAppSelector } from "../../hooks";
+import getArrayObjectKeyFromValue from "../../utils/getArrayObjectKeyFromValue";
 import getArrayObjectValueFromKey from "../../utils/getArrayObjectValueFromKey";
 import { selectAuthIsLoggedIn } from "../auth/authSlice";
 import generateFormErrorStatus from "./generateFormErrorStatus";
@@ -49,6 +52,10 @@ import {
   selectSubmitInput,
   setSubmitFormInputStatus,
   selectSubmitFormInputStatus,
+  selectSubmitDefaultValue,
+  clearSubmitInputs,
+  generateEditPayload,
+  setSubmitDefaultValue,
 } from "./submitItemSlice";
 import UploadDragDrop from "./UploadDragDrop";
 
@@ -58,9 +65,21 @@ const ItemSubmissionForm: React.FC = function () {
   const formInput = useAppSelector(selectSubmitInput);
   const formInputStatus = useAppSelector(selectSubmitFormInputStatus);
   const [attemptedSubmit, setAttemptedSubmit] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
   const [searchParams] = useSearchParams();
   const submitType = searchParams.get(QUERY_SUBMIT_TYPE_KEY);
   const isLoggedIn = useAppSelector(selectAuthIsLoggedIn);
+  const imageUploadRef = useRef<HTMLDivElement>(null);
+  const [fieldEdited, setFieldEdited] = useState({
+    [FORM_FIELD_IDENTIFIER_NAME]: false,
+    [FORM_FIELD_IDENTIFIER_CATEGORY]: false,
+    [FORM_FIELD_IDENTIFIER_DATE]: false,
+    [FORM_FIELD_IDENTIFIER_LOCATION]: false,
+    [FORM_FIELD_IDENTIFIER_CONTACT_METHOD]: false,
+    [FORM_FIELD_IDENTIFIER_CONTACT_DETAILS]: false,
+    [FORM_FIELD_IDENTIFIER_ADD_DETAILS]: false,
+    [FORM_FIELD_IDENTIFIER_IMAGE]: false,
+  });
 
   useEffect(() => {
     if (firebaseAuth.currentUser) return; // currently logged in
@@ -72,6 +91,46 @@ const ItemSubmissionForm: React.FC = function () {
       navigate(ROUTE_HOME);
   }, [firebaseAuth.currentUser]);
 
+  // load values if editing an item
+  const isEdit = submitType === QUERY_SUBMIT_TYPE_VALUE_EDIT;
+  const defaultValue = useAppSelector(selectSubmitDefaultValue);
+  useEffect(() => {
+    dispatch(clearSubmitInputs());
+    if (!defaultValue) return;
+    // set dropdown menu selected option
+    const {
+      category,
+      contactMethod,
+      name,
+      contactDetails,
+      additionalDetails,
+      location,
+      date,
+    } = defaultValue;
+
+    if (name) dispatch(setSubmitName(name));
+    if (date) dispatch(setSubmitDate(date));
+    if (location) dispatch(setSubmitLocation(location));
+    if (additionalDetails)
+      dispatch(setSubmitAdditionalDetails(additionalDetails));
+    if (contactDetails) dispatch(setSubmitContactDetails(contactDetails));
+    if (category) dispatch(setSubmitCategory(category));
+    if (contactMethod) {
+      const contactMethodKey = getArrayObjectKeyFromValue(
+        SUBMIT_FOUND_CONTACT_METHODS,
+        contactMethod
+      );
+      dispatch(setSubmitContactMethod(contactMethodKey));
+    }
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (submitted) return;
+      // clear default values if user aborts item edit session
+      dispatch(setSubmitDefaultValue(undefined));
+    };
+  }, [submitted]);
   /**
    * Helper function to update form field corresponding to identifier in store.
    * @param identifier The string which corresponds to the form field.
@@ -187,21 +246,72 @@ const ItemSubmissionForm: React.FC = function () {
     if (formHasErrors) return;
 
     if (isLoggedIn) {
-      const userID = firebaseAuth.currentUser?.uid;
-      dispatch(generateSubmitPayload(userID));
+      const userID = (firebaseAuth.currentUser as User).uid as string;
+      if (isEdit) {
+        // PATCH lost item
+        const editedFields = {
+          ...(fieldEdited[FORM_FIELD_IDENTIFIER_NAME] && {
+            name: formInput.name,
+          }),
+          ...(fieldEdited[FORM_FIELD_IDENTIFIER_CATEGORY] && {
+            category: formInput.category,
+          }),
+          ...(fieldEdited[FORM_FIELD_IDENTIFIER_DATE] && {
+            date: formInput.date,
+          }),
+          ...(fieldEdited[FORM_FIELD_IDENTIFIER_LOCATION] && {
+            location: formInput.location,
+          }),
+          ...(fieldEdited[FORM_FIELD_IDENTIFIER_ADD_DETAILS] && {
+            additionalDetails: formInput.additionalDetails,
+          }),
+          ...(fieldEdited[FORM_FIELD_IDENTIFIER_CONTACT_DETAILS] && {
+            contactDetails: formInput.contactDetails,
+          }),
+          ...(fieldEdited[FORM_FIELD_IDENTIFIER_CONTACT_METHOD] && {
+            contactMethod: formInput.contactMethod,
+          }),
+        };
+
+        dispatch(
+          generateEditPayload({
+            userID,
+            editedFields,
+          })
+        );
+      }
+      // POST lost item
+      else dispatch(generateSubmitPayload(userID));
     } else {
+      // POST found item
       dispatch(generateSubmitPayload());
     }
 
-    navigate(ROUTE_SUBMIT_ITEM_POST);
+    setSubmitted(true);
+    navigate(
+      `${ROUTE_SUBMIT_ITEM_POST}?${QUERY_SUBMIT_TYPE_VALUE_EDIT}=${isEdit}`
+    );
   };
 
   const handleDescriptionChange = (ev: React.FormEvent) => {
     const { value } = ev.target as HTMLInputElement;
+    setFieldEdited((prev) => {
+      return {
+        ...prev,
+        [FORM_FIELD_IDENTIFIER_NAME]: defaultValue?.name !== value && !!value,
+      };
+    });
     dispatch(setSubmitName(value));
   };
   const handleLocationChange = (ev: React.FormEvent) => {
     const { value } = ev.target as HTMLInputElement;
+    setFieldEdited((prev) => {
+      return {
+        ...prev,
+        [FORM_FIELD_IDENTIFIER_LOCATION]:
+          defaultValue?.location !== value && !!value,
+      };
+    });
     dispatch(setSubmitLocation(value));
   };
   const handleDateChange = (ev: React.FormEvent) => {
@@ -209,17 +319,44 @@ const ItemSubmissionForm: React.FC = function () {
     const initialDate = new Date(value);
     const timezoneAdjustedTime = initialDate.getTime() + TIME_OFFSET;
     const timezoneAdjustedDate = new Date(timezoneAdjustedTime).toISOString();
+    setFieldEdited((prev) => {
+      return {
+        ...prev,
+        [FORM_FIELD_IDENTIFIER_DATE]: defaultValue?.date !== value && !!value,
+      };
+    });
     dispatch(setSubmitDate(timezoneAdjustedDate));
   };
   const handleAdditionalDetailsChange = (ev: React.FormEvent) => {
     const { value } = ev.target as HTMLInputElement;
+    setFieldEdited((prev) => {
+      return {
+        ...prev,
+        [FORM_FIELD_IDENTIFIER_ADD_DETAILS]:
+          defaultValue?.additionalDetails !== value && !!value,
+      };
+    });
     dispatch(setSubmitAdditionalDetails(value));
   };
   const handleContactDetailsChange = (ev: React.FormEvent) => {
     const { value } = ev.target as HTMLInputElement;
+    setFieldEdited((prev) => {
+      return {
+        ...prev,
+        [FORM_FIELD_IDENTIFIER_CONTACT_DETAILS]:
+          defaultValue?.contactDetails !== value && !!value,
+      };
+    });
     dispatch(setSubmitContactDetails(value));
   };
-  const handleImageURLChange = async (url: string) => {
+  const handleImageURLChange = (url: string) => {
+    setFieldEdited((prev) => {
+      return {
+        ...prev,
+        [FORM_FIELD_IDENTIFIER_IMAGE]:
+          imageUploadRef.current?.getAttribute("data-edited") === "true",
+      };
+    });
     dispatch(
       setSubmitImageState({
         type: "URL",
@@ -230,10 +367,34 @@ const ItemSubmissionForm: React.FC = function () {
   };
   const handleContactMethodChange = (ev: React.FormEvent) => {
     const { value } = ev.target as HTMLInputElement;
+    const defaultContactMethodKey = defaultValue?.contactMethod;
+    const defaultContactMethod = defaultContactMethodKey
+      ? getArrayObjectKeyFromValue(
+          SUBMIT_FOUND_CONTACT_METHODS,
+          defaultContactMethodKey
+        )
+      : null;
+    setFieldEdited((prev) => {
+      return {
+        ...prev,
+        [FORM_FIELD_IDENTIFIER_CONTACT_METHOD]: defaultContactMethod !== value,
+      };
+    });
     dispatch(setSubmitContactMethod(value));
   };
   const handleCategoryChange = (ev: React.FormEvent) => {
     const { value } = ev.target as HTMLInputElement;
+    const defaultCategoryKey = defaultValue?.category;
+    const defaultCategory = defaultCategoryKey
+      ? getArrayObjectValueFromKey(SUBMIT_FOUND_CATEGORIES, defaultCategoryKey)
+      : null;
+
+    setFieldEdited((prev) => {
+      return {
+        ...prev,
+        [FORM_FIELD_IDENTIFIER_CATEGORY]: defaultCategory !== value,
+      };
+    });
     dispatch(setSubmitCategory(value));
   };
 
@@ -278,7 +439,7 @@ const ItemSubmissionForm: React.FC = function () {
   };
 
   const handleBack = () => {
-    if (submitType === "edit") return navigate(ROUTE_DASHBOARD_ITEMS);
+    if (isEdit) return navigate(ROUTE_DASHBOARD_ITEMS);
     navigate(ROUTE_SUBMIT_ITEM_TYPE);
   };
 
@@ -286,9 +447,7 @@ const ItemSubmissionForm: React.FC = function () {
     <form className="submit-item__form" onSubmit={handleSubmitForm}>
       <div className="submit-item__form--fields">
         <BackButtonText
-          message={
-            submitType === "edit" ? "Return to dashboard" : "Select item type"
-          }
+          message={isEdit ? "Return to dashboard" : "Select item type"}
           onClick={handleBack}
           className="submit-item__form--back"
         />
@@ -297,20 +456,22 @@ const ItemSubmissionForm: React.FC = function () {
           labelContent="Item Description"
           disabled={false}
           isInvalid={generateFormError(FORM_FIELD_IDENTIFIER_NAME)}
+          defaultValue={defaultValue?.name}
         />
         <DropdownButton
           dropdownName="submit-category"
           dropdownID="submit-category"
           options={SUBMIT_FOUND_CATEGORIES}
           onChange={handleCategoryChange}
-          selected={formInput.category}
           isInvalid={generateFormError(FORM_FIELD_IDENTIFIER_CATEGORY)}
+          selected={formInput.category}
         />
         <FormField
           onChange={handleLocationChange}
           labelContent="Location"
           disabled={false}
           isInvalid={generateFormError(FORM_FIELD_IDENTIFIER_LOCATION)}
+          defaultValue={defaultValue?.location}
         />
         <FormField
           onChange={handleDateChange}
@@ -318,6 +479,7 @@ const ItemSubmissionForm: React.FC = function () {
           type="date"
           disabled={false}
           isInvalid={generateFormError(FORM_FIELD_IDENTIFIER_DATE)}
+          defaultValue={defaultValue?.date}
         />
         <DropdownButton
           dropdownName="contact-method"
@@ -336,6 +498,7 @@ const ItemSubmissionForm: React.FC = function () {
               isInvalid={generateFormError(
                 FORM_FIELD_IDENTIFIER_CONTACT_DETAILS
               )}
+              defaultValue={defaultValue?.contactDetails}
             />
           )}
         <FormField
@@ -344,12 +507,15 @@ const ItemSubmissionForm: React.FC = function () {
           type="textarea"
           disabled={false}
           isInvalid={generateFormError(FORM_FIELD_IDENTIFIER_ADD_DETAILS)}
+          defaultValue={defaultValue?.additionalDetails}
         />
         <ButtonSubmit className="btn btn--primary" text="Submit" />
       </div>
       <UploadDragDrop
         className="submit-item__form--upload"
         onImageUpload={handleImageURLChange}
+        defaultValue={defaultValue?.image.url}
+        ref={imageUploadRef}
       />
     </form>
   );
