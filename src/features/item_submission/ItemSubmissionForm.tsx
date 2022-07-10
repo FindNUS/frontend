@@ -65,7 +65,6 @@ const ItemSubmissionForm: React.FC = function () {
   const formInput = useAppSelector(selectSubmitInput);
   const formInputStatus = useAppSelector(selectSubmitFormInputStatus);
   const [attemptedSubmit, setAttemptedSubmit] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
   const [searchParams] = useSearchParams();
   const submitType = searchParams.get(QUERY_SUBMIT_TYPE_KEY);
   const isLoggedIn = useAppSelector(selectAuthIsLoggedIn);
@@ -96,7 +95,11 @@ const ItemSubmissionForm: React.FC = function () {
   const defaultValue = useAppSelector(selectSubmitDefaultValue);
   useEffect(() => {
     dispatch(clearSubmitInputs());
-    if (!defaultValue) return;
+    if (!defaultValue || !isEdit) {
+      dispatch(setSubmitDefaultValue(undefined));
+      return;
+    }
+
     // set dropdown menu selected option
     const {
       category,
@@ -124,13 +127,6 @@ const ItemSubmissionForm: React.FC = function () {
     }
   }, []);
 
-  useEffect(() => {
-    return () => {
-      if (submitted) return;
-      // clear default values if user aborts item edit session
-      dispatch(setSubmitDefaultValue(undefined));
-    };
-  }, [submitted]);
   /**
    * Helper function to update form field corresponding to identifier in store.
    * @param identifier The string which corresponds to the form field.
@@ -287,7 +283,6 @@ const ItemSubmissionForm: React.FC = function () {
       dispatch(generateSubmitPayload());
     }
 
-    setSubmitted(true);
     navigate(
       `${ROUTE_SUBMIT_ITEM_POST}?${QUERY_SUBMIT_TYPE_VALUE_EDIT}=${isEdit}`
     );
