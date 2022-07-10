@@ -39,9 +39,9 @@ const VerifyOTPButton: React.FC<useFirebaseVerifyOTPProps> = function (
   useEffect(() => {
     if (authState.isEmpty) return;
 
-    const { lastLoginAt, createdAt, displayName } = authState;
+    const { lastLoginAt, createdAt, displayName, email } = authState;
     const firstTime =
-      +lastLoginAt - +createdAt < NEW_USER_THRESHOLD || !displayName;
+      +lastLoginAt - +createdAt < NEW_USER_THRESHOLD || !displayName || !email;
     if (firstTime) {
       // first time user (new account or no display name)
       dispatch(setAuthIsFirstTime(true));
