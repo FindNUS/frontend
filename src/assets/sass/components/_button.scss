@@ -20,6 +20,10 @@ $border-style: solid;
     cursor: pointer;
   }
 
+  &--disabled,
+  &--primary.btn--disabled,
+  &--secondary.btn--disabled,
+  &--tertiary.btn--disabled,
   &:disabled {
     background-color: $colour-disabled;
     border: $border-radius $border-style $colour-disabled;
