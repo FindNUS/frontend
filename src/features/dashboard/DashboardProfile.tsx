@@ -1,4 +1,3 @@
-import { Email } from "@mui/icons-material";
 import { User } from "firebase/auth";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
