@@ -19,7 +19,7 @@ const ItemSubmissionPost: React.FC = function () {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const isEditItem = searchParams.get(QUERY_SUBMIT_TYPE_VALUE_EDIT);
+  const isEditItem = searchParams.get(QUERY_SUBMIT_TYPE_VALUE_EDIT) === "true";
   const existingId = useAppSelector(selectSubmitDefaultValue)?.id;
   const payload = useAppSelector(selectSubmitPayload) || {};
   const editPayload = useAppSelector(selectSubmitEditPayload) || {};
