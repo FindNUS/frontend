@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import Button from "../../components/buttons/Button";
 import DropdownButton from "../../components/form/DropdownButton";
@@ -11,12 +11,19 @@ import {
   SUBMIT_FOUND_CATEGORIES,
 } from "../../constants";
 
-const PreviewFilter: React.FC = function () {
+interface PreviewFilterProps {
+  isPeek?: boolean;
+}
+
+const PreviewFilter: React.FC<PreviewFilterProps> = function (
+  props: PreviewFilterProps
+) {
   const location = useLocation();
   const navigate = useNavigate();
   const [selectedCategory, setSelectedCategory] =
     useState<string>(DROPDOWN_DEFAULT_KEY);
   const [itemsPerPage, setItemsPerPage] = useState(DEFAULT_ITEMS_PER_PAGE);
+  const { isPeek = false } = props;
 
   const handleCategoryChange = (ev: React.FormEvent) => {
     const { value } = ev.target as HTMLSelectElement;
@@ -41,6 +48,11 @@ const PreviewFilter: React.FC = function () {
     );
   };
 
+  // reset params in url to avoid mismatch in params and dropdown values
+  useEffect(() => {
+    handleResetFilter();
+  }, []);
+
   return (
     <section className="search-filter">
       <h4>Filter Items</h4>
@@ -52,14 +64,18 @@ const PreviewFilter: React.FC = function () {
           onChange={handleCategoryChange}
           selected={selectedCategory}
         />
-        <h5>Items per page</h5>
-        <DropdownButton
-          dropdownName="items-per-page"
-          dropdownID="items-per-page"
-          options={DROPDOWN_ITEMS_PER_PAGE}
-          onChange={handleItemsPerPageChange}
-          selected={itemsPerPage}
-        />
+        {isPeek && (
+          <>
+            <h5>Items per page</h5>
+            <DropdownButton
+              dropdownName="items-per-page"
+              dropdownID="items-per-page"
+              options={DROPDOWN_ITEMS_PER_PAGE}
+              onChange={handleItemsPerPageChange}
+              selected={itemsPerPage}
+            />
+          </>
+        )}
         {(selectedCategory !== DROPDOWN_DEFAULT_KEY ||
           itemsPerPage !== DEFAULT_ITEMS_PER_PAGE) && (
           <Button

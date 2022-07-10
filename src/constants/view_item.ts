@@ -21,10 +21,10 @@ export interface LNFItem {
   userID?: string;
 }
 
-export const DEFAULT_ITEMS_PER_PAGE = "25";
+export const DEFAULT_ITEMS_PER_PAGE = "10";
 export const DROPDOWN_ITEMS_PER_PAGE = [
   { key: "5", value: "5" },
-  { key: "10", value: "10" },
   { key: DEFAULT_ITEMS_PER_PAGE, value: DEFAULT_ITEMS_PER_PAGE },
+  { key: "25", value: "25" },
   { key: "50", value: "50" },
 ];

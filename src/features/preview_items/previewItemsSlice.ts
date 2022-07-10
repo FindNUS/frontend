@@ -1,25 +1,40 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { RootState } from "../../app/rootReducer";
 
 interface PreviewItemsState {
-  type: "dashboard" | "peek" | "search" | undefined;
-  loading: boolean;
+  pageNumber: number;
+  isLastPage: boolean;
 }
 
 const initialPreviewItemsState: PreviewItemsState = {
-  type: undefined,
-  loading: false,
+  pageNumber: 1,
+  isLastPage: false,
 };
 
 export const previewItemsSlice = createSlice({
   name: "previewItems",
   initialState: initialPreviewItemsState,
   reducers: {
-    setGetLoading(state, action: PayloadAction<boolean>) {
-      state.loading = action.payload;
+    setPreviewPageNumber(state, action: PayloadAction<number>) {
+      state.pageNumber = action.payload;
+    },
+    setPreviewLastPage(state, action: PayloadAction<boolean>) {
+      state.isLastPage = action.payload;
+      state.isLastPage = action.payload;
+    },
+    resetPreview(state) {
+      state.pageNumber = initialPreviewItemsState.pageNumber;
+      state.isLastPage = initialPreviewItemsState.isLastPage;
     },
   },
 });
 
-export const { setGetLoading } = previewItemsSlice.actions;
+export const { setPreviewPageNumber, setPreviewLastPage, resetPreview } =
+  previewItemsSlice.actions;
+
+export const selectPreviewPageNumber = (state: RootState) =>
+  state.previewItem.pageNumber;
+export const selectPreviewLastPage = (state: RootState) =>
+  state.previewItem.isLastPage;
 
 export default previewItemsSlice.reducer;

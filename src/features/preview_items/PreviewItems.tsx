@@ -2,15 +2,16 @@ import React, { useEffect } from "react";
 import ItemCard from "./ItemCard";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import {
+  APIItemGET,
   DROPDOWN_DEFAULT_KEY,
   ENDPOINT_PEEK,
   ENDPOINT_SEARCH,
   IMGUR_THUMBNAIL_MEDUIM,
-  PEEK_DEFAULT_LIMIT,
   QUERY_SEARCH_DASHBOARD,
   QUERY_SEARCH_IS_PEEK,
   QUERY_SEARCH_ITEM_ID,
   QUERY_VIEW_ITEM_CATEGORY,
+  QUERY_VIEW_ITEM_PER_PAGE,
   ROUTE_VIEW_ITEM,
 } from "../../constants";
 import {
@@ -23,6 +24,14 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import Loading from "../../components/Loading";
 import getImgurThumbnailUrl from "./getImgurThumbnailUrl";
 import useAxios from "../../hooks/useAxios";
+import PreviewPagination from "./PreviewPagination";
+import {
+  resetPreview,
+  selectPreviewLastPage,
+  selectPreviewPageNumber,
+  setPreviewLastPage,
+  setPreviewPageNumber,
+} from "./previewItemsSlice";
 
 type rawPreviewItemsType = {
   Name: string;
@@ -46,11 +55,11 @@ interface previewItemType {
 
 /**
  * Parses the raw string data and converts it into an object
- * @param response The raw JSON data from API GET
+ * @param currentResponse The raw JSON data from API GET
  * @returns Object with camelCase keys
  */
-const parsePreviewItems = (response: rawPreviewItemsType) => {
-  return response.map((item) => {
+const parsePreviewItems = (currentResponse: rawPreviewItemsType) => {
+  return currentResponse.map((item) => {
     const {
       Name: name,
       Id: id,
@@ -86,31 +95,42 @@ const PreviewItems: React.FC<PreviewItemsProps> = function (
   const queryResults = useAppSelector(selectQueryResults);
   const [searchParams] = useSearchParams();
   const filterCategory = searchParams.get(QUERY_VIEW_ITEM_CATEGORY);
+  const itemsPerPage = searchParams.get(QUERY_VIEW_ITEM_PER_PAGE);
   const isValidFilter =
     filterCategory && filterCategory !== DROPDOWN_DEFAULT_KEY;
   const isPeek = props.isPeek ?? false;
+  const pageNumber = useAppSelector(selectPreviewPageNumber);
+  const isLastPage = useAppSelector(selectPreviewLastPage);
   const dashboard = !!props.dashboard;
-  const url =
+
+  const currentUrl =
     props.url ||
     (isPeek
-      ? `${ENDPOINT_PEEK}?limit=${PEEK_DEFAULT_LIMIT}${
+      ? `${ENDPOINT_PEEK}?limit=${itemsPerPage}${
           isValidFilter ? `&category=${filterCategory}` : ""
+        }${
+          pageNumber > 1
+            ? `&offset=${(pageNumber - 1) * +(itemsPerPage as string)}`
+            : ""
         }`
       : `${ENDPOINT_SEARCH}?query=${query}`);
 
-  const [response, error, isLoading] = useAxios({ method: "GET", url });
+  const [currentResponse, currentError, currentIsLoading] = useAxios({
+    method: "GET",
+    url: currentUrl,
+  });
 
   useEffect(() => {
-    if (isLoading) {
+    if (currentIsLoading) {
       dispatch(setSearchLoading(true));
       return;
     }
 
-    if (response === undefined) {
+    if (currentResponse === undefined) {
       dispatch(setQueryResults([]));
       return;
     }
-    const items = parsePreviewItems(response.data);
+    const items = parsePreviewItems(currentResponse.data);
 
     if (!isPeek && isValidFilter)
       // manual item filtering by category for search results
@@ -122,7 +142,7 @@ const PreviewItems: React.FC<PreviewItemsProps> = function (
     else dispatch(setQueryResults(items));
 
     dispatch(setSearchLoading(false));
-  }, [isLoading, response, filterCategory]);
+  }, [currentIsLoading, currentResponse, filterCategory]);
 
   const handleItemClick = (ev: React.MouseEvent) => {
     const item = ev.currentTarget;
@@ -132,18 +152,52 @@ const PreviewItems: React.FC<PreviewItemsProps> = function (
     );
   };
 
-  const errorMessage = error?.response as { data: string };
+  const currentErrorMessage = currentError?.response as { data: string };
+
+  // pagination
+  const handlePageBack = () => {
+    dispatch(setPreviewPageNumber(pageNumber - 1));
+    if (isLastPage) dispatch(setPreviewLastPage(false));
+  };
+  const handlePageNext = () => {
+    dispatch(setPreviewPageNumber(pageNumber + 1));
+  };
+
+  // Check if next page exists
+  const nextUrl = `${ENDPOINT_PEEK}?limit=${itemsPerPage}${
+    isValidFilter ? `&category=${filterCategory}` : ""
+  }&offset=${pageNumber * +(itemsPerPage as string)}`;
+
+  const [nextResponse, nextError, nextIsLoading] = useAxios({
+    method: isPeek ? "GET" : undefined,
+    url: nextUrl,
+  });
+
+  // check if next page has items
+  useEffect(() => {
+    if (nextIsLoading || !nextResponse) return;
+    if (nextError) {
+      dispatch(setPreviewLastPage(true));
+    }
+    const data = nextResponse.data as Array<APIItemGET>;
+    if (data.length === 0) dispatch(setPreviewLastPage(true));
+  }, [nextResponse, nextError, nextIsLoading]);
+
+  // reset pagination on filter update
+  useEffect(() => {
+    dispatch(resetPreview());
+  }, [itemsPerPage]);
 
   return (
     <section className="search-results-container">
       <div className="search-results">
-        {isLoading && <Loading />}
-        {!isLoading && !error && queryResults.length === 0 && (
+        {currentIsLoading && <Loading />}
+        {!currentIsLoading && !currentError && queryResults.length === 0 && (
           <h4>
             No items found. {dashboard && "Submit a lost item to see it here."}
           </h4>
         )}
-        {!isLoading && !error && (
+        {!currentIsLoading && !currentError && (
           <ul className="search-results__list">
             {queryResults.map((item: previewItemType) => {
               const { name, id, date, location, category } = item;
@@ -171,13 +225,21 @@ const PreviewItems: React.FC<PreviewItemsProps> = function (
             })}
           </ul>
         )}
-        {error && (
+        {currentError && (
           <div className="search__error">
             <h2>Error</h2>
-            <span>{JSON.stringify(errorMessage.data)}</span>
+            <span>{JSON.stringify(currentErrorMessage.data)}</span>
           </div>
         )}
       </div>
+      {isPeek && !currentIsLoading && !currentError && (
+        <PreviewPagination
+          pageNumber={pageNumber}
+          isLast={isLastPage}
+          handleBack={handlePageBack}
+          handleNext={handlePageNext}
+        />
+      )}
     </section>
   );
 };
