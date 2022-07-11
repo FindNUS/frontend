@@ -44,7 +44,7 @@ const PreviewFilter: React.FC<PreviewFilterProps> = function (
     setSelectedCategory(DROPDOWN_DEFAULT_KEY);
     setItemsPerPage(DEFAULT_ITEMS_PER_PAGE);
     navigate(
-      `${location.pathname}?${QUERY_VIEW_ITEM_CATEGORY}=${DROPDOWN_DEFAULT_KEY}&${QUERY_VIEW_ITEM_PER_PAGE}=${DEFAULT_ITEMS_PER_PAGE}`
+      `${location.pathname}?${QUERY_VIEW_ITEM_CATEGORY}=${DROPDOWN_DEFAULT_KEY}&${QUERY_VIEW_ITEM_PER_PAGE}=${itemsPerPage}`
     );
   };
 
@@ -64,9 +64,17 @@ const PreviewFilter: React.FC<PreviewFilterProps> = function (
           onChange={handleCategoryChange}
           selected={selectedCategory}
         />
+
+        {selectedCategory !== DROPDOWN_DEFAULT_KEY && (
+          <Button
+            class="btn btn--secondary"
+            text="Reset filters"
+            onClick={handleResetFilter}
+          />
+        )}
         {isPeek && (
           <>
-            <h5>Items per page</h5>
+            <h4>Items per page</h4>
             <DropdownButton
               dropdownName="items-per-page"
               dropdownID="items-per-page"
@@ -75,14 +83,6 @@ const PreviewFilter: React.FC<PreviewFilterProps> = function (
               selected={itemsPerPage}
             />
           </>
-        )}
-        {(selectedCategory !== DROPDOWN_DEFAULT_KEY ||
-          itemsPerPage !== DEFAULT_ITEMS_PER_PAGE) && (
-          <Button
-            class="btn btn--secondary"
-            text="Reset filters"
-            onClick={handleResetFilter}
-          />
         )}
       </form>
     </section>
