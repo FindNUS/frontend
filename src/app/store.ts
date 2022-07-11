@@ -1,4 +1,4 @@
-import { configureStore } from "@reduxjs/toolkit";
+import { configureStore, PreloadedState } from "@reduxjs/toolkit";
 import rootReducer from "./rootReducer";
 import {
   getFirebase,
@@ -6,7 +6,9 @@ import {
 } from "react-redux-firebase";
 import { constants as rfConstants } from "redux-firestore";
 
-export const createAppStore = () =>
+export const createAppStore = (
+  preloadedState?: PreloadedState<ReducerRootState>
+) =>
   configureStore({
     reducer: rootReducer,
     middleware: (getDefaultMiddleware) =>
@@ -29,6 +31,7 @@ export const createAppStore = () =>
           },
         },
       }),
+    preloadedState,
   });
 
 const store = createAppStore();
@@ -37,5 +40,7 @@ export default store;
 // Infer the `RootState` and `AppDispatch` types from the store itself
 export type StoreType = typeof store;
 export type RootState = ReturnType<typeof store.getState>;
+export type ReducerRootState = ReturnType<typeof rootReducer>;
 // Inferred type: {posts: PostsState, comments: CommentsState, users: UsersState}
 export type AppDispatch = typeof store.dispatch;
+export type AppStore = ReturnType<typeof createAppStore>;
