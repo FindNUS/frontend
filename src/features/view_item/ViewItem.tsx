@@ -1,14 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {
   ENDPOINT_ITEM,
   APIItemGET,
-  QUERY_SEARCH_ITEM_ID,
   ROUTE_SEARCH,
   LNFItem,
-  QUERY_SEARCH_IS_PEEK,
   ROUTE_HOME,
-  QUERY_SEARCH_DASHBOARD,
   ROUTE_DASHBOARD_ITEMS,
 } from "../../constants";
 import processItemResponseFromAPI from "../../utils/processItemResponseFromAPI";
@@ -16,7 +13,11 @@ import LostAndFoundItem from "./LostAndFoundItem";
 import BackButtonText from "../../components/buttons/BackButtonText";
 import { firebaseAuth } from "../../app/firebase";
 import { useAppDispatch, useAppSelector } from "../../hooks";
-import { selectViewLoading, updateViewStore } from "./viewItemSlice";
+import {
+  selectViewItemSlice,
+  selectViewLoading,
+  updateViewStore,
+} from "./viewItemSlice";
 import PopupMessage from "../../components/PopupMessage";
 import Loading from "../../components/Loading";
 import ItemCRUDOptions from "./ItemCRUDOptions";
@@ -25,20 +26,25 @@ import useAxios from "../../hooks/useAxios";
 const ViewItem: React.FC = function () {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-  const itemId = searchParams.get(QUERY_SEARCH_ITEM_ID);
-  const fromPeek = searchParams.get(QUERY_SEARCH_IS_PEEK) === "true";
-  const fromDashboard = searchParams.get(QUERY_SEARCH_DASHBOARD) === "true";
-
+  const viewItemSlice = useAppSelector(selectViewItemSlice);
+  const fromDashboard = viewItemSlice.from === "dashboard";
+  const fromPeek = viewItemSlice.from === "peek";
   const currentUser = firebaseAuth.currentUser?.uid;
+
+  useEffect(() => {
+    if (!viewItemSlice.id) {
+      navigate(ROUTE_HOME);
+      return;
+    }
+  }, []);
 
   const params = new URLSearchParams(
     fromDashboard
       ? {
-          Id: itemId as string,
+          Id: viewItemSlice.id as string,
           User_id: currentUser as string,
         }
-      : { Id: itemId as string }
+      : { Id: viewItemSlice.id as string }
   );
 
   const url = `${ENDPOINT_ITEM}?${params.toString()}`;

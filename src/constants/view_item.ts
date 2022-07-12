@@ -1,5 +1,3 @@
-export const QUERY_VIEW_ITEM_CATEGORY = "category";
-export const QUERY_VIEW_ITEM_PER_PAGE = "items";
 export const IMGUR_THUMBNAIL_SQUARE_SMALL = "s";
 export const IMGUR_THUMBNAIL_SQUARE_BIG = "b";
 export const IMGUR_THUMBNAIL_SMALL = "t";

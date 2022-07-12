@@ -1,15 +1,19 @@
-import React, { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import React, { useEffect } from "react";
 import Button from "../../components/buttons/Button";
 import DropdownButton from "../../components/form/DropdownButton";
 import {
-  DEFAULT_ITEMS_PER_PAGE,
   DROPDOWN_DEFAULT_KEY,
   DROPDOWN_ITEMS_PER_PAGE,
-  QUERY_VIEW_ITEM_CATEGORY,
-  QUERY_VIEW_ITEM_PER_PAGE,
   SUBMIT_FOUND_CATEGORIES,
 } from "../../constants";
+import { useAppDispatch, useAppSelector } from "../../hooks";
+import {
+  resetPreview,
+  selectPreviewCategory,
+  selectPreviewItemsPerPage,
+  setPreviewCategory,
+  setPreviewItemsPerPage,
+} from "./previewItemsSlice";
 
 interface PreviewFilterProps {
   isPeek?: boolean;
@@ -18,42 +22,22 @@ interface PreviewFilterProps {
 const PreviewFilter: React.FC<PreviewFilterProps> = function (
   props: PreviewFilterProps
 ) {
-  const location = useLocation();
-  const navigate = useNavigate();
-  const [selectedCategory, setSelectedCategory] =
-    useState<string>(DROPDOWN_DEFAULT_KEY);
-  const [itemsPerPage, setItemsPerPage] = useState(DEFAULT_ITEMS_PER_PAGE);
+  const dispatch = useAppDispatch();
+  const selectedCategory = useAppSelector(selectPreviewCategory);
+  const itemsPerPage = useAppSelector(selectPreviewItemsPerPage);
   const { isPeek = false } = props;
 
   const handleCategoryChange = (ev: React.FormEvent) => {
     const { value } = ev.target as HTMLSelectElement;
-    setSelectedCategory(value);
-    const params = new URLSearchParams({
-      [QUERY_VIEW_ITEM_CATEGORY]: value,
-      [QUERY_VIEW_ITEM_PER_PAGE]: itemsPerPage,
-    });
-
-    navigate(`${location.pathname}?${params.toString()}`);
+    dispatch(setPreviewCategory(value));
   };
   const handleItemsPerPageChange = (ev: React.FormEvent) => {
     const { value } = ev.target as HTMLSelectElement;
-    setItemsPerPage(value);
-    const params = new URLSearchParams({
-      [QUERY_VIEW_ITEM_CATEGORY]: selectedCategory,
-      [QUERY_VIEW_ITEM_PER_PAGE]: value,
-    });
-
-    navigate(`${location.pathname}?${params.toString()}`);
+    dispatch(setPreviewItemsPerPage(+value));
   };
 
   const handleResetFilter = () => {
-    setSelectedCategory(DROPDOWN_DEFAULT_KEY);
-    const params = new URLSearchParams({
-      [QUERY_VIEW_ITEM_CATEGORY]: DROPDOWN_DEFAULT_KEY,
-      [QUERY_VIEW_ITEM_PER_PAGE]: itemsPerPage,
-    });
-
-    navigate(`${location.pathname}?${params.toString()}`);
+    dispatch(resetPreview());
   };
 
   // reset params in url to avoid mismatch in params and dropdown values
@@ -88,7 +72,7 @@ const PreviewFilter: React.FC<PreviewFilterProps> = function (
               dropdownID="items-per-page"
               options={DROPDOWN_ITEMS_PER_PAGE}
               onChange={handleItemsPerPageChange}
-              selected={itemsPerPage}
+              selected={`${itemsPerPage}`}
             />
           </>
         )}

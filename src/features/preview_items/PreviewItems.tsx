@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import ItemCard from "./ItemCard";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import {
@@ -7,11 +7,6 @@ import {
   ENDPOINT_PEEK,
   ENDPOINT_SEARCH,
   IMGUR_THUMBNAIL_MEDUIM,
-  QUERY_SEARCH_DASHBOARD,
-  QUERY_SEARCH_IS_PEEK,
-  QUERY_SEARCH_ITEM_ID,
-  QUERY_VIEW_ITEM_CATEGORY,
-  QUERY_VIEW_ITEM_PER_PAGE,
   ROUTE_VIEW_ITEM,
 } from "../../constants";
 import {
@@ -20,18 +15,18 @@ import {
   setQueryResults,
   setSearchLoading,
 } from "../search/searchSlice";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Loading from "../../components/Loading";
 import getImgurThumbnailUrl from "./getImgurThumbnailUrl";
 import useAxios from "../../hooks/useAxios";
 import PreviewPagination from "./PreviewPagination";
 import {
-  resetPreview,
-  selectPreviewLastPage,
-  selectPreviewPageNumber,
+  resetPreviewPagination,
+  selectPreviewSlice,
   setPreviewLastPage,
   setPreviewPageNumber,
 } from "./previewItemsSlice";
+import { setViewItemFrom, setViewItemId } from "../view_item/viewItemSlice";
 
 type rawPreviewItemsType = {
   Name: string;
@@ -93,33 +88,47 @@ const PreviewItems: React.FC<PreviewItemsProps> = function (
   const navigate = useNavigate();
   const query = useAppSelector(selectQuery);
   const queryResults = useAppSelector(selectQueryResults);
-  const [searchParams] = useSearchParams();
-  const filterCategory = searchParams.get(QUERY_VIEW_ITEM_CATEGORY);
-  const itemsPerPage = searchParams.get(QUERY_VIEW_ITEM_PER_PAGE);
-  const isValidFilter =
-    filterCategory && filterCategory !== DROPDOWN_DEFAULT_KEY;
   const isPeek = props.isPeek ?? false;
-  const pageNumber = useAppSelector(selectPreviewPageNumber);
-  const isLastPage = useAppSelector(selectPreviewLastPage);
   const dashboard = !!props.dashboard;
+
+  // update store on render
+  useEffect(() => {
+    dispatch(
+      setViewItemFrom(isPeek ? "peek" : dashboard ? "dashboard" : "search")
+    );
+  }, []);
+  const previewSlice = useAppSelector(selectPreviewSlice);
+  const {
+    itemsPerPage,
+    category: filterCategory,
+    pageNumber,
+    offset,
+    isLastPage,
+  } = previewSlice;
 
   const currentUrlParams = new URLSearchParams(
     isPeek
-      ? {
-          ...(itemsPerPage && { limit: itemsPerPage }),
-          ...(isValidFilter && { category: filterCategory }),
-          ...(pageNumber > 1 && {
-            offset: `${(pageNumber - 1) * +(itemsPerPage as string)}`,
+      ? // peek
+        {
+          limit: `${itemsPerPage}`,
+          ...(filterCategory !== DROPDOWN_DEFAULT_KEY && {
+            category: filterCategory,
           }),
+          ...(pageNumber > 1 && { offset: `${offset}` }),
         }
-      : { query: query }
+      : // search
+        { query: query }
   );
 
-  const currentUrl =
-    props.url ||
-    `${
-      isPeek ? ENDPOINT_PEEK : ENDPOINT_SEARCH
-    }?${currentUrlParams.toString()}`;
+  const [currentUrl, setCurrentUrl] = useState<string>();
+  useEffect(() => {
+    setCurrentUrl(
+      props.url ||
+        `${
+          isPeek ? ENDPOINT_PEEK : ENDPOINT_SEARCH
+        }?${currentUrlParams.toString()}`
+    );
+  }, [previewSlice]);
 
   const [currentResponse, currentError, currentIsLoading] = useAxios({
     method: "GET",
@@ -138,7 +147,7 @@ const PreviewItems: React.FC<PreviewItemsProps> = function (
     }
     const items = parsePreviewItems(currentResponse.data);
 
-    if (!isPeek && isValidFilter)
+    if (!isPeek && filterCategory !== DROPDOWN_DEFAULT_KEY)
       // manual item filtering by category for search results
       dispatch(
         setQueryResults(
@@ -153,14 +162,9 @@ const PreviewItems: React.FC<PreviewItemsProps> = function (
   const handleItemClick = (ev: React.MouseEvent) => {
     const item = ev.currentTarget;
     const id = item.getAttribute("data-id");
-
-    const params = new URLSearchParams({
-      ...(id && { [QUERY_SEARCH_ITEM_ID]: id }),
-      [QUERY_SEARCH_IS_PEEK]: String(isPeek),
-      [QUERY_SEARCH_DASHBOARD]: String(dashboard),
-    });
-
-    navigate(`${ROUTE_VIEW_ITEM}?${params.toString()}`);
+    if (!id) return;
+    dispatch(setViewItemId(id));
+    navigate(ROUTE_VIEW_ITEM);
   };
 
   const currentErrorMessage = currentError?.response as { data: string };
@@ -176,9 +180,11 @@ const PreviewItems: React.FC<PreviewItemsProps> = function (
 
   // Check if next page exists
   const nextUrlParams = new URLSearchParams({
-    ...(itemsPerPage && { limit: itemsPerPage }),
-    ...(isValidFilter && { category: filterCategory }),
-    offset: `${pageNumber * +(itemsPerPage as string)}`,
+    limit: `${itemsPerPage}`,
+    ...(filterCategory !== DROPDOWN_DEFAULT_KEY && {
+      category: filterCategory,
+    }),
+    offset: `${offset + itemsPerPage}`,
   });
 
   const nextUrl = `${ENDPOINT_PEEK}?${nextUrlParams.toString()}`;
@@ -200,7 +206,7 @@ const PreviewItems: React.FC<PreviewItemsProps> = function (
 
   // reset pagination on filter update
   useEffect(() => {
-    dispatch(resetPreview());
+    dispatch(resetPreviewPagination());
   }, [itemsPerPage]);
 
   return (
