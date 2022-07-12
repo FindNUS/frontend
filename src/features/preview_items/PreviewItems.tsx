@@ -103,17 +103,23 @@ const PreviewItems: React.FC<PreviewItemsProps> = function (
   const isLastPage = useAppSelector(selectPreviewLastPage);
   const dashboard = !!props.dashboard;
 
+  const currentUrlParams = new URLSearchParams(
+    isPeek
+      ? {
+          ...(itemsPerPage && { limit: itemsPerPage }),
+          ...(isValidFilter && { category: filterCategory }),
+          ...(pageNumber > 1 && {
+            offset: `${(pageNumber - 1) * +(itemsPerPage as string)}`,
+          }),
+        }
+      : { query: query }
+  );
+
   const currentUrl =
     props.url ||
-    (isPeek
-      ? `${ENDPOINT_PEEK}?limit=${itemsPerPage}${
-          isValidFilter ? `&category=${filterCategory}` : ""
-        }${
-          pageNumber > 1
-            ? `&offset=${(pageNumber - 1) * +(itemsPerPage as string)}`
-            : ""
-        }`
-      : `${ENDPOINT_SEARCH}?query=${query}`);
+    `${
+      isPeek ? ENDPOINT_PEEK : ENDPOINT_SEARCH
+    }?${currentUrlParams.toString()}`;
 
   const [currentResponse, currentError, currentIsLoading] = useAxios({
     method: "GET",
@@ -147,9 +153,14 @@ const PreviewItems: React.FC<PreviewItemsProps> = function (
   const handleItemClick = (ev: React.MouseEvent) => {
     const item = ev.currentTarget;
     const id = item.getAttribute("data-id");
-    navigate(
-      `${ROUTE_VIEW_ITEM}?${QUERY_SEARCH_ITEM_ID}=${id}&${QUERY_SEARCH_IS_PEEK}=${isPeek}&${QUERY_SEARCH_DASHBOARD}=${dashboard}`
-    );
+
+    const params = new URLSearchParams({
+      ...(id && { [QUERY_SEARCH_ITEM_ID]: id }),
+      [QUERY_SEARCH_IS_PEEK]: String(isPeek),
+      [QUERY_SEARCH_DASHBOARD]: String(dashboard),
+    });
+
+    navigate(`${ROUTE_VIEW_ITEM}?${params.toString()}`);
   };
 
   const currentErrorMessage = currentError?.response as { data: string };
@@ -164,9 +175,13 @@ const PreviewItems: React.FC<PreviewItemsProps> = function (
   };
 
   // Check if next page exists
-  const nextUrl = `${ENDPOINT_PEEK}?limit=${itemsPerPage}${
-    isValidFilter ? `&category=${filterCategory}` : ""
-  }&offset=${pageNumber * +(itemsPerPage as string)}`;
+  const nextUrlParams = new URLSearchParams({
+    ...(itemsPerPage && { limit: itemsPerPage }),
+    ...(isValidFilter && { category: filterCategory }),
+    offset: `${pageNumber * +(itemsPerPage as string)}`,
+  });
+
+  const nextUrl = `${ENDPOINT_PEEK}?${nextUrlParams.toString()}`;
 
   const [nextResponse, nextError, nextIsLoading] = useAxios({
     method: isPeek ? "GET" : undefined,

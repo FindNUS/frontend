@@ -32,9 +32,16 @@ const ViewItem: React.FC = function () {
 
   const currentUser = firebaseAuth.currentUser?.uid;
 
-  const url = fromDashboard
-    ? `${ENDPOINT_ITEM}?Id=${itemId}&User_id=${currentUser}`
-    : `${ENDPOINT_ITEM}?Id=${itemId}`;
+  const params = new URLSearchParams(
+    fromDashboard
+      ? {
+          Id: itemId as string,
+          User_id: currentUser as string,
+        }
+      : { Id: itemId as string }
+  );
+
+  const url = `${ENDPOINT_ITEM}?${params.toString()}`;
 
   const [response, error, loading] = useAxios({ method: "GET", url });
   const [item, setItem] = useState<LNFItem>();

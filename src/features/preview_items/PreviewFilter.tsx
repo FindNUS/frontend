@@ -28,24 +28,32 @@ const PreviewFilter: React.FC<PreviewFilterProps> = function (
   const handleCategoryChange = (ev: React.FormEvent) => {
     const { value } = ev.target as HTMLSelectElement;
     setSelectedCategory(value);
-    navigate(
-      `${location.pathname}?${QUERY_VIEW_ITEM_CATEGORY}=${value}&${QUERY_VIEW_ITEM_PER_PAGE}=${itemsPerPage}`
-    );
+    const params = new URLSearchParams({
+      [QUERY_VIEW_ITEM_CATEGORY]: value,
+      [QUERY_VIEW_ITEM_PER_PAGE]: itemsPerPage,
+    });
+
+    navigate(`${location.pathname}?${params.toString()}`);
   };
   const handleItemsPerPageChange = (ev: React.FormEvent) => {
     const { value } = ev.target as HTMLSelectElement;
     setItemsPerPage(value);
-    navigate(
-      `${location.pathname}?${QUERY_VIEW_ITEM_CATEGORY}=${selectedCategory}&${QUERY_VIEW_ITEM_PER_PAGE}=${value}`
-    );
+    const params = new URLSearchParams({
+      [QUERY_VIEW_ITEM_CATEGORY]: selectedCategory,
+      [QUERY_VIEW_ITEM_PER_PAGE]: value,
+    });
+
+    navigate(`${location.pathname}?${params.toString()}`);
   };
 
   const handleResetFilter = () => {
     setSelectedCategory(DROPDOWN_DEFAULT_KEY);
-    setItemsPerPage(DEFAULT_ITEMS_PER_PAGE);
-    navigate(
-      `${location.pathname}?${QUERY_VIEW_ITEM_CATEGORY}=${DROPDOWN_DEFAULT_KEY}&${QUERY_VIEW_ITEM_PER_PAGE}=${itemsPerPage}`
-    );
+    const params = new URLSearchParams({
+      [QUERY_VIEW_ITEM_CATEGORY]: DROPDOWN_DEFAULT_KEY,
+      [QUERY_VIEW_ITEM_PER_PAGE]: itemsPerPage,
+    });
+
+    navigate(`${location.pathname}?${params.toString()}`);
   };
 
   // reset params in url to avoid mismatch in params and dropdown values
