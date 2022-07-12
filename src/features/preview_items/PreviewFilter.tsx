@@ -1,17 +1,24 @@
 import React, { useEffect } from "react";
 import Button from "../../components/buttons/Button";
 import DropdownButton from "../../components/form/DropdownButton";
+import FormField from "../../components/form/FormField";
+import PopupMessage from "../../components/PopupMessage";
 import {
   DROPDOWN_DEFAULT_KEY,
   DROPDOWN_ITEMS_PER_PAGE,
+  OLDEST_ALLOWED_DATE,
   SUBMIT_FOUND_CATEGORIES,
 } from "../../constants";
 import { useAppDispatch, useAppSelector } from "../../hooks";
+import getDateInputValue from "../../utils/getDateInputValue";
 import {
   resetPreview,
   selectPreviewCategory,
+  selectPreviewDate,
   selectPreviewItemsPerPage,
   setPreviewCategory,
+  setPreviewDateEnd,
+  setPreviewDateStart,
   setPreviewItemsPerPage,
 } from "./previewItemsSlice";
 
@@ -26,6 +33,7 @@ const PreviewFilter: React.FC<PreviewFilterProps> = function (
   const selectedCategory = useAppSelector(selectPreviewCategory);
   const itemsPerPage = useAppSelector(selectPreviewItemsPerPage);
   const { isPeek = false } = props;
+  const dateFilter = useAppSelector(selectPreviewDate);
 
   const handleCategoryChange = (ev: React.FormEvent) => {
     const { value } = ev.target as HTMLSelectElement;
@@ -40,7 +48,17 @@ const PreviewFilter: React.FC<PreviewFilterProps> = function (
     dispatch(resetPreview());
   };
 
-  // reset params in url to avoid mismatch in params and dropdown values
+  const handleStartDateChange = (ev: React.FormEvent) => {
+    const { value } = ev.target as HTMLInputElement;
+    dispatch(setPreviewDateStart(value));
+  };
+
+  const handleEndDateChange = (ev: React.FormEvent) => {
+    const { value } = ev.target as HTMLInputElement;
+    dispatch(setPreviewDateEnd(value));
+  };
+
+  // reset previous filters
   useEffect(() => {
     handleResetFilter();
   }, []);
@@ -56,8 +74,31 @@ const PreviewFilter: React.FC<PreviewFilterProps> = function (
           onChange={handleCategoryChange}
           selected={selectedCategory}
         />
-
-        {selectedCategory !== DROPDOWN_DEFAULT_KEY && (
+        {dateFilter.isInvalid && (
+          <PopupMessage
+            status="error"
+            message="End date must not be earlier than start!"
+          />
+        )}
+        <FormField
+          onChange={handleStartDateChange}
+          labelContent="Start Date"
+          type="date"
+          disabled={false}
+          value={dateFilter.start}
+          dateMin={getDateInputValue(OLDEST_ALLOWED_DATE)}
+          dateMax={getDateInputValue(new Date())}
+        />
+        <FormField
+          onChange={handleEndDateChange}
+          labelContent="End Date"
+          type="date"
+          disabled={false}
+          value={dateFilter.end}
+          dateMin={getDateInputValue(OLDEST_ALLOWED_DATE)}
+          dateMax={getDateInputValue(new Date())}
+        />
+        {(selectedCategory !== DROPDOWN_DEFAULT_KEY || dateFilter.edited) && (
           <Button
             class="btn btn--secondary"
             text="Reset filters"

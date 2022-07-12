@@ -22,6 +22,7 @@ import useAxios from "../../hooks/useAxios";
 import PreviewPagination from "./PreviewPagination";
 import {
   resetPreviewPagination,
+  selectPreviewDate,
   selectPreviewSlice,
   setPreviewLastPage,
   setPreviewPageNumber,
@@ -106,6 +107,7 @@ const PreviewItems: React.FC<PreviewItemsProps> = function (
     isLastPage,
   } = previewSlice;
 
+  const dateFilter = useAppSelector(selectPreviewDate);
   const currentUrlParams = new URLSearchParams(
     isPeek
       ? // peek
@@ -115,6 +117,8 @@ const PreviewItems: React.FC<PreviewItemsProps> = function (
             category: filterCategory,
           }),
           ...(pageNumber > 1 && { offset: `${offset}` }),
+          startdate: new Date(dateFilter.start).toISOString(),
+          enddate: new Date(dateFilter.end).toISOString(),
         }
       : // search
         { query: query }
@@ -184,6 +188,8 @@ const PreviewItems: React.FC<PreviewItemsProps> = function (
     ...(filterCategory !== DROPDOWN_DEFAULT_KEY && {
       category: filterCategory,
     }),
+    startdate: new Date(dateFilter.start).toISOString(),
+    enddate: new Date(dateFilter.end).toISOString(),
     offset: `${offset + itemsPerPage}`,
   });
 

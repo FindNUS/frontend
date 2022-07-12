@@ -1,6 +1,8 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../../app/rootReducer";
 import { DEFAULT_ITEMS_PER_PAGE, DROPDOWN_DEFAULT_KEY } from "../../constants";
+import { OLDEST_ALLOWED_DATE } from "../../constants";
+import getDateInputValue from "../../utils/getDateInputValue";
 
 interface PreviewItemsState {
   pageNumber: number;
@@ -10,6 +12,12 @@ interface PreviewItemsState {
   itemsPerPage: number;
   offset: number;
   query: string | undefined;
+  dateRange: {
+    end: string;
+    start: string;
+    isInvalid: boolean;
+    edited: boolean;
+  };
 }
 
 const initialPreviewItemsState: PreviewItemsState = {
@@ -20,6 +28,12 @@ const initialPreviewItemsState: PreviewItemsState = {
   itemsPerPage: +DEFAULT_ITEMS_PER_PAGE,
   offset: 0,
   query: undefined,
+  dateRange: {
+    end: getDateInputValue(new Date()),
+    start: getDateInputValue(OLDEST_ALLOWED_DATE),
+    isInvalid: false,
+    edited: false,
+  },
 };
 
 export const previewItemsSlice = createSlice({
@@ -49,7 +63,30 @@ export const previewItemsSlice = createSlice({
     resetPreviewPagination(state) {
       state.isLastPage = initialPreviewItemsState.isLastPage;
       state.offset = initialPreviewItemsState.offset;
-      state.pageNumber = initialPreviewItemsState.pageNumber;
+    },
+    setPreviewDateStart(state, action: PayloadAction<string>) {
+      const currentEnd = new Date(state.dateRange.end);
+      const newStart = new Date(action.payload);
+      if (currentEnd.getTime() < newStart.getTime()) {
+        // do not update start date if invalid
+        state.dateRange.isInvalid = true;
+        return;
+      }
+      state.dateRange.start = action.payload;
+      state.dateRange.isInvalid = false;
+      state.dateRange.edited = true;
+    },
+    setPreviewDateEnd(state, action: PayloadAction<string>) {
+      const currentStart = new Date(state.dateRange.start);
+      const newEnd = new Date(action.payload);
+      if (newEnd.getTime() < currentStart.getTime()) {
+        // do not update end date if invalid
+        state.dateRange.isInvalid = true;
+        return;
+      }
+      state.dateRange.end = action.payload;
+      state.dateRange.isInvalid = false;
+      state.dateRange.edited = true;
     },
     resetPreview(state) {
       state.category = initialPreviewItemsState.category;
@@ -59,6 +96,7 @@ export const previewItemsSlice = createSlice({
       state.offset = initialPreviewItemsState.offset;
       state.pageNumber = initialPreviewItemsState.pageNumber;
       state.query = initialPreviewItemsState.query;
+      state.dateRange = initialPreviewItemsState.dateRange;
     },
   },
 });
@@ -68,8 +106,10 @@ export const {
   setPreviewLastPage,
   setPreviewCategory,
   setPreviewItemsPerPage,
-  resetPreview,
   resetPreviewPagination,
+  setPreviewDateEnd,
+  setPreviewDateStart,
+  resetPreview,
 } = previewItemsSlice.actions;
 
 export const selectPreviewSlice = (state: RootState) => state.previewItem;
@@ -83,5 +123,7 @@ export const selectPreviewItemsPerPage = (state: RootState) =>
   state.previewItem.itemsPerPage;
 export const selectPreviewOffset = (state: RootState) =>
   state.previewItem.offset;
+export const selectPreviewDate = (state: RootState) =>
+  state.previewItem.dateRange;
 
 export default previewItemsSlice.reducer;
