@@ -10,14 +10,17 @@ interface FormFieldProps {
   inputRef?: React.RefObject<HTMLInputElement>;
   type?: string;
   isInvalid?: { status: boolean; error: string };
+  value?: string;
   defaultValue?: string;
+  dateMax?: string;
+  dateMin?: string;
 }
 
 const FormField: React.FC<FormFieldProps> = function (props: FormFieldProps) {
   const [isFocus, setIsFocus] = useState(false);
   const [isEdited, setIsEdited] = useState(false);
   const handleFocusChange = () => setIsFocus((prevState) => !prevState);
-  const { inputRef, isInvalid, defaultValue } = props;
+  const { inputRef, isInvalid, value, defaultValue, dateMax, dateMin } = props;
   const onChange = (ev: React.FormEvent) => {
     !isEdited && setIsEdited(true);
     props.onChange(ev);
@@ -43,13 +46,17 @@ const FormField: React.FC<FormFieldProps> = function (props: FormFieldProps) {
     onFocus: handleFocusChange,
     onBlur: handleFocusChange,
     ...(inputRef && { ref: inputRef }), // Add inputRef is exists
+    value,
     defaultValue,
+    max: dateMax,
+    min: dateMin,
   };
 
   const textareaProps = {
     onChange,
     isFocus,
     onFocusChange: handleFocusChange,
+    value,
     defaultValue,
   };
 

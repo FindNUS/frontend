@@ -14,12 +14,12 @@ const onFocusChange = () => {
   isFocus = !isFocus;
 };
 
-const generateEl = (defaultValue?: string) => (
+const generateEl = (props: { defaultValue?: string; value?: string }) => (
   <TextArea
     onChange={dummyOnChange}
     isFocus={isFocus}
     onFocusChange={onFocusChange}
-    defaultValue={defaultValue}
+    {...props}
   />
 );
 
@@ -37,16 +37,25 @@ afterEach(() => {
 
 describe("Text area component", () => {
   it("initial class name is correct", () => {
-    render(generateEl());
+    render(generateEl({}));
 
     const textarea = screen.getByRole("textbox");
 
     expect(textarea).toHaveClass("form-field__textarea");
   });
 
+  it("renders with default value", () => {
+    act(() => {
+      render(generateEl({ defaultValue: "hello world!" }));
+    });
+
+    const textarea = screen.getByRole("textbox");
+    expect(textarea).toHaveValue("hello world!");
+  });
+
   it("renders with initial value", () => {
     act(() => {
-      render(generateEl("hello world!"));
+      render(generateEl({ value: "hello world!" }));
     });
 
     const textarea = screen.getByRole("textbox");
