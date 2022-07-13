@@ -25,7 +25,7 @@ const Header: React.FC<HeaderProps> = function (props: HeaderProps) {
 
   return (
     <header className="header" data-testid="header">
-      <Logo />
+      <Logo className="header__logo" />
       <nav className="nav">
         <ul className="nav__list">
           {!isHomePage && <NavItem to={ROUTE_HOME} text="Home" />}
