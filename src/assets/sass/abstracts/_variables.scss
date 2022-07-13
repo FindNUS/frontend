@@ -37,3 +37,29 @@ $rounded-edge: 10px; // TODO: Replace all border-radius value with this
 
 // File upload
 $file-upload-max-width: 70rem;
+
+/* Extra small devices (phones, 600px and down) */
+$DEVICE_3XS: "xxxs";
+$DEVICE_2XS: "xxs";
+$DEVICE_XS: "xs";
+/* Small devices (portrait tablets and large phones, 600px and up) */
+$DEVICE_S: "s";
+/* Medium devices (landscape tablets, 768px and up) */
+$DEVICE_M: "m";
+/* Large devices (laptops/desktops, 992px and up) */
+$DEVICE_L: "l";
+/* Extra large devices (large laptops and desktops, 1200px and up) */
+$DEVICE_XL: "xl";
+$DEVICE_2XL: "xxl";
+
+// media queries
+$media-breakpoints: (
+  $DEVICE_3XS: 380px,
+  $DEVICE_2XS: 480px,
+  $DEVICE_XS: 600px,
+  $DEVICE_S: 768px,
+  $DEVICE_M: 992px,
+  $DEVICE_L: 1300px,
+  $DEVICE_XL: 1600px,
+  $DEVICE_2XL: 1600px,
+) !default;
