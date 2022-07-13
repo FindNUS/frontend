@@ -1,11 +1,35 @@
-@use "../abstracts/variables" as *;
+@use "../abstracts" as *;
 
 .search {
   &-container {
     margin-top: 2rem;
     padding: 0 $pages-padding;
     display: flex;
+    flex-direction: row;
+    justify-content: space-around;
     gap: 4rem;
+    flex-grow: 1;
+    width: 100%;
+    max-width: 200rem;
+
+    @include media($DEVICE_2XL) {
+      margin: 0 auto;
+      margin-top: 2rem;
+    }
+    @include media($DEVICE_L) {
+      gap: 2rem;
+    }
+    @include media($DEVICE_M) {
+      flex-direction: column;
+      align-items: space-around;
+      padding: 0;
+    }
+    @include media($DEVICE_S) {
+      width: min-content;
+      margin: 0 auto;
+      width: 100%;
+      gap: 1.2rem;
+    }
   }
 
   &-filter {
@@ -18,8 +42,22 @@
     gap: 1.5rem;
 
     width: 100%;
-    max-width: 40rem;
+    min-width: 280px;
+    max-width: 35rem;
     height: min-content;
+
+    @include media($DEVICE_XL) {
+      max-width: 27rem;
+    }
+    @include media($DEVICE_M) {
+      max-width: none;
+      margin-top: 2rem;
+      min-width: 200px;
+    }
+    @include media($DEVICE_S) {
+      min-width: 100%;
+      max-width: none;
+    }
 
     &__dropdown {
       padding: 0.6rem 1.5rem;

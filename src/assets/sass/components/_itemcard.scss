@@ -1,16 +1,31 @@
-@use "../abstracts/variables" as *;
+@use "../abstracts" as *;
 
 .item-card {
-  width: 25rem;
+  width: 100%;
   height: 31rem;
   background-color: $colour-white;
 
+  @include media($DEVICE_XS) {
+    min-width: 16rem;
+    height: 29rem;
+  }
+  @include media($DEVICE_2XS) {
+    height: 26rem;
+  }
   &__image {
     height: 20rem;
     width: 100%;
     border-radius: $card-border-radius $card-border-radius 0 0;
     object-fit: cover;
     padding: 1rem 1.5rem 0 1.5rem;
+    @include media($DEVICE_XS) {
+      height: 19rem;
+      padding: 0;
+    }
+    @include media($DEVICE_2XS) {
+      height: 16rem;
+      padding: 0;
+    }
   }
 
   &__contents {
@@ -19,12 +34,20 @@
     flex-direction: column;
     gap: 0.2rem;
     justify-content: center;
+
+    @include media($DEVICE_XS) {
+      padding: 0.3rem 1.2rem;
+    }
   }
 
   &__name {
     font-size: 110%;
     font-weight: bold;
     margin-bottom: 0.2rem;
+
+    @include media($DEVICE_XS) {
+      font-size: 100%;
+    }
   }
 
   &__location {
