@@ -217,13 +217,13 @@ const PreviewItems: React.FC<PreviewItemsProps> = function (
 
   return (
     <section className="search-results">
-      {isLoading && <Loading />}
-      {!isLoading && !error && queryResults.length === 0 && (
+      {currentIsLoading && <Loading />}
+      {!currentIsLoading && !currentError && queryResults.length === 0 && (
         <h4 className="search__error">
           No items found. {dashboard && "Submit a lost item to see it here."}
         </h4>
       )}
-      {!isLoading && !error && (
+      {!currentIsLoading && !currentError && (
         <ul className="search-results__list">
           {queryResults.map((item: previewItemType) => {
             const { name, id, date, location, category } = item;
@@ -251,11 +251,12 @@ const PreviewItems: React.FC<PreviewItemsProps> = function (
           })}
         </ul>
       )}
-      {error && (
+      {currentError && (
         <div className="search__error">
           <h2>Error</h2>
-          <span>{JSON.stringify(errorMessage.data)}</span>
+          <span>{JSON.stringify(currentErrorMessage.data)}</span>
         </div>
+      )}
       {isPeek && !currentIsLoading && !currentError && (
         <PreviewPagination
           pageNumber={pageNumber}
