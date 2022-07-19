@@ -1,4 +1,12 @@
+@use "../abstracts/" as *;
+
 .link--wrapper {
   color: inherit;
   text-decoration: none;
+  height: min-content;
+  width: min-content;
+
+  @include media($DEVICE_S) {
+    padding: 1rem;
+  }
 }
