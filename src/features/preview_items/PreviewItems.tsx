@@ -1,16 +1,12 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import ItemCard from "./ItemCard";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import {
+  APIItemGET,
   DROPDOWN_DEFAULT_KEY,
   ENDPOINT_PEEK,
   ENDPOINT_SEARCH,
   IMGUR_THUMBNAIL_MEDUIM,
-  PEEK_DEFAULT_LIMIT,
-  QUERY_SEARCH_DASHBOARD,
-  QUERY_SEARCH_IS_PEEK,
-  QUERY_SEARCH_ITEM_ID,
-  QUERY_VIEW_ITEM_CATEGORY,
   ROUTE_VIEW_ITEM,
 } from "../../constants";
 import {
@@ -19,10 +15,19 @@ import {
   setQueryResults,
   setSearchLoading,
 } from "../search/searchSlice";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Loading from "../../components/Loading";
 import getImgurThumbnailUrl from "./getImgurThumbnailUrl";
 import useAxios from "../../hooks/useAxios";
+import PreviewPagination from "./PreviewPagination";
+import {
+  resetPreviewPagination,
+  selectPreviewDate,
+  selectPreviewSlice,
+  setPreviewLastPage,
+  setPreviewPageNumber,
+} from "./previewItemsSlice";
+import { setViewItemFrom, setViewItemId } from "../view_item/viewItemSlice";
 
 type rawPreviewItemsType = {
   Name: string;
@@ -46,11 +51,11 @@ interface previewItemType {
 
 /**
  * Parses the raw string data and converts it into an object
- * @param response The raw JSON data from API GET
+ * @param currentResponse The raw JSON data from API GET
  * @returns Object with camelCase keys
  */
-const parsePreviewItems = (response: rawPreviewItemsType) => {
-  return response.map((item) => {
+const parsePreviewItems = (currentResponse: rawPreviewItemsType) => {
+  return currentResponse.map((item) => {
     const {
       Name: name,
       Id: id,
@@ -84,35 +89,69 @@ const PreviewItems: React.FC<PreviewItemsProps> = function (
   const navigate = useNavigate();
   const query = useAppSelector(selectQuery);
   const queryResults = useAppSelector(selectQueryResults);
-  const [searchParams] = useSearchParams();
-  const filterCategory = searchParams.get(QUERY_VIEW_ITEM_CATEGORY);
-  const isValidFilter =
-    filterCategory && filterCategory !== DROPDOWN_DEFAULT_KEY;
   const isPeek = props.isPeek ?? false;
   const dashboard = !!props.dashboard;
-  const url =
-    props.url ||
-    (isPeek
-      ? `${ENDPOINT_PEEK}?limit=${PEEK_DEFAULT_LIMIT}${
-          isValidFilter ? `&category=${filterCategory}` : ""
-        }`
-      : `${ENDPOINT_SEARCH}?query=${query}`);
 
-  const [response, error, isLoading] = useAxios({ method: "GET", url });
+  // update store on render
+  useEffect(() => {
+    dispatch(
+      setViewItemFrom(isPeek ? "peek" : dashboard ? "dashboard" : "search")
+    );
+  }, []);
+  const previewSlice = useAppSelector(selectPreviewSlice);
+  const {
+    itemsPerPage,
+    category: filterCategory,
+    pageNumber,
+    offset,
+    isLastPage,
+  } = previewSlice;
+
+  const dateFilter = useAppSelector(selectPreviewDate);
+  const currentUrlParams = new URLSearchParams(
+    isPeek
+      ? // peek
+        {
+          limit: `${itemsPerPage}`,
+          ...(filterCategory !== DROPDOWN_DEFAULT_KEY && {
+            category: filterCategory,
+          }),
+          ...(pageNumber > 1 && { offset: `${offset}` }),
+          startdate: new Date(dateFilter.start).toISOString(),
+          enddate: new Date(dateFilter.end).toISOString(),
+        }
+      : // search
+        { query: query }
+  );
+
+  const [currentUrl, setCurrentUrl] = useState<string>();
+  useEffect(() => {
+    setCurrentUrl(
+      props.url ||
+        `${
+          isPeek ? ENDPOINT_PEEK : ENDPOINT_SEARCH
+        }?${currentUrlParams.toString()}`
+    );
+  }, [previewSlice]);
+
+  const [currentResponse, currentError, currentIsLoading] = useAxios({
+    method: "GET",
+    url: currentUrl,
+  });
 
   useEffect(() => {
-    if (isLoading) {
+    if (currentIsLoading) {
       dispatch(setSearchLoading(true));
       return;
     }
 
-    if (response === undefined) {
+    if (currentResponse === undefined) {
       dispatch(setQueryResults([]));
       return;
     }
-    const items = parsePreviewItems(response.data);
+    const items = parsePreviewItems(currentResponse.data);
 
-    if (!isPeek && isValidFilter)
+    if (!isPeek && filterCategory !== DROPDOWN_DEFAULT_KEY)
       // manual item filtering by category for search results
       dispatch(
         setQueryResults(
@@ -122,17 +161,59 @@ const PreviewItems: React.FC<PreviewItemsProps> = function (
     else dispatch(setQueryResults(items));
 
     dispatch(setSearchLoading(false));
-  }, [isLoading, response, filterCategory]);
+  }, [currentIsLoading, currentResponse, filterCategory]);
 
   const handleItemClick = (ev: React.MouseEvent) => {
     const item = ev.currentTarget;
     const id = item.getAttribute("data-id");
-    navigate(
-      `${ROUTE_VIEW_ITEM}?${QUERY_SEARCH_ITEM_ID}=${id}&${QUERY_SEARCH_IS_PEEK}=${isPeek}&${QUERY_SEARCH_DASHBOARD}=${dashboard}`
-    );
+    if (!id) return;
+    dispatch(setViewItemId(id));
+    navigate(ROUTE_VIEW_ITEM);
   };
 
-  const errorMessage = error?.response as { data: string };
+  const currentErrorMessage = currentError?.response as { data: string };
+
+  // pagination
+  const handlePageBack = () => {
+    dispatch(setPreviewPageNumber(pageNumber - 1));
+    if (isLastPage) dispatch(setPreviewLastPage(false));
+  };
+  const handlePageNext = () => {
+    dispatch(setPreviewPageNumber(pageNumber + 1));
+  };
+
+  // Check if next page exists
+  const nextUrlParams = new URLSearchParams({
+    limit: `${itemsPerPage}`,
+    ...(filterCategory !== DROPDOWN_DEFAULT_KEY && {
+      category: filterCategory,
+    }),
+    startdate: new Date(dateFilter.start).toISOString(),
+    enddate: new Date(dateFilter.end).toISOString(),
+    offset: `${offset + itemsPerPage}`,
+  });
+
+  const nextUrl = `${ENDPOINT_PEEK}?${nextUrlParams.toString()}`;
+
+  const [nextResponse, nextError, nextIsLoading] = useAxios({
+    method: isPeek ? "GET" : undefined,
+    url: nextUrl,
+  });
+
+  // check if next page has items
+  useEffect(() => {
+    if (nextIsLoading || !nextResponse) return;
+    if (nextError) {
+      dispatch(setPreviewLastPage(true));
+    }
+    const data = nextResponse.data as Array<APIItemGET>;
+    if (data.length === 0) dispatch(setPreviewLastPage(true));
+  }, [nextResponse, nextError, nextIsLoading]);
+
+  // reset pagination on filter update
+  useEffect(() => {
+    dispatch(resetPreviewPagination());
+  }, [itemsPerPage]);
 
   return (
     <section className="search-results">
@@ -175,6 +256,13 @@ const PreviewItems: React.FC<PreviewItemsProps> = function (
           <h2>Error</h2>
           <span>{JSON.stringify(errorMessage.data)}</span>
         </div>
+      {isPeek && !currentIsLoading && !currentError && (
+        <PreviewPagination
+          pageNumber={pageNumber}
+          isLast={isLastPage}
+          handleBack={handlePageBack}
+          handleNext={handlePageNext}
+        />
       )}
     </section>
   );
