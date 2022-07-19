@@ -1,4 +1,4 @@
-@use "../../abstracts/variables" as *;
+@use "../../abstracts" as *;
 
 .dashboard {
   display: flex;
@@ -7,6 +7,14 @@
   &-contents {
     padding: 0 $pages-padding;
     display: flex;
+    flex-direction: row;
     gap: 2rem;
+
+    @include media($DEVICE_S) {
+      padding: 0;
+    }
+    @include media($DEVICE_XS) {
+      flex-direction: column;
+    }
   }
 }
