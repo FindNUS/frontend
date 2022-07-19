@@ -1,4 +1,4 @@
-@use "../abstracts/variables" as *;
+@use "../abstracts" as *;
 
 .login {
   display: flex;
@@ -8,9 +8,18 @@
     flex-grow: 1;
     height: calc(100% - $header-height);
     display: flex;
+    flex-direction: row;
     column-gap: 2rem;
     align-items: center;
     justify-content: space-around;
+
+    @include media($DEVICE_S) {
+      height: min-content;
+      flex-direction: column;
+      gap: 5rem;
+      margin: auto 0;
+      justify-content: center;
+    }
   }
 
   &__message {
@@ -38,6 +47,11 @@
     background-color: $colour-white;
     padding: 3rem;
 
+    @include media($DEVICE_S) {
+      width: 100%;
+      max-width: 40rem;
+    }
+
     &__header {
       text-align: center;
       position: relative;
@@ -49,7 +63,7 @@
         background-color: $colour-tertiary;
         position: absolute;
         bottom: 0;
-        left: 15rem;
+        left: calc((100% - 4rem) / 2);
       }
     }
 
