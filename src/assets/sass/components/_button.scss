@@ -78,7 +78,7 @@ $border-style: solid;
   }
 
   &--search {
-    width: 12rem;
+    width: min-content;
     background-color: none;
     color: $colour-white;
     margin-right: 2rem;
