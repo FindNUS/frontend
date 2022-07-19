@@ -38,7 +38,16 @@
 
     &--upload {
       height: auto;
+      width: 100%;
       max-width: $file-upload-max-width;
+
+      @include media($DEVICE_L) {
+        max-width: 35rem;
+      }
+      @include media($DEVICE_S) {
+        max-width: 100%;
+        height: min-content;
+      }
     }
 
     &--back {

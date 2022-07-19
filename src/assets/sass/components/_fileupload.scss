@@ -1,4 +1,4 @@
-@use "../abstracts/variables" as *;
+@use "../abstracts" as *;
 
 .file-upload {
   height: 100%;
@@ -34,6 +34,10 @@
     align-items: center;
     text-align: center;
     height: 100%;
+
+    @include media($DEVICE_S) {
+      min-height: 30rem;
+    }
   }
 
   &__image {
