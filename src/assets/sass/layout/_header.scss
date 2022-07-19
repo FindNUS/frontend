@@ -10,8 +10,8 @@
   @include media($DEVICE_M) {
     padding: 2rem 3rem;
   }
-  @include media($DEVICE_S) {
-    padding: 2rem 2rem;
+  @include media($DEVICE_XS) {
+    padding: 2rem 0;
     flex-direction: column;
     gap: 2rem;
   }
