@@ -41,21 +41,21 @@ const DashboardProfile: React.FC = function () {
       {currentUser?.metadata.lastSignInTime && (
         <div className="dashboard-body__message">
           <span className="dashboard-body__message--descriptor">
-            Last logged in at:&nbsp;
+            Last&nbsp;logged&nbsp;in&nbsp;at:&ensp;
           </span>
           {currentUser?.metadata.lastSignInTime}
         </div>
       )}
       <div className="dashboard-body__message">
         <span className="dashboard-body__message--descriptor">
-          Currently logged in as:&nbsp;
+          Currently&nbsp;logged&nbsp;in&nbsp;as:&ensp;
         </span>
         {currentUser?.phoneNumber}
       </div>
       {currentUser?.displayName && (
         <div className="dashboard-body__message">
           <span className="dashboard-body__message--descriptor">
-            Name:&nbsp;
+            Name:&ensp;
           </span>
           {currentUser?.displayName}
         </div>
@@ -63,7 +63,7 @@ const DashboardProfile: React.FC = function () {
       {currentUser?.email && (
         <div className="dashboard-body__message">
           <span className="dashboard-body__message--descriptor">
-            Email:&nbsp;
+            Email:&ensp;
           </span>
           {currentUser?.email}
           {!currentUser.emailVerified && " (not verified)"}
@@ -71,7 +71,7 @@ const DashboardProfile: React.FC = function () {
       )}
       <div className="dashboard-body__message">
         <span className="dashboard-body__message--descriptor">
-          Unique ID:&nbsp;
+          Unique&nbsp;ID:&ensp;
         </span>
         {currentUser?.uid}
       </div>

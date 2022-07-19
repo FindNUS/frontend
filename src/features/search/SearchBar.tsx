@@ -34,16 +34,14 @@ const SearchBar: React.FC<SearchBarProps> = function (props: SearchBarProps) {
   };
 
   return (
-    <form onSubmit={handleSearch}>
-      <div className="search">
-        <input
-          type="text"
-          className="search__prompt"
-          placeholder={props.prompt}
-          onChange={setInputQuery}
-        />
-        <ButtonSearch onSearch={handleSearch} />
-      </div>
+    <form className="search" onSubmit={handleSearch}>
+      <input
+        type="text"
+        className="search__prompt"
+        placeholder={props.prompt}
+        onChange={setInputQuery}
+      />
+      <ButtonSearch className="search__btn" onSearch={handleSearch} />
     </form>
   );
 };

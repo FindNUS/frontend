@@ -216,49 +216,47 @@ const PreviewItems: React.FC<PreviewItemsProps> = function (
   }, [itemsPerPage]);
 
   return (
-    <section className="search-results-container">
-      <div className="search-results">
-        {currentIsLoading && <Loading />}
-        {!currentIsLoading && !currentError && queryResults.length === 0 && (
-          <h4>
-            No items found. {dashboard && "Submit a lost item to see it here."}
-          </h4>
-        )}
-        {!currentIsLoading && !currentError && (
-          <ul className="search-results__list">
-            {queryResults.map((item: previewItemType) => {
-              const { name, id, date, location, category } = item;
-              // set image to load thumbnail
-              const imageUrl: string | undefined = item.imageUrl
-                ? getImgurThumbnailUrl(item.imageUrl, IMGUR_THUMBNAIL_MEDUIM)
-                : "";
-              return (
-                <li
-                  className="search-results__item"
-                  key={id}
-                  onClick={handleItemClick}
-                  data-id={id}
-                >
-                  <ItemCard
-                    name={name}
-                    id={id}
-                    date={new Date(date)}
-                    location={location}
-                    category={category}
-                    imageUrl={imageUrl}
-                  />
-                </li>
-              );
-            })}
-          </ul>
-        )}
-        {currentError && (
-          <div className="search__error">
-            <h2>Error</h2>
-            <span>{JSON.stringify(currentErrorMessage.data)}</span>
-          </div>
-        )}
-      </div>
+    <section className="search-results">
+      {currentIsLoading && <Loading />}
+      {!currentIsLoading && !currentError && queryResults.length === 0 && (
+        <h4 className="search__error">
+          No items found. {dashboard && "Submit a lost item to see it here."}
+        </h4>
+      )}
+      {!currentIsLoading && !currentError && (
+        <ul className="search-results__list">
+          {queryResults.map((item: previewItemType) => {
+            const { name, id, date, location, category } = item;
+            // set image to load thumbnail
+            const imageUrl: string | undefined = item.imageUrl
+              ? getImgurThumbnailUrl(item.imageUrl, IMGUR_THUMBNAIL_MEDUIM)
+              : "";
+            return (
+              <li
+                className="search-results__item"
+                key={id}
+                onClick={handleItemClick}
+                data-id={id}
+              >
+                <ItemCard
+                  name={name}
+                  id={id}
+                  date={new Date(date)}
+                  location={location}
+                  category={category}
+                  imageUrl={imageUrl}
+                />
+              </li>
+            );
+          })}
+        </ul>
+      )}
+      {currentError && (
+        <div className="search__error">
+          <h2>Error</h2>
+          <span>{JSON.stringify(currentErrorMessage.data)}</span>
+        </div>
+      )}
       {isPeek && !currentIsLoading && !currentError && (
         <PreviewPagination
           pageNumber={pageNumber}

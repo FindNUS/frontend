@@ -1,20 +1,33 @@
-@use "../abstracts/variables" as *;
+@use "../abstracts" as *;
 
 .lnf-item {
   display: flex;
+  flex-direction: row;
   gap: 2rem;
+
+  @include media($DEVICE_S) {
+    flex-direction: column;
+  }
 
   &__descriptor {
     font-weight: 500;
-    padding-right: 1rem;
   }
 
   &__image {
     min-width: 40rem;
     max-width: 60rem;
-    min-height: 40rem;
-    padding: 2rem;
+    padding: 1rem;
     object-fit: cover;
+
+    @include media($DEVICE_M) {
+      min-width: 30rem;
+    }
+    @include media($DEVICE_S) {
+      width: 100%;
+      min-width: 100%;
+      max-height: 40rem;
+      padding: 0;
+    }
   }
 
   &__details {

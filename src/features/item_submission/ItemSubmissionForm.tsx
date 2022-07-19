@@ -440,78 +440,80 @@ const ItemSubmissionForm: React.FC = function () {
 
   return (
     <form className="submit-item__form" onSubmit={handleSubmitForm}>
-      <div className="submit-item__form--fields">
-        <BackButtonText
-          message={isEdit ? "Return to dashboard" : "Select item type"}
-          onClick={handleBack}
-          className="submit-item__form--back"
-        />
-        <FormField
-          onChange={handleDescriptionChange}
-          labelContent="Item Description"
-          disabled={false}
-          isInvalid={generateFormError(FORM_FIELD_IDENTIFIER_NAME)}
-          defaultValue={defaultValue?.name}
-        />
-        <DropdownButton
-          dropdownName="submit-category"
-          dropdownID="submit-category"
-          options={SUBMIT_FOUND_CATEGORIES}
-          onChange={handleCategoryChange}
-          isInvalid={generateFormError(FORM_FIELD_IDENTIFIER_CATEGORY)}
-          selected={formInput.category}
-        />
-        <FormField
-          onChange={handleLocationChange}
-          labelContent="Location"
-          disabled={false}
-          isInvalid={generateFormError(FORM_FIELD_IDENTIFIER_LOCATION)}
-          defaultValue={defaultValue?.location}
-        />
-        <FormField
-          onChange={handleDateChange}
-          labelContent="Date"
-          type="date"
-          disabled={false}
-          isInvalid={generateFormError(FORM_FIELD_IDENTIFIER_DATE)}
-          defaultValue={defaultValue?.date}
-        />
-        <DropdownButton
-          dropdownName="contact-method"
-          dropdownID="contact-method"
-          options={SUBMIT_FOUND_CONTACT_METHODS}
-          onChange={handleContactMethodChange}
-          selected={formInput.contactMethod}
-        />
-        {/* Enable contact details as required */}
-        {formInput.contactMethod !== DROPDOWN_DEFAULT_KEY &&
-          formInput.contactMethod !== CONTACT_METHOD_NUS_SECURITY_KEY && (
-            <FormField
-              onChange={handleContactDetailsChange}
-              labelContent="Contact details"
-              disabled={false}
-              isInvalid={generateFormError(
-                FORM_FIELD_IDENTIFIER_CONTACT_DETAILS
-              )}
-              defaultValue={defaultValue?.contactDetails}
-            />
-          )}
-        <FormField
-          onChange={handleAdditionalDetailsChange}
-          labelContent="Additional details"
-          type="textarea"
-          disabled={false}
-          isInvalid={generateFormError(FORM_FIELD_IDENTIFIER_ADD_DETAILS)}
-          defaultValue={defaultValue?.additionalDetails}
-        />
-        <ButtonSubmit className="btn btn--primary" text="Submit" />
-      </div>
-      <UploadDragDrop
-        className="submit-item__form--upload"
-        onImageUpload={handleImageURLChange}
-        defaultValue={defaultValue?.image.url}
-        ref={imageUploadRef}
+      <BackButtonText
+        message={isEdit ? "Return to dashboard" : "Select item type"}
+        onClick={handleBack}
+        className="submit-item__form--back"
       />
+      <div className="submit-item__form-container">
+        <div className="submit-item__form--fields">
+          <FormField
+            onChange={handleDescriptionChange}
+            labelContent="Item Description"
+            disabled={false}
+            isInvalid={generateFormError(FORM_FIELD_IDENTIFIER_NAME)}
+            defaultValue={defaultValue?.name}
+          />
+          <DropdownButton
+            dropdownName="submit-category"
+            dropdownID="submit-category"
+            options={SUBMIT_FOUND_CATEGORIES}
+            onChange={handleCategoryChange}
+            isInvalid={generateFormError(FORM_FIELD_IDENTIFIER_CATEGORY)}
+            selected={formInput.category}
+          />
+          <FormField
+            onChange={handleLocationChange}
+            labelContent="Location"
+            disabled={false}
+            isInvalid={generateFormError(FORM_FIELD_IDENTIFIER_LOCATION)}
+            defaultValue={defaultValue?.location}
+          />
+          <FormField
+            onChange={handleDateChange}
+            labelContent="Date"
+            type="date"
+            disabled={false}
+            isInvalid={generateFormError(FORM_FIELD_IDENTIFIER_DATE)}
+            defaultValue={defaultValue?.date}
+          />
+          <DropdownButton
+            dropdownName="contact-method"
+            dropdownID="contact-method"
+            options={SUBMIT_FOUND_CONTACT_METHODS}
+            onChange={handleContactMethodChange}
+            selected={formInput.contactMethod}
+          />
+          {/* Enable contact details as required */}
+          {formInput.contactMethod !== DROPDOWN_DEFAULT_KEY &&
+            formInput.contactMethod !== CONTACT_METHOD_NUS_SECURITY_KEY && (
+              <FormField
+                onChange={handleContactDetailsChange}
+                labelContent="Contact details"
+                disabled={false}
+                isInvalid={generateFormError(
+                  FORM_FIELD_IDENTIFIER_CONTACT_DETAILS
+                )}
+                defaultValue={defaultValue?.contactDetails}
+              />
+            )}
+          <FormField
+            onChange={handleAdditionalDetailsChange}
+            labelContent="Additional details"
+            type="textarea"
+            disabled={false}
+            isInvalid={generateFormError(FORM_FIELD_IDENTIFIER_ADD_DETAILS)}
+            defaultValue={defaultValue?.additionalDetails}
+          />
+        </div>
+        <UploadDragDrop
+          className="submit-item__form--upload"
+          onImageUpload={handleImageURLChange}
+          defaultValue={defaultValue?.image.url}
+          ref={imageUploadRef}
+        />
+      </div>
+      <ButtonSubmit className="btn btn--primary" text="Submit" />
     </form>
   );
 };

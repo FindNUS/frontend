@@ -1,8 +1,12 @@
-@use "../abstracts/variables" as *;
+@use "../abstracts" as *;
 
 .search-filter {
   position: sticky;
   top: $pages-padding;
+
+  @include media($DEVICE_M) {
+    position: relative;
+  }
 
   &__form {
     display: flex;
