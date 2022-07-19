@@ -10,7 +10,7 @@
   @include media($DEVICE_M) {
     padding: 2rem 3rem;
   }
-  @include media($DEVICE_XS) {
+  @include media($DEVICE_S) {
     padding: 2rem 0;
     flex-direction: column;
     gap: 2rem;
@@ -39,8 +39,15 @@
     flex-grow: 1;
 
     &--main {
+      display: inline;
       @include media($DEVICE_S) {
         display: none;
+      }
+    }
+    &--mobile {
+      display: none;
+      @include media($DEVICE_S) {
+        display: inline;
       }
     }
 

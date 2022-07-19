@@ -67,7 +67,8 @@ describe("Header component", () => {
 
     const navButtons = screen.getAllByRole("listitem");
     const submitBtn = navButtons.find(
-      (btn) => btn.textContent === "Submit an item"
+      // \xa0 represents non-breaking space character &nbsp;
+      (btn) => btn.textContent === "Submit\xa0an\xa0item"
     );
 
     expect(submitBtn).toBeUndefined();
@@ -79,7 +80,7 @@ describe("Header component", () => {
     const navButtons = screen.getAllByRole("listitem");
     const homeBtn = navButtons.find((btn) => btn.textContent === "Home");
     const submitBtn = navButtons.find(
-      (btn) => btn.textContent === "Submit an item"
+      (btn) => btn.textContent === "Submit\xa0an\xa0item"
     );
 
     expect(homeBtn).toBeInTheDocument();
