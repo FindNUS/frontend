@@ -1,4 +1,9 @@
+@use "../abstracts/variables" as *;
+
 .search-filter {
+  position: sticky;
+  top: $pages-padding;
+
   &__form {
     display: flex;
     flex-direction: column;

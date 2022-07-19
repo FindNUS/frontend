@@ -5,7 +5,12 @@ import { render, screen } from "@testing-library/react";
 import FormInput from "../FormInput";
 import { act } from "react-dom/test-utils";
 
-const generateEl = (defaultValue?: string) => {
+const generateEl = (props: {
+  defaultValue?: string;
+  value?: string;
+  min?: string;
+  max?: string;
+}) => {
   return (
     <FormInput
       type="text"
@@ -19,7 +24,7 @@ const generateEl = (defaultValue?: string) => {
       onChange={(ev: React.FormEvent) => {
         return;
       }}
-      defaultValue={defaultValue}
+      {...props}
     />
   );
 };
@@ -38,7 +43,7 @@ afterEach(() => {
 
 describe("Text area component", () => {
   it("has the correct class", () => {
-    render(generateEl());
+    render(generateEl({}));
 
     const inputEl = screen.getByRole("textbox");
 
@@ -47,14 +52,32 @@ describe("Text area component", () => {
 
   it("renders with initial value", () => {
     act(() => {
-      render(generateEl("hello world!"));
+      render(generateEl({ defaultValue: "hello world!" }));
     });
 
     const inputEl = screen.getByRole("textbox");
     expect(inputEl).toHaveValue("hello world!");
   });
+
+  it("renders date input with min and max", () => {
+    act(() => {
+      render(
+        generateEl({
+          value: "2021-12-13",
+          min: "2021-12-09",
+          max: "2022-01-09",
+        })
+      );
+    });
+
+    const inputEl = screen.getByRole("textbox");
+    expect(inputEl).toHaveValue("2021-12-13");
+    expect(inputEl).toHaveAttribute("min", "2021-12-09");
+    expect(inputEl).toHaveAttribute("max", "2022-01-09");
+  });
+
   // it("types", () => {
-  //   render(generateEl());
+  //   render(generateEl({}));
 
   //   const inputEl = screen.getByRole("textbox");
 
