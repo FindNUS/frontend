@@ -5,6 +5,7 @@ export const ENDPOINT_DEBUG_GET_DEMO_ITEM = `${API_BASE_URL}/debug/getDemoItem`;
 export const ENDPOINT_ITEM = `${API_BASE_URL}/item`;
 export const ENDPOINT_PEEK = `${API_BASE_URL}/item/peek`;
 export const ENDPOINT_SEARCH = `${API_BASE_URL}/search`;
+export const ENDPOINT_LOOKOUT = `${API_BASE_URL}/lookout`;
 export const REQUEST_DELAY = 100; // ms
 
 export const UNKNOWN_VALUE = "Unknown";

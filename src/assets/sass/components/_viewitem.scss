@@ -6,6 +6,9 @@
     padding: $pages-padding;
     border-radius: $rounded-edge;
     background-color: $colour-white;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
   }
 
   &__back {

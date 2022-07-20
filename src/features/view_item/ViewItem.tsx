@@ -7,6 +7,7 @@ import {
   LNFItem,
   ROUTE_HOME,
   ROUTE_DASHBOARD_ITEMS,
+  ENDPOINT_LOOKOUT,
 } from "../../constants";
 import processItemResponseFromAPI from "../../utils/processItemResponseFromAPI";
 import LostAndFoundItem from "./LostAndFoundItem";
@@ -22,6 +23,7 @@ import PopupMessage from "../../components/PopupMessage";
 import Loading from "../../components/Loading";
 import ItemCRUDOptions from "./ItemCRUDOptions";
 import useAxios from "../../hooks/useAxios";
+import PreviewItems from "../preview_items/PreviewItems";
 
 const ViewItem: React.FC = function () {
   const dispatch = useAppDispatch();
@@ -29,6 +31,7 @@ const ViewItem: React.FC = function () {
   const viewItemSlice = useAppSelector(selectViewItemSlice);
   const fromDashboard = viewItemSlice.from === "dashboard";
   const fromPeek = viewItemSlice.from === "peek";
+  const isSimilar = viewItemSlice.isSimilarItem;
   const currentUser = firebaseAuth.currentUser?.uid;
 
   useEffect(() => {
@@ -39,7 +42,7 @@ const ViewItem: React.FC = function () {
   }, []);
 
   const params = new URLSearchParams(
-    fromDashboard
+    fromDashboard && !isSimilar
       ? {
           Id: viewItemSlice.id as string,
           User_id: currentUser as string,
@@ -111,7 +114,20 @@ const ViewItem: React.FC = function () {
         )}
       </div>
 
-      {item && !loadingCRUD && <LostAndFoundItem {...item} />}
+      {item && !loadingCRUD && (
+        <>
+          <LostAndFoundItem {...item} />
+          {fromDashboard && !isSimilar && (
+            <>
+              <h4>View similar items</h4>
+              <PreviewItems
+                dashboard={true}
+                url={`${ENDPOINT_LOOKOUT}?${params.toString()}`}
+              />
+            </>
+          )}
+        </>
+      )}
       {(loading || loadingCRUD) && <Loading />}
       {error && (
         <div className="search__error">

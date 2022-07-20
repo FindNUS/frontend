@@ -15,7 +15,7 @@ import {
   setQueryResults,
   setSearchLoading,
 } from "../search/searchSlice";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import Loading from "../../components/Loading";
 import getImgurThumbnailUrl from "./getImgurThumbnailUrl";
 import useAxios from "../../hooks/useAxios";
@@ -27,7 +27,11 @@ import {
   setPreviewLastPage,
   setPreviewPageNumber,
 } from "./previewItemsSlice";
-import { setViewItemFrom, setViewItemId } from "../view_item/viewItemSlice";
+import {
+  setViewIsSimilarItem,
+  setViewItemFrom,
+  setViewItemId,
+} from "../view_item/viewItemSlice";
 
 type rawPreviewItemsType = {
   Name: string;
@@ -163,10 +167,14 @@ const PreviewItems: React.FC<PreviewItemsProps> = function (
     dispatch(setSearchLoading(false));
   }, [currentIsLoading, currentResponse, filterCategory]);
 
+  const location = useLocation();
   const handleItemClick = (ev: React.MouseEvent) => {
     const item = ev.currentTarget;
     const id = item.getAttribute("data-id");
     if (!id) return;
+    // hide similar items if already clicked one
+    if (location.pathname === ROUTE_VIEW_ITEM)
+      dispatch(setViewIsSimilarItem(true));
     dispatch(setViewItemId(id));
     navigate(ROUTE_VIEW_ITEM);
   };
@@ -218,11 +226,18 @@ const PreviewItems: React.FC<PreviewItemsProps> = function (
   return (
     <section className="search-results">
       {currentIsLoading && <Loading />}
-      {!currentIsLoading && !currentError && queryResults.length === 0 && (
-        <h4 className="search__error">
-          No items found. {dashboard && "Submit a lost item to see it here."}
-        </h4>
-      )}
+      {!currentIsLoading &&
+        !currentError &&
+        queryResults.length === 0 &&
+        !dashboard && (
+          <h4 className="search__error">
+            No items found. {dashboard && "Submit a lost item to see it here."}
+          </h4>
+        )}
+      {!currentIsLoading &&
+        !currentError &&
+        queryResults.length === 0 &&
+        dashboard && <h4 className="search__error">No matching items.</h4>}
       {!currentIsLoading && !currentError && (
         <ul className="search-results__list">
           {queryResults.map((item: previewItemType) => {
