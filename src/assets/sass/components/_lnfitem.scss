@@ -30,10 +30,19 @@
     }
   }
 
+  &__map {
+    width: 100%;
+    min-height: 35rem;
+  }
+
   &__details {
     width: 100%;
     flex-grow: 1;
     padding-left: 1rem;
+
+    &-container {
+      width: 100%;
+    }
 
     &--header {
       margin-bottom: 0.8rem;

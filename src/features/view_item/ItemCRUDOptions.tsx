@@ -62,6 +62,7 @@ const ItemCRUDOptions: React.FC<ItemCRUDOptionsProps> = function (
       additionalDetails,
       imageUrl,
       id,
+      pluscode,
     } = item;
 
     const [itemDate, itemMonth, itemYear] = date.split("/");
@@ -84,6 +85,7 @@ const ItemCRUDOptions: React.FC<ItemCRUDOptionsProps> = function (
           loading: false,
         },
         id,
+        pluscode: pluscode ?? "",
       })
     );
 

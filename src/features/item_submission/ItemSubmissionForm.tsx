@@ -38,6 +38,7 @@ import { useAppDispatch, useAppSelector } from "../../hooks";
 import getArrayObjectKeyFromValue from "../../utils/getArrayObjectKeyFromValue";
 import getArrayObjectValueFromKey from "../../utils/getArrayObjectValueFromKey";
 import { selectAuthIsLoggedIn } from "../auth/authSlice";
+import GeocodingSearch from "../geocoding/GeocodingSearch";
 import generateFormErrorStatus from "./generateFormErrorStatus";
 import {
   setSubmitDate,
@@ -56,6 +57,7 @@ import {
   clearSubmitInputs,
   generateEditPayload,
   setSubmitDefaultValue,
+  setSubmitPlusCode,
 } from "./submitItemSlice";
 import UploadDragDrop from "./UploadDragDrop";
 
@@ -126,6 +128,9 @@ const ItemSubmissionForm: React.FC = function () {
       dispatch(setSubmitContactMethod(contactMethodKey));
     }
   }, []);
+
+  // Geocoding
+  const [showGeocodingResults, setShowGeocodingResults] = useState(true);
 
   /**
    * Helper function to update form field corresponding to identifier in store.
@@ -308,6 +313,13 @@ const ItemSubmissionForm: React.FC = function () {
       };
     });
     dispatch(setSubmitLocation(value));
+    setShowGeocodingResults(true);
+  };
+  const handleGeocodeChange = (ev: React.FormEvent) => {
+    const item = ev.currentTarget as HTMLDivElement;
+    const pluscode = item.getAttribute("data-pluscode") as string;
+    dispatch(setSubmitPlusCode(pluscode));
+    setShowGeocodingResults(false);
   };
   const handleDateChange = (ev: React.FormEvent) => {
     const { value } = ev.target as HTMLInputElement;
@@ -462,13 +474,20 @@ const ItemSubmissionForm: React.FC = function () {
             isInvalid={generateFormError(FORM_FIELD_IDENTIFIER_CATEGORY)}
             selected={formInput.category}
           />
-          <FormField
-            onChange={handleLocationChange}
-            labelContent="Location"
-            disabled={false}
-            isInvalid={generateFormError(FORM_FIELD_IDENTIFIER_LOCATION)}
-            defaultValue={defaultValue?.location}
-          />
+          <div className="geocoding__wrapper">
+            <FormField
+              onChange={handleLocationChange}
+              labelContent="Location"
+              disabled={false}
+              isInvalid={generateFormError(FORM_FIELD_IDENTIFIER_LOCATION)}
+              defaultValue={defaultValue?.location}
+            />
+            <GeocodingSearch
+              showResults={showGeocodingResults || !formInput.pluscode}
+              query={formInput.location}
+              setGeocode={handleGeocodeChange}
+            />
+          </div>
           <FormField
             onChange={handleDateChange}
             labelContent="Date"

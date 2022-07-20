@@ -11,6 +11,7 @@ const processSubmitItemForAPI = (data: Partial<FormSubmitItem>) => {
     additionalDetails,
     imageBase64,
     userID,
+    pluscode,
   } = data;
 
   return {
@@ -25,6 +26,7 @@ const processSubmitItemForAPI = (data: Partial<FormSubmitItem>) => {
     ...(additionalDetails && { Item_details: additionalDetails }),
     ...(imageBase64 && { Image_base64: imageBase64 }),
     ...(userID && { User_id: userID }),
+    ...(pluscode && { Pluscode: pluscode }),
   };
 };
 
