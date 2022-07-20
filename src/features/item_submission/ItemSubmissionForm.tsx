@@ -38,6 +38,7 @@ import { useAppDispatch, useAppSelector } from "../../hooks";
 import getArrayObjectKeyFromValue from "../../utils/getArrayObjectKeyFromValue";
 import getArrayObjectValueFromKey from "../../utils/getArrayObjectValueFromKey";
 import { selectAuthIsLoggedIn } from "../auth/authSlice";
+import EmbeddedMap from "../geocoding/EmbeddedMap";
 import GeocodingSearch from "../geocoding/GeocodingSearch";
 import generateFormErrorStatus from "./generateFormErrorStatus";
 import {
@@ -487,6 +488,12 @@ const ItemSubmissionForm: React.FC = function () {
               query={formInput.location}
               setGeocode={handleGeocodeChange}
             />
+            {formInput.pluscode && (
+              <EmbeddedMap
+                plusCode={formInput.pluscode}
+                className="submit-item__form--map"
+              />
+            )}
           </div>
           <FormField
             onChange={handleDateChange}
