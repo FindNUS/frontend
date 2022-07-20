@@ -18,6 +18,7 @@ interface FormItemDetails {
   name: string;
   image: ImageState;
   location: string;
+  pluscode: string;
 }
 
 export interface DefaultItem extends FormItemDetails {
@@ -62,6 +63,7 @@ const initialSubmitItemState: SubmitItemState = {
     error: undefined,
   },
   location: "",
+  pluscode: "",
   formInputStatus: FORM_FIELD_STATUS_SUBMIT,
   payload: {
     Name: "",
@@ -96,6 +98,9 @@ export const submitItemSlice = createSlice({
     },
     setSubmitLocation(state, action: PayloadAction<string>) {
       state.location = action.payload;
+    },
+    setSubmitPlusCode(state, action: PayloadAction<string>) {
+      state.pluscode = action.payload;
     },
     setSubmitDate(state, action: PayloadAction<string>) {
       state.date = action.payload;
@@ -156,6 +161,7 @@ export const submitItemSlice = createSlice({
         contactDetails,
         contactMethod,
         additionalDetails,
+        pluscode,
       } = state;
 
       const userID = action.payload;
@@ -173,6 +179,7 @@ export const submitItemSlice = createSlice({
         ...(additionalDetails !== "" && { additionalDetails }),
         ...(imageBase64 !== "" && { imageBase64 }),
         ...(userID && { userID }),
+        ...(pluscode !== "" && { pluscode }),
       });
     },
     generateEditPayload(
@@ -191,6 +198,7 @@ export const submitItemSlice = createSlice({
         contactDetails,
         contactMethod,
         additionalDetails,
+        pluscode,
       } = editedFields;
 
       const imageBase64 = state.image.result ?? "";
@@ -206,6 +214,7 @@ export const submitItemSlice = createSlice({
         ...(contactMethod !== DROPDOWN_DEFAULT_KEY && { contactMethod }),
         ...(additionalDetails && { additionalDetails }),
         ...(imageBase64 && { imageBase64 }),
+        ...(pluscode && { pluscode }),
         userID,
       });
     },
@@ -217,6 +226,7 @@ export const submitItemSlice = createSlice({
       state.date = initialSubmitItemState.date;
       state.image = initialSubmitItemState.image;
       state.location = initialSubmitItemState.location;
+      state.pluscode = initialSubmitItemState.pluscode;
       state.name = initialSubmitItemState.name;
       state.formInputStatus = initialSubmitItemState.formInputStatus;
       state.payload = initialSubmitItemState.payload;
@@ -251,12 +261,14 @@ export const submitItemSlice = createSlice({
         contactMethod,
         contactDetails,
         image,
+        pluscode,
       } = action.payload;
       if (name) state.name = name;
       if (category) state.category = category;
       if (additionalDetails) state.additionalDetails = additionalDetails;
       if (date) state.date = date;
       if (location) state.location = location;
+      if (pluscode) state.pluscode = pluscode;
       if (contactMethod) state.contactMethod = contactMethod;
       if (contactDetails) state.contactDetails = contactDetails;
       if (image) state.image = image;
@@ -267,6 +279,7 @@ export const submitItemSlice = createSlice({
 export const {
   setSubmitName,
   setSubmitLocation,
+  setSubmitPlusCode,
   setSubmitDate,
   setSubmitContactDetails,
   setSubmitAdditionalDetails,

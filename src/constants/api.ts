@@ -19,6 +19,7 @@ export interface FormSubmitItem {
   additionalDetails?: string;
   imageBase64?: string;
   userID?: string;
+  pluscode?: string;
 }
 
 export interface APIItemGET {
@@ -32,4 +33,5 @@ export interface APIItemGET {
   Item_details?: string;
   Image_url?: string;
   User_id?: string;
+  Pluscode?: string;
 }

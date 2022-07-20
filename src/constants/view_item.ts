@@ -17,6 +17,7 @@ export interface LNFItem {
   additionalDetails?: string;
   imageUrl?: string;
   userID?: string;
+  pluscode?: string;
 }
 
 export const DEFAULT_ITEMS_PER_PAGE = "10";
