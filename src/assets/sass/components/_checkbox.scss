@@ -1,0 +1,15 @@
+@use "../abstracts" as *;
+
+.checkbox {
+  cursor: pointer;
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  align-items: center;
+
+  &--input {
+    height: 2rem;
+    width: 2rem;
+    border: 2px solid $colour-grey-dark-medium;
+  }
+}
