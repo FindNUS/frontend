@@ -10,12 +10,14 @@ interface ViewItemState {
   id?: string;
   userId?: string;
   from: ViewItemFrom;
+  isSimilarItem: boolean;
 }
 
 const initialViewItemState: ViewItemState = {
   isLoading: false,
   status: undefined,
   from: "peek",
+  isSimilarItem: false,
 };
 
 export const viewItemSlice = createSlice({
@@ -53,6 +55,9 @@ export const viewItemSlice = createSlice({
     setViewItemFrom(state, action: PayloadAction<ViewItemFrom>) {
       state.from = action.payload;
     },
+    setViewIsSimilarItem(state, action: PayloadAction<boolean>) {
+      state.isSimilarItem = action.payload;
+    },
     resetViewItem(state) {
       state.isLoading = initialViewItemState.isLoading;
       state.status = initialViewItemState.status;
@@ -60,6 +65,7 @@ export const viewItemSlice = createSlice({
       state.id = initialViewItemState.id;
       state.userId = initialViewItemState.userId;
       state.from = initialViewItemState.from;
+      state.isSimilarItem = initialViewItemState.isSimilarItem;
     },
   },
 });
@@ -72,6 +78,7 @@ export const {
   setViewItemId,
   setViewItemUserId,
   setViewItemFrom,
+  setViewIsSimilarItem,
   resetViewItem,
 } = viewItemSlice.actions;
 
