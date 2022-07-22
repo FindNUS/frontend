@@ -21,6 +21,7 @@ export interface FormSubmitItem {
   imageBase64?: string;
   userID?: string;
   pluscode?: string;
+  lookout: boolean;
 }
 
 export interface APIItemGET {
@@ -35,4 +36,5 @@ export interface APIItemGET {
   Image_url?: string;
   User_id?: string;
   Pluscode?: string;
+  Lookout?: boolean;
 }

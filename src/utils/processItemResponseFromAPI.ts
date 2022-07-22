@@ -14,6 +14,7 @@ const processItemResponseFromAPI = (data: APIItemGET) => {
     Image_url: imageUrl,
     User_id: userID,
     Pluscode: pluscode,
+    Lookout: lookout,
   } = data;
 
   return {
@@ -30,6 +31,7 @@ const processItemResponseFromAPI = (data: APIItemGET) => {
     ...(imageUrl && { imageUrl }),
     ...(userID && { userID }),
     ...(pluscode && { pluscode }),
+    ...(lookout && { lookout }),
   };
 };
 
