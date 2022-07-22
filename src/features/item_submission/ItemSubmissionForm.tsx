@@ -4,6 +4,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { firebaseAuth } from "../../app/firebase";
 import BackButtonText from "../../components/buttons/BackButtonText";
 import ButtonSubmit from "../../components/buttons/ButtonSubmit";
+import Checkbox from "../../components/form/Checkbox";
 import DropdownButton from "../../components/form/DropdownButton";
 import FormField from "../../components/form/FormField";
 import {
@@ -59,6 +60,7 @@ import {
   generateEditPayload,
   setSubmitDefaultValue,
   setSubmitPlusCode,
+  setSubmitLookout,
 } from "./submitItemSlice";
 import UploadDragDrop from "./UploadDragDrop";
 
@@ -83,21 +85,20 @@ const ItemSubmissionForm: React.FC = function () {
     [FORM_FIELD_IDENTIFIER_IMAGE]: false,
   });
 
+  // load values if editing an item
+  const isEdit = submitType === QUERY_SUBMIT_TYPE_VALUE_EDIT;
+  const isLost = submitType === QUERY_SUBMIT_TYPE_VALUE_LOST;
+
   useEffect(() => {
     if (firebaseAuth.currentUser) return; // currently logged in
     // user is logged out, redirect to home page
-    if (
-      submitType === QUERY_SUBMIT_TYPE_VALUE_LOST ||
-      submitType === QUERY_SUBMIT_TYPE_VALUE_EDIT
-    )
-      navigate(ROUTE_HOME);
+    if (isLost || isEdit) navigate(ROUTE_HOME);
   }, [firebaseAuth.currentUser]);
 
-  // load values if editing an item
-  const isEdit = submitType === QUERY_SUBMIT_TYPE_VALUE_EDIT;
   const defaultValue = useAppSelector(selectSubmitDefaultValue);
   useEffect(() => {
     dispatch(clearSubmitInputs());
+    if (isLost) dispatch(setSubmitLookout(false));
     if (!defaultValue || !isEdit) {
       dispatch(setSubmitDefaultValue(undefined));
       return;
@@ -112,6 +113,7 @@ const ItemSubmissionForm: React.FC = function () {
       additionalDetails,
       location,
       date,
+      lookout,
     } = defaultValue;
 
     if (name) dispatch(setSubmitName(name));
@@ -128,6 +130,7 @@ const ItemSubmissionForm: React.FC = function () {
       );
       dispatch(setSubmitContactMethod(contactMethodKey));
     }
+    if (lookout !== undefined) dispatch(setSubmitLookout(lookout));
   }, []);
 
   // Geocoding
@@ -451,6 +454,12 @@ const ItemSubmissionForm: React.FC = function () {
     navigate(ROUTE_SUBMIT_ITEM_TYPE);
   };
 
+  // lookout
+  const handleLookoutChange = (ev: React.ChangeEvent<HTMLInputElement>) => {
+    const isChecked = ev.target.checked;
+    dispatch(setSubmitLookout(isChecked));
+  };
+
   return (
     <form className="submit-item__form" onSubmit={handleSubmitForm}>
       <BackButtonText
@@ -531,6 +540,13 @@ const ItemSubmissionForm: React.FC = function () {
             isInvalid={generateFormError(FORM_FIELD_IDENTIFIER_ADD_DETAILS)}
             defaultValue={defaultValue?.additionalDetails}
           />
+          {isLost && (
+            <Checkbox
+              label="Subscribe to lookout notifications"
+              onChange={handleLookoutChange}
+              checked={formInput.lookout}
+            />
+          )}
         </div>
         <UploadDragDrop
           className="submit-item__form--upload"

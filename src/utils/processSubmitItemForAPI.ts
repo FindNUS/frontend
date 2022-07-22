@@ -28,7 +28,7 @@ const processSubmitItemForAPI = (data: Partial<FormSubmitItem>) => {
     ...(imageBase64 && { Image_base64: imageBase64 }),
     ...(userID && { User_id: userID }),
     ...(pluscode && { Pluscode: pluscode }),
-    ...(lookout && { Lookout: lookout }),
+    ...(lookout !== undefined && { Lookout: lookout }),
   };
 };
 

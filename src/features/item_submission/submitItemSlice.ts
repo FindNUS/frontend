@@ -19,6 +19,7 @@ interface FormItemDetails {
   image: ImageState;
   location: string;
   pluscode: string;
+  lookout?: boolean;
 }
 
 export interface DefaultItem extends FormItemDetails {
@@ -87,6 +88,7 @@ const initialSubmitItemState: SubmitItemState = {
     Item_details: undefined,
     User_id: "",
   },
+  lookout: undefined,
 };
 
 export const submitItemSlice = createSlice({
@@ -152,6 +154,9 @@ export const submitItemSlice = createSlice({
     setSubmitContactMethod(state, action: PayloadAction<string>) {
       state.contactMethod = action.payload;
     },
+    setSubmitLookout(state, action: PayloadAction<boolean>) {
+      state.lookout = action.payload;
+    },
     generateSubmitPayload(state, action: PayloadAction<string | undefined>) {
       const {
         category,
@@ -162,6 +167,7 @@ export const submitItemSlice = createSlice({
         contactMethod,
         additionalDetails,
         pluscode,
+        lookout,
       } = state;
 
       const userID = action.payload;
@@ -180,6 +186,7 @@ export const submitItemSlice = createSlice({
         ...(imageBase64 !== "" && { imageBase64 }),
         ...(userID && { userID }),
         ...(pluscode !== "" && { pluscode }),
+        ...(lookout !== undefined && { lookout }),
       });
     },
     generateEditPayload(
@@ -199,6 +206,7 @@ export const submitItemSlice = createSlice({
         contactMethod,
         additionalDetails,
         pluscode,
+        lookout,
       } = editedFields;
 
       const imageBase64 = state.image.result ?? "";
@@ -215,6 +223,7 @@ export const submitItemSlice = createSlice({
         ...(additionalDetails && { additionalDetails }),
         ...(imageBase64 && { imageBase64 }),
         ...(pluscode && { pluscode }),
+        ...(lookout !== undefined && { lookout }),
         userID,
       });
     },
@@ -231,6 +240,7 @@ export const submitItemSlice = createSlice({
       state.formInputStatus = initialSubmitItemState.formInputStatus;
       state.payload = initialSubmitItemState.payload;
       state.editPayload = initialSubmitItemState.editPayload;
+      state.lookout = initialSubmitItemState.lookout;
     },
     setSubmitFormInputStatus(
       state,
@@ -262,6 +272,7 @@ export const submitItemSlice = createSlice({
         contactDetails,
         image,
         pluscode,
+        lookout,
       } = action.payload;
       if (name) state.name = name;
       if (category) state.category = category;
@@ -272,6 +283,7 @@ export const submitItemSlice = createSlice({
       if (contactMethod) state.contactMethod = contactMethod;
       if (contactDetails) state.contactDetails = contactDetails;
       if (image) state.image = image;
+      if (lookout !== undefined) state.lookout = lookout;
     },
   },
 });
@@ -287,6 +299,7 @@ export const {
   clearSubmitImage,
   setSubmitCategory,
   setSubmitContactMethod,
+  setSubmitLookout,
   generateSubmitPayload,
   generateEditPayload,
   clearSubmitInputs,
