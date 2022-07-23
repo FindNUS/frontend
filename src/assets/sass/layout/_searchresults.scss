@@ -1,40 +1,45 @@
-@use "../abstracts/variables" as *;
+@use "../abstracts/" as *;
 
 .search-results {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  align-items: center;
+
   &__item {
     list-style: none;
-    cursor: pointer;
-    position: relative;
-    z-index: 10;
-
-    &::after {
-      position: absolute;
-      width: 0;
-      height: 0;
-      content: "";
-      border: none;
-      border-radius: 1.5rem;
-      top: -1.7%;
-      left: -2%;
-      transition: width 0.4s, height 0.4s;
-      z-index: -1;
-    }
-
-    &:hover {
-      &::after {
-        width: 104%;
-        height: 103.4%;
-        border: 5px solid $colour-secondary;
-      }
-    }
   }
 
   &__list {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     grid-auto-rows: auto;
-    column-gap: 2rem;
+    column-gap: 2.5rem;
     flex-shrink: 1;
-    row-gap: 2rem;
+    row-gap: 2.5rem;
+    width: 100%;
+
+    @include media($DEVICE_L) {
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      column-gap: 2rem;
+      row-gap: 2rem;
+    }
+    @include media($DEVICE_M) {
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    }
+    @include media($DEVICE_XS) {
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      column-gap: 1.2rem;
+      row-gap: 1.2rem;
+    }
+    @include media($DEVICE_2XS) {
+      grid-template-columns: repeat(auto-fit, minmax(165px, 1fr));
+    }
+    @include media($DEVICE_3XS) {
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      column-gap: 0.6rem;
+      row-gap: 0.6rem;
+    }
   }
 }

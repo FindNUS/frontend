@@ -1,13 +1,19 @@
-@use "../abstracts/variables" as *;
+@use "../abstracts" as *;
 
 .search {
   height: 5rem;
-  width: 50rem;
+  width: 100%;
+  max-width: 50rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
   background-color: $colour-primary;
   border-radius: 2.5rem;
+  flex-direction: row;
+
+  @include media($DEVICE_XS) {
+    padding: 1rem;
+  }
 
   &__prompt {
     width: 100%;
@@ -18,5 +24,15 @@
     margin-right: 1rem;
     font-family: "Dosis";
     font-size: 2rem;
+
+    @include media($DEVICE_XS) {
+      text-align: center;
+    }
+  }
+
+  &__btn-text {
+    @include media($DEVICE_XS) {
+      display: none;
+    }
   }
 }

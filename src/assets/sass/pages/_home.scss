@@ -1,14 +1,24 @@
-@use "../abstracts/variables" as *;
+@use "../abstracts" as *;
 
 .home {
   &__header {
     color: $colour-white;
     padding-bottom: 5rem;
     font-size: 6rem;
+    margin: 0 auto;
+    text-align: center;
+
+    @include media($DEVICE_M) {
+      font-size: 5rem;
+    }
+    @include media($DEVICE_S) {
+      font-size: 4rem;
+    }
   }
 
   &__body {
-    height: calc(90vh - $header-height);
+    height: calc(80vh - $header-height);
+    width: 100%;
     display: flex;
     flex-direction: column;
     row-gap: 2.5rem;

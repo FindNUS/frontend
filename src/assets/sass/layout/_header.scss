@@ -1,27 +1,101 @@
-@use "../abstracts/variables" as *;
+@use "../abstracts" as *;
 
 .header {
   display: flex;
-  justify-content: space-between;
   align-items: center;
   padding: 2rem 6rem;
-  height: $header-height;
+  min-height: $header-height;
+  flex-direction: row;
+
+  @include media($DEVICE_M) {
+    padding: 2rem 3rem;
+  }
+  @include media($DEVICE_S) {
+    padding: 2rem 0;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  &__mobile {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 100%;
+  }
+
+  &__logo {
+    height: 100%;
+    width: auto;
+    margin: auto 2rem;
+    flex-grow: 0;
+    @include media($DEVICE_M) {
+      margin: auto 1rem;
+      height: calc($header-height * 0.7);
+    }
+  }
 
   .nav {
+    width: 100%;
+    flex-grow: 1;
+
+    &--main {
+      display: inline;
+      @include media($DEVICE_S) {
+        display: none;
+      }
+    }
+    &--mobile {
+      display: none;
+      @include media($DEVICE_S) {
+        display: inline;
+      }
+    }
+
+    &__menu-button {
+      display: none;
+      font-size: 4rem;
+      color: $colour-white;
+      height: min-content;
+      width: min-content;
+      @include media($DEVICE_S) {
+        display: inline;
+        margin-left: auto;
+      }
+    }
+
     &__list {
+      width: 100%;
       list-style: none;
       display: flex;
       flex-direction: row;
+      justify-content: flex-end;
+      align-items: center;
       gap: 2rem;
       font-weight: bold;
       color: $colour-white;
+
+      @include media($DEVICE_M) {
+        gap: 0.8rem;
+      }
+      @include media($DEVICE_S) {
+        background-color: rgba(220, 220, 220, $translucent-alpha);
+        border-radius: $rounded-edge;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+      }
     }
 
     &__item {
+      width: 100%;
       position: relative;
       padding: 1rem 2rem;
+      width: max-content;
       cursor: pointer;
-      // filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+      @include media($DEVICE_M) {
+        width: auto;
+      }
 
       &::after {
         content: "";

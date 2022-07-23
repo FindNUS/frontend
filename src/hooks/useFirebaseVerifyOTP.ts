@@ -1,5 +1,4 @@
-import { getAuth } from "firebase/auth";
-import { useNavigate } from "react-router-dom";
+import { firebaseAuth } from "../app/firebase";
 import { setToken } from "../features/auth/authSlice";
 import {
   confirmationResultType,
@@ -34,9 +33,6 @@ const useFirebaseVerifyOTP = (props: useFirebaseVerifyOTPProps) => {
     confirmationResult,
   } = props;
 
-  const auth = getAuth();
-  const navigate = useNavigate();
-
   return async (receivedOTP: string) => {
     // Check if user has requested for OTP
     if (!confirmationResult) {
@@ -54,7 +50,7 @@ const useFirebaseVerifyOTP = (props: useFirebaseVerifyOTPProps) => {
       const res = await confirmationResult.confirm(receivedOTP);
 
       // Update ID Token in auth slice
-      const idToken = await auth.currentUser?.getIdToken();
+      const idToken = await firebaseAuth.currentUser?.getIdToken();
       if (!idToken) throw new Error("Something went wrong");
       dispatch(setToken(idToken));
 
@@ -70,9 +66,6 @@ const useFirebaseVerifyOTP = (props: useFirebaseVerifyOTPProps) => {
       // Clear reCAPTCHA widget and destroy the current instance
       setAppVerifier(undefined);
       clearAppVerifier(appVerifier, recaptchaRef);
-
-      // Redirect user to home page
-      navigate("/");
     } catch (e) {
       // OTP Verification Error
       const error = e as Error;

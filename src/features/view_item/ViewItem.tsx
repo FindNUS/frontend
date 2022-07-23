@@ -1,36 +1,106 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {
   ENDPOINT_ITEM,
   APIItemGET,
-  QUERY_SEARCH_ITEM_ID,
   ROUTE_SEARCH,
   LNFItem,
-  QUERY_SEARCH_IS_PEEK,
   ROUTE_HOME,
-  QUERY_SEARCH_DASHBOARD,
   ROUTE_DASHBOARD_ITEMS,
+  ENDPOINT_LOOKOUT,
 } from "../../constants";
-import useAxiosGet from "../../hooks/useAxiosGet";
 import processItemResponseFromAPI from "../../utils/processItemResponseFromAPI";
 import LostAndFoundItem from "./LostAndFoundItem";
-import { getAuth } from "firebase/auth";
 import BackButtonText from "../../components/buttons/BackButtonText";
+import { firebaseAuth } from "../../app/firebase";
+import { useAppDispatch, useAppSelector } from "../../hooks";
+import {
+  selectViewItemSlice,
+  selectViewLoading,
+  updateViewStore,
+} from "./viewItemSlice";
+import PopupMessage from "../../components/PopupMessage";
+import Loading from "../../components/Loading";
+import ItemCRUDOptions from "./ItemCRUDOptions";
+import useAxios from "../../hooks/useAxios";
+import PreviewItems from "../preview_items/PreviewItems";
+import Checkbox from "../../components/form/Checkbox";
 
 const ViewItem: React.FC = function () {
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-  const itemId = searchParams.get(QUERY_SEARCH_ITEM_ID);
-  const fromPeek = searchParams.get(QUERY_SEARCH_IS_PEEK) === "true";
-  const fromDashboard = searchParams.get(QUERY_SEARCH_DASHBOARD) === "true";
+  const viewItemSlice = useAppSelector(selectViewItemSlice);
+  const fromDashboard = viewItemSlice.from === "dashboard";
+  const fromPeek = viewItemSlice.from === "peek";
+  const isSimilar = viewItemSlice.isSimilarItem;
+  const currentUser = firebaseAuth.currentUser?.uid;
 
-  const auth = getAuth();
-  const url = fromDashboard
-    ? `${ENDPOINT_ITEM}?Id=${itemId}&User_id=${auth.currentUser?.uid}`
-    : `${ENDPOINT_ITEM}?Id=${itemId}`;
+  useEffect(() => {
+    if (!viewItemSlice.id) {
+      navigate(ROUTE_HOME);
+      return;
+    }
+  }, []);
 
-  const [response, error, loading] = useAxiosGet({ url });
+  const params = new URLSearchParams(
+    fromDashboard && !isSimilar
+      ? {
+          Id: viewItemSlice.id as string,
+          User_id: currentUser as string,
+        }
+      : { Id: viewItemSlice.id as string }
+  );
+
+  const url = `${ENDPOINT_ITEM}?${params.toString()}`;
+
+  const [responseGET, errorGET, loadingGET] = useAxios({ method: "GET", url });
   const [item, setItem] = useState<LNFItem>();
+  const [patchURL, setPatchURL] = useState<string>();
+  const [patchConfig, setPatchConfig] = useState<string>();
+  const [responsePATCH, errorPATCH, loadingPATCH] = useAxios({
+    method: "PATCH",
+    url: patchURL,
+    config: patchConfig,
+  });
+
+  // lookout
+  const isLookoutItem = item && !!item.lookout;
+  const handleLookoutChange = (ev: React.ChangeEvent<HTMLInputElement>) => {
+    if (!responseGET) return;
+    const isChecked = ev.target.checked;
+    const currentItem = responseGET.data as APIItemGET;
+    const updatedItem = {
+      Id: currentItem.Id,
+      User_id: currentItem.User_id,
+      Lookout: isChecked,
+    };
+
+    setPatchConfig(JSON.stringify(updatedItem));
+    setItem((prev) => {
+      if (!prev) return undefined;
+      return { ...prev, lookout: isChecked };
+    });
+    setPatchURL(
+      `${ENDPOINT_ITEM}?Id=${currentItem.Id}&User_id=${currentItem.User_id}`
+    );
+  };
+
+  useEffect(() => {
+    if (responsePATCH?.status === 200) setPatchURL(undefined);
+  }, [responsePATCH]);
+
+  // update viewItem store
+  useEffect(() => {
+    const errorStatusGET = errorGET ? "error" : undefined;
+    const message = errorGET?.message;
+    dispatch(
+      updateViewStore({
+        isLoading: loadingGET,
+        status: errorStatusGET,
+        message,
+      })
+    );
+  }, [loadingGET, errorGET]);
 
   const handleBack = () => {
     if (fromPeek) return navigate(ROUTE_HOME);
@@ -39,42 +109,79 @@ const ViewItem: React.FC = function () {
   };
 
   useEffect(() => {
-    const data = response?.data as APIItemGET | undefined;
+    const data = responseGET?.data as APIItemGET | undefined;
     if (!data) return;
     setItem(processItemResponseFromAPI(data));
-  }, [response]);
+  }, [responseGET]);
+
+  // item CRUD
+  const itemBelongsToUser = currentUser && item && currentUser === item?.userID;
+  const loadingCRUD = useAppSelector(selectViewLoading);
 
   return (
     <div className="view-item__container">
-      {fromPeek && (
-        <BackButtonText
-          className="view-item__back"
-          onClick={handleBack}
-          message="Return to home"
-        />
+      <div className="view-item__actions">
+        {fromPeek && (
+          <BackButtonText
+            className="view-item__back"
+            onClick={handleBack}
+            message="Return to home"
+          />
+        )}
+        {fromDashboard && (
+          <BackButtonText
+            className="view-item__back"
+            onClick={handleBack}
+            message="Return to dashboard"
+          />
+        )}
+        {!fromPeek && !fromDashboard && (
+          <BackButtonText
+            className="view-item__back"
+            onClick={handleBack}
+            message="Return to search results"
+          />
+        )}
+
+        {itemBelongsToUser && (
+          <ItemCRUDOptions item={item} userID={currentUser} />
+        )}
+      </div>
+
+      {item && !loadingCRUD && (
+        <>
+          <LostAndFoundItem {...item} />
+          {fromDashboard && !isSimilar && (
+            <>
+              {!loadingPATCH && !errorPATCH && (
+                <Checkbox
+                  label="Subscribe to lookout notifications"
+                  onChange={handleLookoutChange}
+                  checked={isLookoutItem}
+                />
+              )}
+              <h4>View similar items</h4>
+              <PreviewItems
+                dashboard={true}
+                url={`${ENDPOINT_LOOKOUT}?${params.toString()}`}
+              />
+            </>
+          )}
+        </>
       )}
-      {fromDashboard && (
-        <BackButtonText
-          className="view-item__back"
-          onClick={handleBack}
-          message="Return to dashboard"
-        />
-      )}
-      {!fromPeek && !fromDashboard && (
-        <BackButtonText
-          className="view-item__back"
-          onClick={handleBack}
-          message="Return to search results"
-        />
-      )}
-      {item && <LostAndFoundItem {...item} />}
-      {loading && <h3>Loading...</h3>}
-      {error && (
-        <div className="search__error">
-          <h2>Error</h2>
-          <span>{error.message}</span>
-        </div>
-      )}
+      {(loadingGET || loadingCRUD) && <Loading />}
+      <>
+        {errorGET && (
+          <div className="search__error">
+            <PopupMessage status="error" message={errorGET.message} />
+          </div>
+        )}
+        {errorPATCH && (
+          <div className="search__error">
+            <PopupMessage status="error" message={errorPATCH.message} />
+          </div>
+        )}
+      </>
     </div>
   );
 };

@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "../../app/store";
-import { LoginStatus } from "./LoginForm";
 import { PopupMessageProps } from "../../components/PopupMessage";
+import type { PopupMessageStatus } from "../../components/PopupMessage";
 
 interface LoginState {
   number: string;
@@ -15,7 +15,7 @@ const initialLoginState: LoginState = {
   otp: "",
   state: {
     status: undefined,
-    message: "",
+    message: undefined,
   },
   lastRequested: undefined,
 };
@@ -30,7 +30,7 @@ export const loginSlice = createSlice({
     onChangeOTP(state, action: PayloadAction<string>) {
       state.otp = action.payload;
     },
-    updateStatus(state, action: PayloadAction<LoginStatus>) {
+    updateStatus(state, action: PayloadAction<PopupMessageStatus>) {
       state.state.status = action.payload;
     },
     updateMessage(state, action: PayloadAction<string>) {

@@ -1,4 +1,4 @@
-@use "../../abstracts/variables" as *;
+@use "../../abstracts" as *;
 
 .dashboard-body {
   display: flex;
@@ -10,9 +10,21 @@
   background-color: rgba(220, 220, 220, $translucent-alpha);
   border-radius: $rounded-edge;
 
+  @include media($DEVICE_XS) {
+    width: 100%;
+  }
+
   &__message {
     &--descriptor {
       font-weight: 500;
     }
+    text-overflow: clip;
+  }
+
+  &__verify {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 1rem;
   }
 }

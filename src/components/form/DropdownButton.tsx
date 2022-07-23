@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { nanoid } from "nanoid";
 import { DropdownOption } from "../../constants";
 import PopupMessage from "../PopupMessage";
@@ -15,9 +15,15 @@ interface DropdownButtonProps {
 const DropdownButton: React.FC<DropdownButtonProps> = function (
   props: DropdownButtonProps
 ) {
-  const { options, dropdownName, dropdownID, onChange, isInvalid } = props;
+  const [isEdited, setIsEdited] = useState(false);
+  const { options, dropdownName, dropdownID, isInvalid, selected } = props;
+
+  const onChange = (ev: React.FormEvent) => {
+    !isEdited && setIsEdited(true);
+    props.onChange(ev);
+  };
   return (
-    <div className="dropdown-container">
+    <div className="dropdown-container" data-testid="dropdown-container">
       {isInvalid?.status && (
         <PopupMessage status="error" message={isInvalid.error} />
       )}
@@ -26,11 +32,17 @@ const DropdownButton: React.FC<DropdownButtonProps> = function (
         id={dropdownID}
         className="dropdown"
         onChange={onChange}
-        value={props.selected}
+        value={selected}
+        data-testid="dropdown-select"
+        data-edited={isEdited}
       >
         {options.map((item) => {
           return (
-            <option value={item.key} key={nanoid()}>
+            <option
+              value={item.key}
+              key={nanoid()}
+              data-testid="dropdown-option"
+            >
               {item.value}
             </option>
           );

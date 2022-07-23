@@ -7,6 +7,8 @@ import authReducer from "../features/auth/authSlice";
 import loginReducer from "../features/auth/loginSlice";
 import searchReducer from "../features/search/searchSlice";
 import submitItemReducer from "../features/item_submission/submitItemSlice";
+import viewItemReducer from "../features/view_item/viewItemSlice";
+import previewItemReducer from "../features/preview_items/previewItemsSlice";
 
 const rootReducer = combineReducers({
   firebase: firebaseReducer,
@@ -15,6 +17,8 @@ const rootReducer = combineReducers({
   login: loginReducer,
   search: searchReducer,
   submitItem: submitItemReducer,
+  viewItem: viewItemReducer,
+  previewItem: previewItemReducer,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;

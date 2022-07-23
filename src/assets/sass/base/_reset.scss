@@ -1,4 +1,4 @@
-@use "../abstracts/variables" as *;
+@use "../abstracts" as *;
 
 * {
   margin: 0;
@@ -25,22 +25,53 @@ h6 {
   font-family: "dosis";
   padding: 1rem;
   color: $colour-grey-dark-medium;
+
+  @include media($DEVICE_M) {
+    padding: 0.5rem;
+  }
+  @include media($DEVICE_S) {
+    padding: 0.25rem;
+  }
 }
 
 h1 {
   font-size: 6rem;
+  @include media($DEVICE_M) {
+    font-size: 5rem;
+  }
+  @include media($DEVICE_S) {
+    font-size: 4rem;
+  }
 }
 
 h2 {
   font-size: 4.5rem;
+  @include media($DEVICE_M) {
+    font-size: 4rem;
+  }
+  @include media($DEVICE_S) {
+    font-size: 3rem;
+  }
 }
 
 h3 {
   font-size: 3.5rem;
+  @include media($DEVICE_M) {
+    font-size: 3rem;
+  }
+  @include media($DEVICE_S) {
+    font-size: 2.5rem;
+  }
 }
 
 h4 {
   font-size: 3rem;
+  @include media($DEVICE_M) {
+    font-size: 2.5rem;
+  }
+  @include media($DEVICE_S) {
+    font-size: 2rem;
+  }
 }
 h5 {
   font-size: 2.5rem;

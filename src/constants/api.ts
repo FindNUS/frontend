@@ -1,11 +1,12 @@
 export const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
-export const PEEK_DEFAULT_LIMIT = 20;
 export const ENDPOINT_DEBUG_PING = `${API_BASE_URL}/debug/ping`;
 export const ENDPOINT_DEBUG_CHECK_AUTH = `${API_BASE_URL}/debug/checkAuth`;
 export const ENDPOINT_DEBUG_GET_DEMO_ITEM = `${API_BASE_URL}/debug/getDemoItem`;
 export const ENDPOINT_ITEM = `${API_BASE_URL}/item`;
 export const ENDPOINT_PEEK = `${API_BASE_URL}/item/peek`;
 export const ENDPOINT_SEARCH = `${API_BASE_URL}/search`;
+export const ENDPOINT_LOOKOUT = `${API_BASE_URL}/lookout`;
+export const REQUEST_DELAY = 100; // ms
 
 export const UNKNOWN_VALUE = "Unknown";
 
@@ -19,6 +20,9 @@ export interface FormSubmitItem {
   additionalDetails?: string;
   imageBase64?: string;
   userID?: string;
+  pluscode?: string;
+  lookout: boolean;
+  itemID?: string;
 }
 
 export interface APIItemGET {
@@ -32,4 +36,6 @@ export interface APIItemGET {
   Item_details?: string;
   Image_url?: string;
   User_id?: string;
+  Pluscode?: string;
+  Lookout?: boolean;
 }

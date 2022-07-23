@@ -1,16 +1,57 @@
-@use "../abstracts/variables" as *;
+@use "../abstracts" as *;
 
 .item-card {
-  width: 25rem;
+  width: 100%;
+  max-width: 30rem;
   height: 31rem;
   background-color: $colour-white;
 
+  cursor: pointer;
+  position: relative;
+  z-index: 10;
+
+  &::after {
+    position: absolute;
+    width: 0;
+    height: 0;
+    content: "";
+    border: none;
+    border-radius: 1.5rem;
+    top: -1.7%;
+    left: -2%;
+    transition: width 0.4s, height 0.4s;
+    z-index: -1;
+  }
+
+  &:hover {
+    &::after {
+      width: 104%;
+      height: 103.4%;
+      border: 5px solid $colour-secondary;
+    }
+  }
+
+  @include media($DEVICE_XS) {
+    min-width: 16rem;
+    height: 29rem;
+  }
+  @include media($DEVICE_2XS) {
+    height: 26rem;
+  }
   &__image {
     height: 20rem;
     width: 100%;
     border-radius: $card-border-radius $card-border-radius 0 0;
     object-fit: cover;
     padding: 1rem 1.5rem 0 1.5rem;
+    @include media($DEVICE_XS) {
+      height: 19rem;
+      padding: 0;
+    }
+    @include media($DEVICE_2XS) {
+      height: 16rem;
+      padding: 0;
+    }
   }
 
   &__contents {
@@ -19,18 +60,35 @@
     flex-direction: column;
     gap: 0.2rem;
     justify-content: center;
+
+    @include media($DEVICE_XS) {
+      padding: 0.3rem 1.2rem;
+    }
   }
 
   &__name {
     font-size: 110%;
     font-weight: bold;
     margin-bottom: 0.2rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    @include media($DEVICE_XS) {
+      font-size: 100%;
+    }
   }
 
   &__location {
     display: flex;
     align-items: center;
     gap: 0.5rem;
+
+    &-text {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
   }
   &__date {
     display: flex;

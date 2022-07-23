@@ -11,6 +11,9 @@ import {
   ROUTE_DASHBOARD_INNER_PROFILE,
   ROUTE_HOME,
   ROUTE_LOGIN,
+  ROUTE_LOGIN_INNER_FIRST_TIME,
+  ROUTE_LOGIN_INNER_MAIN,
+  ROUTE_LOGIN_MAIN,
   ROUTE_SEARCH,
   ROUTE_SUBMIT_ITEM,
   ROUTE_SUBMIT_ITEM_INNER_FORM,
@@ -34,6 +37,8 @@ import ItemSubmissionPost from "./features/item_submission/ItemSubmissionPost";
 import ItemSubmissionForm from "./features/item_submission/ItemSubmissionForm";
 import ViewPage from "./pages/ViewPage";
 import ItemSubmissionType from "./features/item_submission/ItemSubmissionType";
+import LoginForm from "./features/auth/LoginForm";
+import FirstTimeUserForm from "./features/auth/first_time/FirstTimeUserForm";
 
 function App() {
   const isLoggedIn = useAppSelector(selectAuthIsLoggedIn);
@@ -46,7 +51,28 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path={ROUTE_HOME} element={<Home />} />
-        {!isLoggedIn && <Route path={ROUTE_LOGIN} element={<Login />} />}
+        {!isLoggedIn && (
+          <Route path={ROUTE_LOGIN} element={<Login />}>
+            <Route path={ROUTE_LOGIN_INNER_MAIN} element={<LoginForm />} />
+            <Route
+              path="*"
+              element={<Navigate to={ROUTE_LOGIN_MAIN} replace />}
+            />
+          </Route>
+        )}
+        {isLoggedIn && (
+          <Route path={ROUTE_LOGIN} element={<Login />}>
+            <Route path={ROUTE_LOGIN_INNER_MAIN} element={<LoginForm />} />
+            <Route
+              path={ROUTE_LOGIN_INNER_FIRST_TIME}
+              element={<FirstTimeUserForm />}
+            />
+            <Route
+              path="*"
+              element={<Navigate to={ROUTE_LOGIN_MAIN} replace />}
+            />
+          </Route>
+        )}
         {isLoggedIn && (
           <Route path={ROUTE_DASHBOARD} element={<Dashboard />}>
             <Route

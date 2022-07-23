@@ -1,22 +1,16 @@
-import React, { useState, useRef } from "react";
-import { useAppSelector } from "../../hooks";
+import React, { useState, useRef, useEffect } from "react";
+import { useAppDispatch, useAppSelector } from "../../hooks";
 import { selectLoginStatus, selectLoginMessage } from "./loginSlice";
 import { ConfirmationResult, RecaptchaVerifier } from "firebase/auth";
 import PopupMessage from "../../components/PopupMessage";
 import { RECAPTCHA_CONTAINER_ELEMENT } from "../../constants";
 import GetOTPForm from "./get_otp/GetOTPForm";
 import VerifyOTPForm from "./verify_otp/VerifyOTPForm";
+import { setAuthVerificationId } from "./authSlice";
 
 export type recaptchaType = RecaptchaVerifier | undefined;
 
 export type confirmationResultType = ConfirmationResult | undefined;
-
-export type LoginStatus =
-  | "success"
-  | "warning"
-  | "error"
-  | "loading"
-  | undefined;
 
 const LoginForm: React.FC = function () {
   const [confirmationResult, setConfirmationResult] =
@@ -25,6 +19,12 @@ const LoginForm: React.FC = function () {
   const loginMessage = useAppSelector(selectLoginMessage);
   const [appVerifier, setAppVerifier] = useState<recaptchaType>(undefined);
   const recaptchaWrapperRef = useRef<HTMLDivElement>(null);
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    if (!confirmationResult) return;
+    dispatch(setAuthVerificationId(confirmationResult.verificationId));
+  }, [confirmationResult]);
 
   const getOTPProps = {
     setAppVerifier,

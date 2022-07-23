@@ -1,10 +1,18 @@
-import { getAuth } from "firebase/auth";
-import React, { useEffect, useState } from "react";
+import {
+  PhoneAuthProvider,
+  reauthenticateWithCredential,
+  User,
+} from "firebase/auth";
+import React, { useEffect, useRef, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import { firebaseAuth } from "../../app/firebase";
 import BackButtonText from "../../components/buttons/BackButtonText";
+import Button from "../../components/buttons/Button";
 import ButtonSubmit from "../../components/buttons/ButtonSubmit";
+import Checkbox from "../../components/form/Checkbox";
 import DropdownButton from "../../components/form/DropdownButton";
 import FormField from "../../components/form/FormField";
+import PopupMessage from "../../components/PopupMessage";
 import {
   DROPDOWN_DEFAULT_KEY,
   CONTACT_METHOD_NUS_SECURITY_KEY,
@@ -29,10 +37,19 @@ import {
   QUERY_SUBMIT_TYPE_VALUE_LOST,
   ROUTE_HOME,
   TIME_OFFSET,
+  QUERY_SUBMIT_TYPE_VALUE_EDIT,
+  ROUTE_DASHBOARD_ITEMS,
+  FORM_FIELD_IDENTIFIER_IMAGE,
+  ROUTE_LOGIN_FIRST_TIME,
 } from "../../constants";
 import { useAppDispatch, useAppSelector } from "../../hooks";
+import getArrayObjectKeyFromValue from "../../utils/getArrayObjectKeyFromValue";
 import getArrayObjectValueFromKey from "../../utils/getArrayObjectValueFromKey";
-import { selectAuthIsLoggedIn } from "../auth/authSlice";
+import { selectAuthVerificationId } from "../auth/authSlice";
+import { selectOTP } from "../auth/loginSlice";
+import VerifyEmail from "../auth/VerifyEmail";
+import EmbeddedMap from "../geocoding/EmbeddedMap";
+import GeocodingSearch from "../geocoding/GeocodingSearch";
 import generateFormErrorStatus from "./generateFormErrorStatus";
 import {
   setSubmitDate,
@@ -47,6 +64,12 @@ import {
   selectSubmitInput,
   setSubmitFormInputStatus,
   selectSubmitFormInputStatus,
+  selectSubmitDefaultValue,
+  clearSubmitInputs,
+  generateEditPayload,
+  setSubmitDefaultValue,
+  setSubmitPlusCode,
+  setSubmitLookout,
 } from "./submitItemSlice";
 import UploadDragDrop from "./UploadDragDrop";
 
@@ -58,14 +81,68 @@ const ItemSubmissionForm: React.FC = function () {
   const [attemptedSubmit, setAttemptedSubmit] = useState(false);
   const [searchParams] = useSearchParams();
   const submitType = searchParams.get(QUERY_SUBMIT_TYPE_KEY);
-  const auth = getAuth();
-  const isLoggedIn = useAppSelector(selectAuthIsLoggedIn);
+  const imageUploadRef = useRef<HTMLDivElement>(null);
+  const [fieldEdited, setFieldEdited] = useState({
+    [FORM_FIELD_IDENTIFIER_NAME]: false,
+    [FORM_FIELD_IDENTIFIER_CATEGORY]: false,
+    [FORM_FIELD_IDENTIFIER_DATE]: false,
+    [FORM_FIELD_IDENTIFIER_LOCATION]: false,
+    [FORM_FIELD_IDENTIFIER_CONTACT_METHOD]: false,
+    [FORM_FIELD_IDENTIFIER_CONTACT_DETAILS]: false,
+    [FORM_FIELD_IDENTIFIER_ADD_DETAILS]: false,
+    [FORM_FIELD_IDENTIFIER_IMAGE]: false,
+  });
+
+  // load values if editing an item
+  const isEdit = submitType === QUERY_SUBMIT_TYPE_VALUE_EDIT;
+  const isLost = submitType === QUERY_SUBMIT_TYPE_VALUE_LOST;
 
   useEffect(() => {
-    if (auth.currentUser) return; // currently logged in
+    if (firebaseAuth.currentUser) return; // currently logged in
     // user is logged out, redirect to home page
-    if (submitType === QUERY_SUBMIT_TYPE_VALUE_LOST) navigate(ROUTE_HOME);
-  }, [auth.currentUser]);
+    if (isLost || isEdit) navigate(ROUTE_HOME);
+  }, [firebaseAuth.currentUser]);
+
+  const defaultValue = useAppSelector(selectSubmitDefaultValue);
+  useEffect(() => {
+    dispatch(clearSubmitInputs());
+    if (isLost) dispatch(setSubmitLookout(false));
+    if (!defaultValue || !isEdit) {
+      dispatch(setSubmitDefaultValue(undefined));
+      return;
+    }
+
+    // set dropdown menu selected option
+    const {
+      category,
+      contactMethod,
+      name,
+      contactDetails,
+      additionalDetails,
+      location,
+      date,
+      lookout,
+    } = defaultValue;
+
+    if (name) dispatch(setSubmitName(name));
+    if (date) dispatch(setSubmitDate(date));
+    if (location) dispatch(setSubmitLocation(location));
+    if (additionalDetails)
+      dispatch(setSubmitAdditionalDetails(additionalDetails));
+    if (contactDetails) dispatch(setSubmitContactDetails(contactDetails));
+    if (category) dispatch(setSubmitCategory(category));
+    if (contactMethod) {
+      const contactMethodKey = getArrayObjectKeyFromValue(
+        SUBMIT_FOUND_CONTACT_METHODS,
+        contactMethod
+      );
+      dispatch(setSubmitContactMethod(contactMethodKey));
+    }
+    if (lookout !== undefined) dispatch(setSubmitLookout(lookout));
+  }, []);
+
+  // Geocoding
+  const [showGeocodingResults, setShowGeocodingResults] = useState(true);
 
   /**
    * Helper function to update form field corresponding to identifier in store.
@@ -181,40 +258,125 @@ const ItemSubmissionForm: React.FC = function () {
     setAttemptedSubmit(true);
     if (formHasErrors) return;
 
-    if (isLoggedIn) {
-      const userID = auth.currentUser?.uid;
+    // POST lost item
+    if (isLost) {
+      const userID = (firebaseAuth.currentUser as User).uid as string;
       dispatch(generateSubmitPayload(userID));
+    } else if (isEdit) {
+      // PATCH lost item
+      const userID = (firebaseAuth.currentUser as User).uid as string;
+      const editedFields = {
+        ...(fieldEdited[FORM_FIELD_IDENTIFIER_NAME] && {
+          name: formInput.name,
+        }),
+        ...(fieldEdited[FORM_FIELD_IDENTIFIER_CATEGORY] && {
+          category: formInput.category,
+        }),
+        ...(fieldEdited[FORM_FIELD_IDENTIFIER_DATE] && {
+          date: formInput.date,
+        }),
+        ...(fieldEdited[FORM_FIELD_IDENTIFIER_LOCATION] && {
+          location: formInput.location,
+        }),
+        ...(fieldEdited[FORM_FIELD_IDENTIFIER_ADD_DETAILS] && {
+          additionalDetails: formInput.additionalDetails,
+        }),
+        ...(fieldEdited[FORM_FIELD_IDENTIFIER_CONTACT_DETAILS] && {
+          contactDetails: formInput.contactDetails,
+        }),
+        ...(fieldEdited[FORM_FIELD_IDENTIFIER_CONTACT_METHOD] && {
+          contactMethod: formInput.contactMethod,
+        }),
+      };
+
+      dispatch(
+        generateEditPayload({
+          userID,
+          itemID: defaultValue?.id as string,
+          editedFields,
+        })
+      );
     } else {
+      // POST found item
       dispatch(generateSubmitPayload());
     }
 
-    navigate(ROUTE_SUBMIT_ITEM_POST);
+    navigate(
+      `${ROUTE_SUBMIT_ITEM_POST}?${QUERY_SUBMIT_TYPE_VALUE_EDIT}=${isEdit}`
+    );
   };
 
   const handleDescriptionChange = (ev: React.FormEvent) => {
     const { value } = ev.target as HTMLInputElement;
+    setFieldEdited((prev) => {
+      return {
+        ...prev,
+        [FORM_FIELD_IDENTIFIER_NAME]: defaultValue?.name !== value && !!value,
+      };
+    });
     dispatch(setSubmitName(value));
   };
   const handleLocationChange = (ev: React.FormEvent) => {
     const { value } = ev.target as HTMLInputElement;
+    setFieldEdited((prev) => {
+      return {
+        ...prev,
+        [FORM_FIELD_IDENTIFIER_LOCATION]:
+          defaultValue?.location !== value && !!value,
+      };
+    });
     dispatch(setSubmitLocation(value));
+    setShowGeocodingResults(true);
+  };
+  const handleGeocodeChange = (ev: React.FormEvent) => {
+    const item = ev.currentTarget as HTMLDivElement;
+    const pluscode = item.getAttribute("data-pluscode") as string;
+    dispatch(setSubmitPlusCode(pluscode));
+    setShowGeocodingResults(false);
   };
   const handleDateChange = (ev: React.FormEvent) => {
     const { value } = ev.target as HTMLInputElement;
     const initialDate = new Date(value);
     const timezoneAdjustedTime = initialDate.getTime() + TIME_OFFSET;
     const timezoneAdjustedDate = new Date(timezoneAdjustedTime).toISOString();
+    setFieldEdited((prev) => {
+      return {
+        ...prev,
+        [FORM_FIELD_IDENTIFIER_DATE]: defaultValue?.date !== value && !!value,
+      };
+    });
     dispatch(setSubmitDate(timezoneAdjustedDate));
   };
   const handleAdditionalDetailsChange = (ev: React.FormEvent) => {
     const { value } = ev.target as HTMLInputElement;
+    setFieldEdited((prev) => {
+      return {
+        ...prev,
+        [FORM_FIELD_IDENTIFIER_ADD_DETAILS]:
+          defaultValue?.additionalDetails !== value && !!value,
+      };
+    });
     dispatch(setSubmitAdditionalDetails(value));
   };
   const handleContactDetailsChange = (ev: React.FormEvent) => {
     const { value } = ev.target as HTMLInputElement;
+    setFieldEdited((prev) => {
+      return {
+        ...prev,
+        [FORM_FIELD_IDENTIFIER_CONTACT_DETAILS]:
+          defaultValue?.contactDetails !== value && !!value,
+      };
+    });
     dispatch(setSubmitContactDetails(value));
   };
-  const handleImageURLChange = async (url: string) => {
+  const handleImageURLChange = (url: string) => {
+    setFieldEdited((prev) => {
+      return {
+        ...prev,
+        [FORM_FIELD_IDENTIFIER_IMAGE]:
+          imageUploadRef.current?.getAttribute("data-edited") === "true",
+      };
+    });
     dispatch(
       setSubmitImageState({
         type: "URL",
@@ -225,10 +387,34 @@ const ItemSubmissionForm: React.FC = function () {
   };
   const handleContactMethodChange = (ev: React.FormEvent) => {
     const { value } = ev.target as HTMLInputElement;
+    const defaultContactMethodKey = defaultValue?.contactMethod;
+    const defaultContactMethod = defaultContactMethodKey
+      ? getArrayObjectKeyFromValue(
+          SUBMIT_FOUND_CONTACT_METHODS,
+          defaultContactMethodKey
+        )
+      : null;
+    setFieldEdited((prev) => {
+      return {
+        ...prev,
+        [FORM_FIELD_IDENTIFIER_CONTACT_METHOD]: defaultContactMethod !== value,
+      };
+    });
     dispatch(setSubmitContactMethod(value));
   };
   const handleCategoryChange = (ev: React.FormEvent) => {
     const { value } = ev.target as HTMLInputElement;
+    const defaultCategoryKey = defaultValue?.category;
+    const defaultCategory = defaultCategoryKey
+      ? getArrayObjectValueFromKey(SUBMIT_FOUND_CATEGORIES, defaultCategoryKey)
+      : null;
+
+    setFieldEdited((prev) => {
+      return {
+        ...prev,
+        [FORM_FIELD_IDENTIFIER_CATEGORY]: defaultCategory !== value,
+      };
+    });
     dispatch(setSubmitCategory(value));
   };
 
@@ -272,74 +458,155 @@ const ItemSubmissionForm: React.FC = function () {
     };
   };
 
-  const handleBack = () => navigate(ROUTE_SUBMIT_ITEM_TYPE);
+  const handleBack = () => {
+    if (isEdit) return navigate(ROUTE_DASHBOARD_ITEMS);
+    navigate(ROUTE_SUBMIT_ITEM_TYPE);
+  };
+
+  // lookout
+  const [showAddEmail, setShowAddEmail] = useState(false);
+  const [showVerifyEmail, setShowVerifyEmail] = useState(false);
+  const user = firebaseAuth.currentUser;
+  const hasEmail = !!user?.email;
+  const isEmailVerified = user?.emailVerified;
+  const verificationId = useAppSelector(selectAuthVerificationId);
+  const userOTP = useAppSelector(selectOTP);
+
+  const handleAddEmail = async () => {
+    if (!user || !verificationId) return navigate(ROUTE_HOME);
+    // refresh user status to prevent auth/requires-recent-login
+    const credentials = PhoneAuthProvider.credential(verificationId, userOTP);
+    await reauthenticateWithCredential(user, credentials);
+    navigate(ROUTE_LOGIN_FIRST_TIME);
+  };
+
+  const handleLookoutChange = (ev: React.ChangeEvent<HTMLInputElement>) => {
+    const isChecked = ev.target.checked;
+    if (!hasEmail) return setShowAddEmail(true);
+    if (!isEmailVerified) return setShowVerifyEmail(true);
+    dispatch(setSubmitLookout(isChecked));
+  };
 
   return (
     <form className="submit-item__form" onSubmit={handleSubmitForm}>
-      <div className="submit-item__form--fields">
-        <BackButtonText
-          message="Select item type"
-          onClick={handleBack}
-          className="submit-item__form--back"
-        />
-        <FormField
-          onChange={handleDescriptionChange}
-          labelContent="Item Description"
-          disabled={false}
-          isInvalid={generateFormError(FORM_FIELD_IDENTIFIER_NAME)}
-        />
-        <DropdownButton
-          dropdownName="submit-category"
-          dropdownID="submit-category"
-          options={SUBMIT_FOUND_CATEGORIES}
-          onChange={handleCategoryChange}
-          selected={formInput.category}
-          isInvalid={generateFormError(FORM_FIELD_IDENTIFIER_CATEGORY)}
-        />
-        <FormField
-          onChange={handleLocationChange}
-          labelContent="Location"
-          disabled={false}
-          isInvalid={generateFormError(FORM_FIELD_IDENTIFIER_LOCATION)}
-        />
-        <FormField
-          onChange={handleDateChange}
-          labelContent="Date"
-          type="date"
-          disabled={false}
-          isInvalid={generateFormError(FORM_FIELD_IDENTIFIER_DATE)}
-        />
-        <DropdownButton
-          dropdownName="contact-method"
-          dropdownID="contact-method"
-          options={SUBMIT_FOUND_CONTACT_METHODS}
-          onChange={handleContactMethodChange}
-          selected={formInput.contactMethod}
-        />
-        {/* Enable contact details as required */}
-        {formInput.contactMethod !== DROPDOWN_DEFAULT_KEY &&
-          formInput.contactMethod !== CONTACT_METHOD_NUS_SECURITY_KEY && (
+      <BackButtonText
+        message={isEdit ? "Return to dashboard" : "Select item type"}
+        onClick={handleBack}
+        className="submit-item__form--back"
+      />
+      <div className="submit-item__form-container">
+        <div className="submit-item__form--fields">
+          <FormField
+            onChange={handleDescriptionChange}
+            labelContent="Item Description"
+            disabled={false}
+            isInvalid={generateFormError(FORM_FIELD_IDENTIFIER_NAME)}
+            defaultValue={defaultValue?.name}
+          />
+          <DropdownButton
+            dropdownName="submit-category"
+            dropdownID="submit-category"
+            options={SUBMIT_FOUND_CATEGORIES}
+            onChange={handleCategoryChange}
+            isInvalid={generateFormError(FORM_FIELD_IDENTIFIER_CATEGORY)}
+            selected={formInput.category}
+          />
+          <div className="geocoding__wrapper">
             <FormField
-              onChange={handleContactDetailsChange}
-              labelContent="Contact details"
+              onChange={handleLocationChange}
+              labelContent="Location"
               disabled={false}
-              isInvalid={generateFormError(
-                FORM_FIELD_IDENTIFIER_CONTACT_DETAILS
-              )}
+              isInvalid={generateFormError(FORM_FIELD_IDENTIFIER_LOCATION)}
+              defaultValue={defaultValue?.location}
             />
+            <GeocodingSearch
+              showResults={showGeocodingResults || !formInput.pluscode}
+              query={formInput.location}
+              setGeocode={handleGeocodeChange}
+            />
+            {formInput.pluscode && (
+              <EmbeddedMap
+                plusCode={formInput.pluscode}
+                className="submit-item__form--map"
+              />
+            )}
+          </div>
+          <FormField
+            onChange={handleDateChange}
+            labelContent="Date"
+            type="date"
+            disabled={false}
+            isInvalid={generateFormError(FORM_FIELD_IDENTIFIER_DATE)}
+            defaultValue={defaultValue?.date}
+          />
+          <DropdownButton
+            dropdownName="contact-method"
+            dropdownID="contact-method"
+            options={SUBMIT_FOUND_CONTACT_METHODS}
+            onChange={handleContactMethodChange}
+            selected={formInput.contactMethod}
+          />
+          {/* Enable contact details as required */}
+          {formInput.contactMethod !== DROPDOWN_DEFAULT_KEY &&
+            formInput.contactMethod !== CONTACT_METHOD_NUS_SECURITY_KEY && (
+              <FormField
+                onChange={handleContactDetailsChange}
+                labelContent="Contact details"
+                disabled={false}
+                isInvalid={generateFormError(
+                  FORM_FIELD_IDENTIFIER_CONTACT_DETAILS
+                )}
+                defaultValue={defaultValue?.contactDetails}
+              />
+            )}
+          <FormField
+            onChange={handleAdditionalDetailsChange}
+            labelContent="Additional details"
+            type="textarea"
+            disabled={false}
+            isInvalid={generateFormError(FORM_FIELD_IDENTIFIER_ADD_DETAILS)}
+            defaultValue={defaultValue?.additionalDetails}
+          />
+          {isLost && (
+            <>
+              <Checkbox
+                label="Subscribe to lookout notifications"
+                onChange={handleLookoutChange}
+                checked={formInput.lookout}
+              />
+              {showAddEmail && (
+                <>
+                  <PopupMessage
+                    status="error"
+                    message="You need to add your email first!"
+                  />
+                  <Button
+                    class="btn btn--tertiary"
+                    text="Click here to add your email"
+                    onClick={handleAddEmail}
+                  />
+                </>
+              )}
+              {showVerifyEmail && (
+                <VerifyEmail user={firebaseAuth.currentUser as User} />
+              )}
+            </>
           )}
-        <FormField
-          onChange={handleAdditionalDetailsChange}
-          labelContent="Additional details"
-          type="textarea"
-          disabled={false}
-          isInvalid={generateFormError(FORM_FIELD_IDENTIFIER_ADD_DETAILS)}
+        </div>
+        <UploadDragDrop
+          className="submit-item__form--upload"
+          onImageUpload={handleImageURLChange}
+          defaultValue={defaultValue?.image.url}
+          ref={imageUploadRef}
         />
-        <ButtonSubmit className="btn btn--primary" text="Submit" />
       </div>
-      <UploadDragDrop
-        className="submit-item__form--upload"
-        onImageUpload={handleImageURLChange}
+      <ButtonSubmit
+        className={`btn btn--primary ${
+          formInput.lookout && (!hasEmail || !isEmailVerified)
+            ? "btn--disabled"
+            : ""
+        }`}
+        text="Submit"
       />
     </form>
   );

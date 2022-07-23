@@ -1,0 +1,13 @@
+@use "./variables" as *;
+
+@mixin media($device) {
+  @if $device != $DEVICE_2XL {
+    @media only screen and (max-width: map-get($media-breakpoints, $device)) {
+      @content;
+    }
+  } @else {
+    @media only screen and (min-width: map-get($media-breakpoints, $device)) {
+      @content;
+    }
+  }
+}

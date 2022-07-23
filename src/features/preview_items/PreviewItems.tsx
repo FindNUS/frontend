@@ -1,16 +1,12 @@
-import React, { useEffect } from "react";
-import ItemCard from "../../components/ItemCard";
-import useAxiosGet from "../../hooks/useAxiosGet";
+import React, { useEffect, useState } from "react";
+import ItemCard from "./ItemCard";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import {
+  APIItemGET,
   DROPDOWN_DEFAULT_KEY,
   ENDPOINT_PEEK,
   ENDPOINT_SEARCH,
-  PEEK_DEFAULT_LIMIT,
-  QUERY_SEARCH_DASHBOARD,
-  QUERY_SEARCH_IS_PEEK,
-  QUERY_SEARCH_ITEM_ID,
-  QUERY_VIEW_ITEM_CATEGORY,
+  IMGUR_THUMBNAIL_MEDUIM,
   ROUTE_VIEW_ITEM,
 } from "../../constants";
 import {
@@ -19,8 +15,23 @@ import {
   setQueryResults,
   setSearchLoading,
 } from "../search/searchSlice";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import Loading from "../../components/Loading";
+import getImgurThumbnailUrl from "./getImgurThumbnailUrl";
+import useAxios from "../../hooks/useAxios";
+import PreviewPagination from "./PreviewPagination";
+import {
+  resetPreviewPagination,
+  selectPreviewDate,
+  selectPreviewSlice,
+  setPreviewLastPage,
+  setPreviewPageNumber,
+} from "./previewItemsSlice";
+import {
+  setViewIsSimilarItem,
+  setViewItemFrom,
+  setViewItemId,
+} from "../view_item/viewItemSlice";
 
 type rawPreviewItemsType = {
   Name: string;
@@ -44,11 +55,11 @@ interface previewItemType {
 
 /**
  * Parses the raw string data and converts it into an object
- * @param response The raw JSON data from API GET
+ * @param currentResponse The raw JSON data from API GET
  * @returns Object with camelCase keys
  */
-const parsePreviewItems = (response: rawPreviewItemsType) => {
-  return response.map((item) => {
+const parsePreviewItems = (currentResponse: rawPreviewItemsType) => {
+  return currentResponse.map((item) => {
     const {
       Name: name,
       Id: id,
@@ -82,35 +93,69 @@ const PreviewItems: React.FC<PreviewItemsProps> = function (
   const navigate = useNavigate();
   const query = useAppSelector(selectQuery);
   const queryResults = useAppSelector(selectQueryResults);
-  const [searchParams] = useSearchParams();
-  const filterCategory = searchParams.get(QUERY_VIEW_ITEM_CATEGORY);
-  const isValidFilter =
-    filterCategory && filterCategory !== DROPDOWN_DEFAULT_KEY;
   const isPeek = props.isPeek ?? false;
   const dashboard = !!props.dashboard;
-  const url =
-    props.url ||
-    (isPeek
-      ? `${ENDPOINT_PEEK}?limit=${PEEK_DEFAULT_LIMIT}${
-          isValidFilter ? `&category=${filterCategory}` : ""
-        }`
-      : `${ENDPOINT_SEARCH}?query=${query}`);
 
-  const [response, error, isLoading] = useAxiosGet({ url });
+  // update store on render
+  useEffect(() => {
+    dispatch(
+      setViewItemFrom(isPeek ? "peek" : dashboard ? "dashboard" : "search")
+    );
+  }, []);
+  const previewSlice = useAppSelector(selectPreviewSlice);
+  const {
+    itemsPerPage,
+    category: filterCategory,
+    pageNumber,
+    offset,
+    isLastPage,
+  } = previewSlice;
+
+  const dateFilter = useAppSelector(selectPreviewDate);
+  const currentUrlParams = new URLSearchParams(
+    isPeek
+      ? // peek
+        {
+          limit: `${itemsPerPage}`,
+          ...(filterCategory !== DROPDOWN_DEFAULT_KEY && {
+            category: filterCategory,
+          }),
+          ...(pageNumber > 1 && { offset: `${offset}` }),
+          startdate: new Date(dateFilter.start).toISOString(),
+          enddate: new Date(dateFilter.end).toISOString(),
+        }
+      : // search
+        { query: query }
+  );
+
+  const [currentUrl, setCurrentUrl] = useState<string>();
+  useEffect(() => {
+    setCurrentUrl(
+      props.url ||
+        `${
+          isPeek ? ENDPOINT_PEEK : ENDPOINT_SEARCH
+        }?${currentUrlParams.toString()}`
+    );
+  }, [previewSlice]);
+
+  const [currentResponse, currentError, currentIsLoading] = useAxios({
+    method: "GET",
+    url: currentUrl,
+  });
 
   useEffect(() => {
-    if (isLoading) {
+    if (currentIsLoading) {
       dispatch(setSearchLoading(true));
       return;
     }
 
-    if (response === undefined) {
+    if (currentResponse === undefined) {
       dispatch(setQueryResults([]));
       return;
     }
-    const items = parsePreviewItems(response.data);
+    const items = parsePreviewItems(currentResponse.data);
 
-    if (!isPeek && isValidFilter)
+    if (!isPeek && filterCategory !== DROPDOWN_DEFAULT_KEY)
       // manual item filtering by category for search results
       dispatch(
         setQueryResults(
@@ -120,58 +165,121 @@ const PreviewItems: React.FC<PreviewItemsProps> = function (
     else dispatch(setQueryResults(items));
 
     dispatch(setSearchLoading(false));
-  }, [isLoading, response, filterCategory]);
+  }, [currentIsLoading, currentResponse, filterCategory]);
 
+  const location = useLocation();
   const handleItemClick = (ev: React.MouseEvent) => {
     const item = ev.currentTarget;
     const id = item.getAttribute("data-id");
-    navigate(
-      `${ROUTE_VIEW_ITEM}?${QUERY_SEARCH_ITEM_ID}=${id}&${QUERY_SEARCH_IS_PEEK}=${isPeek}&${QUERY_SEARCH_DASHBOARD}=${dashboard}`
-    );
+    if (!id) return;
+    // hide similar items if already clicked one
+    if (location.pathname === ROUTE_VIEW_ITEM)
+      dispatch(setViewIsSimilarItem(true));
+    dispatch(setViewItemId(id));
+    navigate(ROUTE_VIEW_ITEM);
   };
 
-  const errorMessage = error?.response as { data: string };
+  const currentErrorMessage = currentError?.response as { data: string };
+
+  // pagination
+  const handlePageBack = () => {
+    dispatch(setPreviewPageNumber(pageNumber - 1));
+    if (isLastPage) dispatch(setPreviewLastPage(false));
+  };
+  const handlePageNext = () => {
+    dispatch(setPreviewPageNumber(pageNumber + 1));
+  };
+
+  // Check if next page exists
+  const nextUrlParams = new URLSearchParams({
+    limit: `${itemsPerPage}`,
+    ...(filterCategory !== DROPDOWN_DEFAULT_KEY && {
+      category: filterCategory,
+    }),
+    startdate: new Date(dateFilter.start).toISOString(),
+    enddate: new Date(dateFilter.end).toISOString(),
+    offset: `${offset + itemsPerPage}`,
+  });
+
+  const nextUrl = `${ENDPOINT_PEEK}?${nextUrlParams.toString()}`;
+
+  const [nextResponse, nextError, nextIsLoading] = useAxios({
+    method: isPeek ? "GET" : undefined,
+    url: nextUrl,
+  });
+
+  // check if next page has items
+  useEffect(() => {
+    if (nextIsLoading || !nextResponse) return;
+    if (nextError) {
+      dispatch(setPreviewLastPage(true));
+    }
+    const data = nextResponse.data as Array<APIItemGET>;
+    if (data.length === 0) dispatch(setPreviewLastPage(true));
+  }, [nextResponse, nextError, nextIsLoading]);
+
+  // reset pagination on filter update
+  useEffect(() => {
+    dispatch(resetPreviewPagination());
+  }, [itemsPerPage]);
 
   return (
-    <section className="search-results-container">
-      <div className="search-results">
-        {isLoading && <Loading />}
-        {!isLoading && !error && queryResults.length === 0 && (
-          <h4>
+    <section className="search-results">
+      {currentIsLoading && <Loading />}
+      {!currentIsLoading &&
+        !currentError &&
+        queryResults.length === 0 &&
+        !dashboard && (
+          <h4 className="search__error">
             No items found. {dashboard && "Submit a lost item to see it here."}
           </h4>
         )}
-        {!isLoading && !error && (
-          <ul className="search-results__list">
-            {queryResults.map((item: previewItemType) => {
-              const { name, id, date, location, category, imageUrl } = item;
-              return (
-                <li
-                  className="search-results__item"
-                  key={id}
-                  onClick={handleItemClick}
-                  data-id={id}
-                >
-                  <ItemCard
-                    name={name}
-                    id={id}
-                    date={new Date(date)}
-                    location={location}
-                    category={category}
-                    imageUrl={imageUrl}
-                  />
-                </li>
-              );
-            })}
-          </ul>
-        )}
-        {error && (
-          <div className="search__error">
-            <h2>Error</h2>
-            <span>{JSON.stringify(errorMessage.data)}</span>
-          </div>
-        )}
-      </div>
+      {!currentIsLoading &&
+        !currentError &&
+        queryResults.length === 0 &&
+        dashboard && <h4 className="search__error">No matching items.</h4>}
+      {!currentIsLoading && !currentError && (
+        <ul className="search-results__list">
+          {queryResults.map((item: previewItemType) => {
+            const { name, id, date, location, category } = item;
+            // set image to load thumbnail
+            const imageUrl: string | undefined = item.imageUrl
+              ? getImgurThumbnailUrl(item.imageUrl, IMGUR_THUMBNAIL_MEDUIM)
+              : "";
+            return (
+              <li
+                className="search-results__item"
+                key={id}
+                onClick={handleItemClick}
+                data-id={id}
+              >
+                <ItemCard
+                  name={name}
+                  id={id}
+                  date={new Date(date)}
+                  location={location}
+                  category={category}
+                  imageUrl={imageUrl}
+                />
+              </li>
+            );
+          })}
+        </ul>
+      )}
+      {currentError && (
+        <div className="search__error">
+          <h2>Error</h2>
+          <span>{JSON.stringify(currentErrorMessage.data)}</span>
+        </div>
+      )}
+      {isPeek && !currentIsLoading && !currentError && (
+        <PreviewPagination
+          pageNumber={pageNumber}
+          isLast={isLastPage}
+          handleBack={handlePageBack}
+          handleNext={handlePageNext}
+        />
+      )}
     </section>
   );
 };

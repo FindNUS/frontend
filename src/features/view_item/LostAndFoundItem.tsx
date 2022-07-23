@@ -1,6 +1,7 @@
 import React from "react";
 import NoImage from "../../components/NoImage";
 import { LNFItem } from "../../constants";
+import EmbeddedMap from "../geocoding/EmbeddedMap";
 
 interface LostAndFoundItemProps extends LNFItem {
   className?: string;
@@ -20,6 +21,7 @@ const LostAndFoundItem: React.FC<LostAndFoundItemProps> = function (
     contactDetails,
     additionalDetails,
     imageUrl,
+    pluscode,
   } = props;
   return (
     <div className={`lnf-item ${className}`}>
@@ -68,6 +70,10 @@ const LostAndFoundItem: React.FC<LostAndFoundItemProps> = function (
             </span>
             {additionalDetails}
           </div>
+        )}
+        <br />
+        {pluscode && (
+          <EmbeddedMap plusCode={pluscode} className="lnf-item__map" />
         )}
       </div>
     </div>

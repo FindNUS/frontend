@@ -20,6 +20,10 @@ $border-style: solid;
     cursor: pointer;
   }
 
+  &--disabled,
+  &--primary.btn--disabled,
+  &--secondary.btn--disabled,
+  &--tertiary.btn--disabled,
   &:disabled {
     background-color: $colour-disabled;
     border: $border-radius $border-style $colour-disabled;
@@ -74,7 +78,7 @@ $border-style: solid;
   }
 
   &--search {
-    width: 12rem;
+    width: min-content;
     background-color: none;
     color: $colour-white;
     margin-right: 2rem;

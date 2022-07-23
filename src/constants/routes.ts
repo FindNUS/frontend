@@ -1,10 +1,18 @@
 export const ROUTE_COMPONENTS = "/components";
-export const ROUTE_DASHBOARD = "/dashboard";
 export const ROUTE_HOME = "/";
-export const ROUTE_LOGIN = "/login";
 export const ROUTE_SEARCH = "/search";
-export const ROUTE_VIEW_ITEM = `/view`;
+export const ROUTE_VIEW_ITEM = "/view";
 export const ROUTE_SUBMIT_ITEM = "/submit-item";
+
+// Login
+export const ROUTE_LOGIN = "/login";
+export const ROUTE_LOGIN_INNER_MAIN = "";
+export const ROUTE_LOGIN_INNER_FIRST_TIME = "first-time";
+export const ROUTE_LOGIN_MAIN = `${ROUTE_LOGIN}/${ROUTE_LOGIN_INNER_MAIN}`;
+export const ROUTE_LOGIN_FIRST_TIME = `${ROUTE_LOGIN}/${ROUTE_LOGIN_INNER_FIRST_TIME}`;
+
+// Dashboard
+export const ROUTE_DASHBOARD = "/dashboard";
 export const ROUTE_DASHBOARD_INNER_PROFILE = "profile";
 export const ROUTE_DASHBOARD_INNER_ITEMS = "items";
 export const ROUTE_DASHBOARD_INNER_MANAGE = "manage";
@@ -12,6 +20,8 @@ export const ROUTE_DASHBOARD_PROFILE = `${ROUTE_DASHBOARD}/${ROUTE_DASHBOARD_INN
 export const ROUTE_DASHBOARD_ITEMS = `${ROUTE_DASHBOARD}/${ROUTE_DASHBOARD_INNER_ITEMS}`;
 export const ROUTE_DASHBOARD_MANAGE = `${ROUTE_DASHBOARD}/${ROUTE_DASHBOARD_INNER_MANAGE}`;
 export const ROUTE_DASHBOARD_HOME = `${ROUTE_DASHBOARD}/${ROUTE_DASHBOARD_INNER_PROFILE}`;
+
+// Item submission
 export const ROUTE_SUBMIT_ITEM_INNER_FORM = "form";
 export const ROUTE_SUBMIT_ITEM_INNER_POST = "post";
 export const ROUTE_SUBMIT_ITEM_INNER_TYPE = "type";

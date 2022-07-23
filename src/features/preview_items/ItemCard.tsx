@@ -1,8 +1,8 @@
 import React from "react";
-import Card from "./Card";
+import Card from "../../components/Card";
 import LocationOnRoundedIcon from "@mui/icons-material/LocationOnRounded";
 import AccessTimeRoundedIcon from "@mui/icons-material/AccessTimeRounded";
-import NoImage from "./NoImage";
+import NoImage from "../../components/NoImage";
 
 interface ItemCardProps {
   category: string;

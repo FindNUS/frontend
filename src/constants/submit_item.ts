@@ -1,10 +1,12 @@
 export const QUERY_SUBMIT_TYPE_KEY = "type";
 export const QUERY_SUBMIT_TYPE_VALUE_FOUND = "found";
 export const QUERY_SUBMIT_TYPE_VALUE_LOST = "lost";
+export const QUERY_SUBMIT_TYPE_VALUE_EDIT = "edit";
 
 export const TITLE_SUBMIT_DEFAULT = "Submit an Item";
 export const TITLE_SUBMIT_FOUND = "Submit Found Item";
 export const TITLE_SUBMIT_LOST = "Submit Lost Item";
+export const TITLE_SUBMIT_EDIT = "Edit Submitted Item";
 
 export const IMGUR_IMAGE_FORMATS = [
   "JPEG",
@@ -14,7 +16,7 @@ export const IMGUR_IMAGE_FORMATS = [
   "APNG",
   "TIFF",
 ];
-export const DRAG_DROP_MESSAGE = `Click to upload or drag and drop your image`;
+export const DRAG_DROP_MESSAGE = "Click to upload or drag and drop your image";
 
 export interface DropdownOption {
   key: string;
@@ -65,6 +67,7 @@ export const FORM_FIELD_IDENTIFIER_LOCATION = "location";
 export const FORM_FIELD_IDENTIFIER_ADD_DETAILS = "additional-details";
 export const FORM_FIELD_IDENTIFIER_CONTACT_METHOD = "contact-method";
 export const FORM_FIELD_IDENTIFIER_CONTACT_DETAILS = "contact-details";
+export const FORM_FIELD_IDENTIFIER_IMAGE = "image";
 
 export const STORE_UPDATE_DELAY = 500; // ms
 
