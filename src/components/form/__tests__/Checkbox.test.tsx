@@ -52,16 +52,6 @@ describe("Checkbox component", () => {
     expect(checkbox.checked).toBeTruthy();
   });
 
-  it("clickable", () => {
-    act(() => {
-      const { getByRole } = renderEl(true);
-      fireEvent.click(getByRole("checkbox"));
-    });
-
-    const checkbox = screen.getByRole("checkbox") as HTMLInputElement;
-    expect(checkbox.checked).toBeFalsy();
-  });
-
   it("handles onChange function", () => {
     const mockOnChange = jest.fn();
     act(() => {
