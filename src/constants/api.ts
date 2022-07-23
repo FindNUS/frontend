@@ -22,6 +22,7 @@ export interface FormSubmitItem {
   userID?: string;
   pluscode?: string;
   lookout: boolean;
+  itemID?: string;
 }
 
 export interface APIItemGET {

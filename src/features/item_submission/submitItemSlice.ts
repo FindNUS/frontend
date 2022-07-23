@@ -193,10 +193,11 @@ export const submitItemSlice = createSlice({
       state,
       action: PayloadAction<{
         userID: string;
+        itemID: string;
         editedFields: Partial<FormItemDetails>;
       }>
     ) {
-      const { editedFields, userID } = action.payload;
+      const { editedFields, userID, itemID } = action.payload;
       const {
         category,
         name,
@@ -224,6 +225,7 @@ export const submitItemSlice = createSlice({
         ...(imageBase64 && { imageBase64 }),
         ...(pluscode && { pluscode }),
         ...(lookout !== undefined && { lookout }),
+        itemID,
         userID,
       });
     },
