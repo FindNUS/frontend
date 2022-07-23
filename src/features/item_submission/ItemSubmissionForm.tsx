@@ -292,6 +292,7 @@ const ItemSubmissionForm: React.FC = function () {
       dispatch(
         generateEditPayload({
           userID,
+          itemID: defaultValue?.id as string,
           editedFields,
         })
       );
