@@ -1,4 +1,8 @@
-import { User } from "firebase/auth";
+import {
+  PhoneAuthProvider,
+  reauthenticateWithCredential,
+  User,
+} from "firebase/auth";
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { firebaseAuth } from "../../app/firebase";
@@ -41,7 +45,11 @@ import {
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import getArrayObjectKeyFromValue from "../../utils/getArrayObjectKeyFromValue";
 import getArrayObjectValueFromKey from "../../utils/getArrayObjectValueFromKey";
-import { selectAuthIsLoggedIn } from "../auth/authSlice";
+import {
+  selectAuthIsLoggedIn,
+  selectAuthVerificationId,
+} from "../auth/authSlice";
+import { selectOTP } from "../auth/loginSlice";
 import VerifyEmail from "../auth/VerifyEmail";
 import EmbeddedMap from "../geocoding/EmbeddedMap";
 import GeocodingSearch from "../geocoding/GeocodingSearch";
@@ -464,8 +472,14 @@ const ItemSubmissionForm: React.FC = function () {
   const user = firebaseAuth.currentUser;
   const hasEmail = !!user?.email;
   const isEmailVerified = user?.emailVerified;
+  const verificationId = useAppSelector(selectAuthVerificationId);
+  const userOTP = useAppSelector(selectOTP);
 
-  const handleAddEmail = () => {
+  const handleAddEmail = async () => {
+    if (!user || !verificationId) return navigate(ROUTE_HOME);
+    // refresh user status to prevent auth/requires-recent-login
+    const credentials = PhoneAuthProvider.credential(verificationId, userOTP);
+    await reauthenticateWithCredential(user, credentials);
     navigate(ROUTE_LOGIN_FIRST_TIME);
   };
 
