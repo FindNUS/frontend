@@ -1,12 +1,18 @@
-import { User } from "firebase/auth";
+import {
+  PhoneAuthProvider,
+  reauthenticateWithCredential,
+  User,
+} from "firebase/auth";
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { firebaseAuth } from "../../app/firebase";
 import BackButtonText from "../../components/buttons/BackButtonText";
+import Button from "../../components/buttons/Button";
 import ButtonSubmit from "../../components/buttons/ButtonSubmit";
 import Checkbox from "../../components/form/Checkbox";
 import DropdownButton from "../../components/form/DropdownButton";
 import FormField from "../../components/form/FormField";
+import PopupMessage from "../../components/PopupMessage";
 import {
   DROPDOWN_DEFAULT_KEY,
   CONTACT_METHOD_NUS_SECURITY_KEY,
@@ -34,11 +40,17 @@ import {
   QUERY_SUBMIT_TYPE_VALUE_EDIT,
   ROUTE_DASHBOARD_ITEMS,
   FORM_FIELD_IDENTIFIER_IMAGE,
+  ROUTE_LOGIN_FIRST_TIME,
 } from "../../constants";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import getArrayObjectKeyFromValue from "../../utils/getArrayObjectKeyFromValue";
 import getArrayObjectValueFromKey from "../../utils/getArrayObjectValueFromKey";
-import { selectAuthIsLoggedIn } from "../auth/authSlice";
+import {
+  selectAuthIsLoggedIn,
+  selectAuthVerificationId,
+} from "../auth/authSlice";
+import { selectOTP } from "../auth/loginSlice";
+import VerifyEmail from "../auth/VerifyEmail";
 import EmbeddedMap from "../geocoding/EmbeddedMap";
 import GeocodingSearch from "../geocoding/GeocodingSearch";
 import generateFormErrorStatus from "./generateFormErrorStatus";
@@ -455,8 +467,26 @@ const ItemSubmissionForm: React.FC = function () {
   };
 
   // lookout
+  const [showAddEmail, setShowAddEmail] = useState(false);
+  const [showVerifyEmail, setShowVerifyEmail] = useState(false);
+  const user = firebaseAuth.currentUser;
+  const hasEmail = !!user?.email;
+  const isEmailVerified = user?.emailVerified;
+  const verificationId = useAppSelector(selectAuthVerificationId);
+  const userOTP = useAppSelector(selectOTP);
+
+  const handleAddEmail = async () => {
+    if (!user || !verificationId) return navigate(ROUTE_HOME);
+    // refresh user status to prevent auth/requires-recent-login
+    const credentials = PhoneAuthProvider.credential(verificationId, userOTP);
+    await reauthenticateWithCredential(user, credentials);
+    navigate(ROUTE_LOGIN_FIRST_TIME);
+  };
+
   const handleLookoutChange = (ev: React.ChangeEvent<HTMLInputElement>) => {
     const isChecked = ev.target.checked;
+    if (!hasEmail) return setShowAddEmail(true);
+    if (!isEmailVerified) return setShowVerifyEmail(true);
     dispatch(setSubmitLookout(isChecked));
   };
 
@@ -541,11 +571,29 @@ const ItemSubmissionForm: React.FC = function () {
             defaultValue={defaultValue?.additionalDetails}
           />
           {isLost && (
-            <Checkbox
-              label="Subscribe to lookout notifications"
-              onChange={handleLookoutChange}
-              checked={formInput.lookout}
-            />
+            <>
+              <Checkbox
+                label="Subscribe to lookout notifications"
+                onChange={handleLookoutChange}
+                checked={formInput.lookout}
+              />
+              {showAddEmail && (
+                <>
+                  <PopupMessage
+                    status="error"
+                    message="You need to add your email first!"
+                  />
+                  <Button
+                    class="btn btn--tertiary"
+                    text="Click here to add your email"
+                    onClick={handleAddEmail}
+                  />
+                </>
+              )}
+              {showVerifyEmail && (
+                <VerifyEmail user={firebaseAuth.currentUser as User} />
+              )}
+            </>
           )}
         </div>
         <UploadDragDrop
@@ -555,7 +603,14 @@ const ItemSubmissionForm: React.FC = function () {
           ref={imageUploadRef}
         />
       </div>
-      <ButtonSubmit className="btn btn--primary" text="Submit" />
+      <ButtonSubmit
+        className={`btn btn--primary ${
+          formInput.lookout && (!hasEmail || !isEmailVerified)
+            ? "btn--disabled"
+            : ""
+        }`}
+        text="Submit"
+      />
     </form>
   );
 };

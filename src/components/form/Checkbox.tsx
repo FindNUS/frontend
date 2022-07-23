@@ -19,7 +19,7 @@ const Checkbox: React.FC<CheckboxProps> = function (props: CheckboxProps) {
         className="checkbox--input"
         id={id}
         onChange={onChange}
-        defaultChecked={checked}
+        checked={checked}
       />
       <label htmlFor={id} className="checkbox--label">
         {label}
