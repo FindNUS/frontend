@@ -45,10 +45,7 @@ import {
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import getArrayObjectKeyFromValue from "../../utils/getArrayObjectKeyFromValue";
 import getArrayObjectValueFromKey from "../../utils/getArrayObjectValueFromKey";
-import {
-  selectAuthIsLoggedIn,
-  selectAuthVerificationId,
-} from "../auth/authSlice";
+import { selectAuthVerificationId } from "../auth/authSlice";
 import { selectOTP } from "../auth/loginSlice";
 import VerifyEmail from "../auth/VerifyEmail";
 import EmbeddedMap from "../geocoding/EmbeddedMap";
@@ -84,7 +81,6 @@ const ItemSubmissionForm: React.FC = function () {
   const [attemptedSubmit, setAttemptedSubmit] = useState(false);
   const [searchParams] = useSearchParams();
   const submitType = searchParams.get(QUERY_SUBMIT_TYPE_KEY);
-  const isLoggedIn = useAppSelector(selectAuthIsLoggedIn);
   const imageUploadRef = useRef<HTMLDivElement>(null);
   const [fieldEdited, setFieldEdited] = useState({
     [FORM_FIELD_IDENTIFIER_NAME]: false,
@@ -262,43 +258,43 @@ const ItemSubmissionForm: React.FC = function () {
     setAttemptedSubmit(true);
     if (formHasErrors) return;
 
-    if (isLoggedIn) {
+    // POST lost item
+    if (isLost) {
       const userID = (firebaseAuth.currentUser as User).uid as string;
-      if (isEdit) {
-        // PATCH lost item
-        const editedFields = {
-          ...(fieldEdited[FORM_FIELD_IDENTIFIER_NAME] && {
-            name: formInput.name,
-          }),
-          ...(fieldEdited[FORM_FIELD_IDENTIFIER_CATEGORY] && {
-            category: formInput.category,
-          }),
-          ...(fieldEdited[FORM_FIELD_IDENTIFIER_DATE] && {
-            date: formInput.date,
-          }),
-          ...(fieldEdited[FORM_FIELD_IDENTIFIER_LOCATION] && {
-            location: formInput.location,
-          }),
-          ...(fieldEdited[FORM_FIELD_IDENTIFIER_ADD_DETAILS] && {
-            additionalDetails: formInput.additionalDetails,
-          }),
-          ...(fieldEdited[FORM_FIELD_IDENTIFIER_CONTACT_DETAILS] && {
-            contactDetails: formInput.contactDetails,
-          }),
-          ...(fieldEdited[FORM_FIELD_IDENTIFIER_CONTACT_METHOD] && {
-            contactMethod: formInput.contactMethod,
-          }),
-        };
+      dispatch(generateSubmitPayload(userID));
+    } else if (isEdit) {
+      // PATCH lost item
+      const userID = (firebaseAuth.currentUser as User).uid as string;
+      const editedFields = {
+        ...(fieldEdited[FORM_FIELD_IDENTIFIER_NAME] && {
+          name: formInput.name,
+        }),
+        ...(fieldEdited[FORM_FIELD_IDENTIFIER_CATEGORY] && {
+          category: formInput.category,
+        }),
+        ...(fieldEdited[FORM_FIELD_IDENTIFIER_DATE] && {
+          date: formInput.date,
+        }),
+        ...(fieldEdited[FORM_FIELD_IDENTIFIER_LOCATION] && {
+          location: formInput.location,
+        }),
+        ...(fieldEdited[FORM_FIELD_IDENTIFIER_ADD_DETAILS] && {
+          additionalDetails: formInput.additionalDetails,
+        }),
+        ...(fieldEdited[FORM_FIELD_IDENTIFIER_CONTACT_DETAILS] && {
+          contactDetails: formInput.contactDetails,
+        }),
+        ...(fieldEdited[FORM_FIELD_IDENTIFIER_CONTACT_METHOD] && {
+          contactMethod: formInput.contactMethod,
+        }),
+      };
 
-        dispatch(
-          generateEditPayload({
-            userID,
-            editedFields,
-          })
-        );
-      }
-      // POST lost item
-      else dispatch(generateSubmitPayload(userID));
+      dispatch(
+        generateEditPayload({
+          userID,
+          editedFields,
+        })
+      );
     } else {
       // POST found item
       dispatch(generateSubmitPayload());
