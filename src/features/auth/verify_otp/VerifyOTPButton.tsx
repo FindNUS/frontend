@@ -2,14 +2,18 @@ import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   NEW_USER_THRESHOLD,
-  ROUTE_DASHBOARD,
+  ROUTE_DASHBOARD_HOME,
   ROUTE_LOGIN_FIRST_TIME,
 } from "../../../constants";
 import { useAppDispatch, useAppSelector } from "../../../hooks";
 import useFirebaseVerifyOTP, {
   useFirebaseVerifyOTPProps,
 } from "../../../hooks/useFirebaseVerifyOTP";
-import { selectAuthIsFirstTime, setAuthIsFirstTime } from "../authSlice";
+import {
+  selectAuthIsFirstTime,
+  setAuthIsFirstTime,
+  setIsLoggedIn,
+} from "../authSlice";
 import { selectOTP } from "../loginSlice";
 
 const VerifyOTPButton: React.FC<useFirebaseVerifyOTPProps> = function (
@@ -39,6 +43,7 @@ const VerifyOTPButton: React.FC<useFirebaseVerifyOTPProps> = function (
   useEffect(() => {
     if (authState.isEmpty) return;
 
+    dispatch(setIsLoggedIn(true));
     const { lastLoginAt, createdAt, displayName, email } = authState;
     const firstTime =
       +lastLoginAt - +createdAt < NEW_USER_THRESHOLD || !displayName || !email;
@@ -48,7 +53,7 @@ const VerifyOTPButton: React.FC<useFirebaseVerifyOTPProps> = function (
       return;
     }
 
-    navigate(ROUTE_DASHBOARD);
+    navigate(ROUTE_DASHBOARD_HOME);
   }, [authState]);
 
   // redirect to first timer page to collect user information
