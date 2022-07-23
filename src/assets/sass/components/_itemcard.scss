@@ -2,8 +2,34 @@
 
 .item-card {
   width: 100%;
+  max-width: 30rem;
   height: 31rem;
   background-color: $colour-white;
+
+  cursor: pointer;
+  position: relative;
+  z-index: 10;
+
+  &::after {
+    position: absolute;
+    width: 0;
+    height: 0;
+    content: "";
+    border: none;
+    border-radius: 1.5rem;
+    top: -1.7%;
+    left: -2%;
+    transition: width 0.4s, height 0.4s;
+    z-index: -1;
+  }
+
+  &:hover {
+    &::after {
+      width: 104%;
+      height: 103.4%;
+      border: 5px solid $colour-secondary;
+    }
+  }
 
   @include media($DEVICE_XS) {
     min-width: 16rem;
