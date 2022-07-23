@@ -44,6 +44,9 @@
     font-size: 110%;
     font-weight: bold;
     margin-bottom: 0.2rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 
     @include media($DEVICE_XS) {
       font-size: 100%;
@@ -54,6 +57,12 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
+
+    &-text {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
   }
   &__date {
     display: flex;
