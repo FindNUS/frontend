@@ -74,30 +74,34 @@ const PreviewFilter: React.FC<PreviewFilterProps> = function (
           onChange={handleCategoryChange}
           selected={selectedCategory}
         />
-        {dateFilter.isInvalid && (
-          <PopupMessage
-            status="error"
-            message="End date must not be earlier than start!"
-          />
+        {isPeek && (
+          <>
+            {dateFilter.isInvalid && (
+              <PopupMessage
+                status="error"
+                message="End date must not be earlier than start!"
+              />
+            )}
+            <FormField
+              onChange={handleStartDateChange}
+              labelContent="Start Date"
+              type="date"
+              disabled={false}
+              value={dateFilter.start}
+              dateMin={getDateInputValue(OLDEST_ALLOWED_DATE)}
+              dateMax={getDateInputValue(new Date())}
+            />
+            <FormField
+              onChange={handleEndDateChange}
+              labelContent="End Date"
+              type="date"
+              disabled={false}
+              value={dateFilter.end}
+              dateMin={getDateInputValue(OLDEST_ALLOWED_DATE)}
+              dateMax={getDateInputValue(new Date())}
+            />
+          </>
         )}
-        <FormField
-          onChange={handleStartDateChange}
-          labelContent="Start Date"
-          type="date"
-          disabled={false}
-          value={dateFilter.start}
-          dateMin={getDateInputValue(OLDEST_ALLOWED_DATE)}
-          dateMax={getDateInputValue(new Date())}
-        />
-        <FormField
-          onChange={handleEndDateChange}
-          labelContent="End Date"
-          type="date"
-          disabled={false}
-          value={dateFilter.end}
-          dateMin={getDateInputValue(OLDEST_ALLOWED_DATE)}
-          dateMax={getDateInputValue(new Date())}
-        />
         {(selectedCategory !== DROPDOWN_DEFAULT_KEY || dateFilter.edited) && (
           <Button
             class="btn btn--secondary"
