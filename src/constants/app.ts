@@ -26,6 +26,8 @@ const keys = [
 // verify if environment variables are defined
 keys.forEach((key, i) => {
   if (!key) {
+    if (DEPLOY_ENV !== "production" && (i === 2 || i === 3)) return;
+
     console.error(
       `Environment variable(s) not properly configured! (Debug code: ${i})`
     );
