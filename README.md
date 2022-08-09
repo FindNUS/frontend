@@ -88,75 +88,64 @@ The documentation for FindNUS is available [here](https://findnus.github.io/).
 
 ## Tech Stack
 
-<style>
-    .tech-stack--row:not(:last-child) {
-        margin-bottom: 10px;
-    }
-    .tech-stack--logo {
-        width: 80px;
-        height: auto;
-        object-fit: cover;
-    }
-    .tech-stack--logo:not(:last-child) {
-        margin-right: 10px;
-    }
-</style>
-<div class="tech-stack">
-    <div class="tech-stack--row">
+
+<div>
+    <div>
         <img 
             src='https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg' 
-            class="tech-stack--logo"
             title="React"
             alt="React"
+            width="80"
         >
         <img 
             src='https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg' 
-            class="tech-stack--logo"
             title="TypeScript"
             alt="TypeScript"
+            width="80"
         >
         <img 
             src='https://cdn.jsdelivr.net/gh/devicons/devicon/icons/sass/sass-original.svg' 
-            class="tech-stack--logo"
             title="Sass"
             alt="Sass"
+            width="80"
         >
         <img 
             src='https://cdn.jsdelivr.net/gh/devicons/devicon/icons/redux/redux-original.svg' 
-            class="tech-stack--logo"
             title="Redux"
             alt="Redux"
+            width="80"
         >
         <img 
             src='https://cdn.jsdelivr.net/gh/devicons/devicon/icons/firebase/firebase-plain.svg' 
-            class="tech-stack--logo"
             title="Firebase"
             alt="Firebase"
+            width="80"
         >
     </div>
-    <div class="tech-stack--row">
+    <div>
         <img 
             src='https://cdn.jsdelivr.net/gh/devicons/devicon/icons/googlecloud/googlecloud-original.svg' 
-            class="tech-stack--logo"
             title="Google Cloud"
             alt="Google Cloud"
+            width="80"
         >
         <img 
-            src='https://symbols.getvecta.com/stencil_25/40_jest.5fde12ec22.svg' class="tech-stack--logo"
+            src='https://symbols.getvecta.com/stencil_25/40_jest.5fde12ec22.svg' 
             title="Jest"    
             alt="Jest"    
+            width="80"
         >
         <img 
             src='https://testing-library.com/img/logo-large.png' 
-            class="tech-stack--logo"
             title="React Testing Library"
             alt="React Testing Library"
+            width="80"
         >
         <img 
             src='https://avatars.githubusercontent.com/u/44036562?s=280&v=4' 
-            class="tech-stack--logo"
             title="GitHub Actions"
             alt="GitHub Actions"
+            width="80"
         >
     </div>
 </div>
