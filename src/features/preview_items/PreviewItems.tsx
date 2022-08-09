@@ -25,6 +25,7 @@ import {
   selectPreviewDate,
   selectPreviewSlice,
   setPreviewLastPage,
+  setPreviewLoading,
   setPreviewPageNumber,
 } from "./previewItemsSlice";
 import {
@@ -146,11 +147,13 @@ const PreviewItems: React.FC<PreviewItemsProps> = function (
   useEffect(() => {
     if (currentIsLoading) {
       dispatch(setSearchLoading(true));
+      dispatch(setPreviewLoading(true));
       return;
     }
 
     if (currentResponse === undefined) {
       dispatch(setQueryResults([]));
+      dispatch(setPreviewLoading(false));
       return;
     }
     const items = parsePreviewItems(currentResponse.data);
@@ -165,6 +168,7 @@ const PreviewItems: React.FC<PreviewItemsProps> = function (
     else dispatch(setQueryResults(items));
 
     dispatch(setSearchLoading(false));
+    dispatch(setPreviewLoading(false));
   }, [currentIsLoading, currentResponse, filterCategory]);
 
   const location = useLocation();

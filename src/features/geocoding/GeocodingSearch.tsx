@@ -31,11 +31,15 @@ const GeocodingSearch: React.FC<GeocodingSearchProps> = function (
           results: google.maps.GeocoderResult[] | null,
           status: google.maps.GeocoderStatus
         ) => {
-          if (status !== "OK")
+          if (status !== "OK") {
+            setResult([]);
             return console.error(
               "Error encountered when performing geocoding."
             );
-          setResult(results as google.maps.GeocoderResult[]);
+          }
+          const locations = results as google.maps.GeocoderResult[];
+          // remove results without plus code
+          setResult(locations.filter((loc) => !!loc?.plus_code));
         }
       );
     });
@@ -50,14 +54,24 @@ const GeocodingSearch: React.FC<GeocodingSearchProps> = function (
 
     return () => clearTimeout(identifier);
   }, [query]);
-
+  1;
   return (
     <ul
       className={`geocoding__list ${
         query && result && showResults ? "" : "hidden"
       }`}
     >
+      {!result ||
+        (result.length === 0 && (
+          <div className="geocoding__item geocoding__item--disabled">
+            <span className="geocoding__item--descriptor geocoding__item--no-results">
+              No results found. Please refine your search.
+            </span>
+          </div>
+        ))}
+
       {result &&
+        result.length !== 0 &&
         showResults &&
         result.map((it) => {
           const address = it.formatted_address;
@@ -73,9 +87,7 @@ const GeocodingSearch: React.FC<GeocodingSearchProps> = function (
                 fontSize="large"
                 className="geocoding__item--icon"
               />
-              <span className="geocoding__item--descriptor">
-                &nbsp;{address}
-              </span>
+              <span className="geocoding__item--descriptor">{address}</span>
             </div>
           );
         })}

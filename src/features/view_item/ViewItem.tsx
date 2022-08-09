@@ -160,7 +160,14 @@ const ViewItem: React.FC = function () {
                   checked={isLookoutItem}
                 />
               )}
-              <h4>View similar items</h4>
+              <div className="tooltip">
+                <h4>View&nbsp;Possible&nbsp;Matches</h4>
+                <span className="tooltiptext">
+                  This feature uses Natural Language Processing (NLP) to find
+                  matching items in our database. The options that are relevant
+                  to the item are ranked appropriately.
+                </span>
+              </div>
               <PreviewItems
                 dashboard={true}
                 url={`${ENDPOINT_LOOKOUT}?${params.toString()}`}

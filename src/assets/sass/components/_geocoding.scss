@@ -26,9 +26,23 @@
     align-items: center;
     background-color: $colour-white;
     cursor: pointer;
+    font-size: 90%;
+    padding: 0 3px;
+
+    &--disabled {
+      cursor: not-allowed;
+    }
+
+    &--no-results {
+      padding: 0 5px;
+    }
 
     &:hover {
       background-color: $colour-grey-light;
+    }
+
+    &--descriptor {
+      padding-left: 3px;
     }
   }
 }

@@ -1,9 +1,8 @@
-import React from "react";
+import React, { forwardRef } from "react";
 
 export interface FormInputProps {
   type: string;
   disabled: boolean;
-  ref?: React.RefObject<HTMLInputElement>;
   onFocus: () => void;
   onBlur: () => void;
   onChange: (ev: React.FormEvent) => void;
@@ -11,10 +10,43 @@ export interface FormInputProps {
   defaultValue?: string;
   max?: string;
   min?: string;
+  required?: boolean;
 }
 
-const FormInput: React.FC<FormInputProps> = function (props: FormInputProps) {
-  return <input className="form-field__input" {...props} />;
-};
+// eslint-disable-next-line react/display-name
+const FormInput = forwardRef<HTMLInputElement, FormInputProps>(function (
+  props: FormInputProps,
+  ref
+) {
+  const {
+    type,
+    disabled,
+    onFocus,
+    onBlur,
+    onChange,
+    value,
+    defaultValue,
+    max,
+    min,
+    required,
+  } = props;
+
+  return (
+    <input
+      ref={ref}
+      className="form-field__input"
+      type={type}
+      disabled={disabled}
+      onFocus={onFocus}
+      onBlur={onBlur}
+      onChange={onChange}
+      value={value}
+      defaultValue={defaultValue}
+      max={max}
+      min={min}
+      required={!!required}
+    />
+  );
+});
 
 export default FormInput;

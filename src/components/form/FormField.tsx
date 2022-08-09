@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { forwardRef, useEffect, useRef, useState } from "react";
 import PopupMessage from "../PopupMessage";
 import FormInput from "./FormInput";
 import TextArea from "./TextArea";
@@ -7,20 +7,24 @@ interface FormFieldProps {
   labelContent: string;
   onChange: (ev: React.FormEvent) => void;
   disabled: boolean;
-  inputRef?: React.RefObject<HTMLInputElement>;
   type?: string;
   isInvalid?: { status: boolean; error: string };
   value?: string;
   defaultValue?: string;
   dateMax?: string;
   dateMin?: string;
+  required?: boolean;
 }
 
-const FormField: React.FC<FormFieldProps> = function (props: FormFieldProps) {
+// eslint-disable-next-line react/display-name
+const FormField = forwardRef<HTMLInputElement, FormFieldProps>(function (
+  props: FormFieldProps,
+  ref
+) {
   const [isFocus, setIsFocus] = useState(false);
   const [isEdited, setIsEdited] = useState(false);
   const handleFocusChange = () => setIsFocus((prevState) => !prevState);
-  const { inputRef, isInvalid, value, defaultValue, dateMax, dateMin } = props;
+  const { isInvalid, value, defaultValue, dateMax, dateMin, required } = props;
   const onChange = (ev: React.FormEvent) => {
     !isEdited && setIsEdited(true);
     props.onChange(ev);
@@ -45,11 +49,12 @@ const FormField: React.FC<FormFieldProps> = function (props: FormFieldProps) {
     onChange,
     onFocus: handleFocusChange,
     onBlur: handleFocusChange,
-    ...(inputRef && { ref: inputRef }), // Add inputRef is exists
+    ...(ref && { ref }), // Add ref if it exists
     value,
     defaultValue,
     max: dateMax,
     min: dateMin,
+    required,
   };
 
   const textareaProps = {
@@ -84,6 +89,6 @@ const FormField: React.FC<FormFieldProps> = function (props: FormFieldProps) {
       </div>
     </div>
   );
-};
+});
 
 export default FormField;
