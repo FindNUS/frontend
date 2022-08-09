@@ -18,6 +18,7 @@ interface PreviewItemsState {
     isInvalid: boolean;
     edited: boolean;
   };
+  isLoading: boolean;
 }
 
 const initialPreviewItemsState: PreviewItemsState = {
@@ -34,6 +35,7 @@ const initialPreviewItemsState: PreviewItemsState = {
     isInvalid: false,
     edited: false,
   },
+  isLoading: false,
 };
 
 export const previewItemsSlice = createSlice({
@@ -88,6 +90,9 @@ export const previewItemsSlice = createSlice({
       state.dateRange.isInvalid = false;
       state.dateRange.edited = true;
     },
+    setPreviewLoading(state, action: PayloadAction<boolean>) {
+      state.isLoading = action.payload;
+    },
     resetPreview(state) {
       state.category = initialPreviewItemsState.category;
       state.itemsPerPage = initialPreviewItemsState.itemsPerPage;
@@ -97,6 +102,7 @@ export const previewItemsSlice = createSlice({
       state.pageNumber = initialPreviewItemsState.pageNumber;
       state.query = initialPreviewItemsState.query;
       state.dateRange = initialPreviewItemsState.dateRange;
+      state.isLoading = initialPreviewItemsState.isLoading;
     },
   },
 });
@@ -109,6 +115,7 @@ export const {
   resetPreviewPagination,
   setPreviewDateEnd,
   setPreviewDateStart,
+  setPreviewLoading,
   resetPreview,
 } = previewItemsSlice.actions;
 
@@ -125,5 +132,7 @@ export const selectPreviewOffset = (state: RootState) =>
   state.previewItem.offset;
 export const selectPreviewDate = (state: RootState) =>
   state.previewItem.dateRange;
+export const selectPreviewLoading = (state: RootState) =>
+  state.previewItem.isLoading;
 
 export default previewItemsSlice.reducer;
