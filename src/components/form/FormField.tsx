@@ -13,6 +13,7 @@ interface FormFieldProps {
   defaultValue?: string;
   dateMax?: string;
   dateMin?: string;
+  required?: boolean;
 }
 
 // eslint-disable-next-line react/display-name
@@ -23,7 +24,7 @@ const FormField = forwardRef<HTMLInputElement, FormFieldProps>(function (
   const [isFocus, setIsFocus] = useState(false);
   const [isEdited, setIsEdited] = useState(false);
   const handleFocusChange = () => setIsFocus((prevState) => !prevState);
-  const { isInvalid, value, defaultValue, dateMax, dateMin } = props;
+  const { isInvalid, value, defaultValue, dateMax, dateMin, required } = props;
   const onChange = (ev: React.FormEvent) => {
     !isEdited && setIsEdited(true);
     props.onChange(ev);
@@ -53,6 +54,7 @@ const FormField = forwardRef<HTMLInputElement, FormFieldProps>(function (
     defaultValue,
     max: dateMax,
     min: dateMin,
+    required,
   };
 
   const textareaProps = {

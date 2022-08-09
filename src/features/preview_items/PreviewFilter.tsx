@@ -90,6 +90,7 @@ const PreviewFilter: React.FC<PreviewFilterProps> = function (
               value={dateFilter.start}
               dateMin={getDateInputValue(OLDEST_ALLOWED_DATE)}
               dateMax={getDateInputValue(new Date())}
+              required={true}
             />
             <FormField
               onChange={handleEndDateChange}
@@ -99,6 +100,7 @@ const PreviewFilter: React.FC<PreviewFilterProps> = function (
               value={dateFilter.end}
               dateMin={getDateInputValue(OLDEST_ALLOWED_DATE)}
               dateMax={getDateInputValue(new Date())}
+              required={true}
             />
           </>
         )}

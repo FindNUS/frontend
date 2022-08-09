@@ -10,6 +10,7 @@ export interface FormInputProps {
   defaultValue?: string;
   max?: string;
   min?: string;
+  required?: boolean;
 }
 
 // eslint-disable-next-line react/display-name
@@ -27,7 +28,9 @@ const FormInput = forwardRef<HTMLInputElement, FormInputProps>(function (
     defaultValue,
     max,
     min,
+    required,
   } = props;
+
   return (
     <input
       ref={ref}
@@ -41,6 +44,7 @@ const FormInput = forwardRef<HTMLInputElement, FormInputProps>(function (
       defaultValue={defaultValue}
       max={max}
       min={min}
+      required={!!required}
     />
   );
 });
