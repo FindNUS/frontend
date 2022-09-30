@@ -51,13 +51,8 @@ export const previewItemsSlice = createSlice({
       state.isLastPage = action.payload;
     },
     setPreviewCategory(state, action: PayloadAction<string>) {
-      if (action.payload === DROPDOWN_DEFAULT_KEY) {
-        state.isValidFilter = false;
-        return;
-      }
-
       state.category = action.payload;
-      state.isValidFilter = true;
+      state.isValidFilter = action.payload !== DROPDOWN_DEFAULT_KEY;
     },
     setPreviewItemsPerPage(state, action: PayloadAction<number>) {
       state.itemsPerPage = action.payload;
@@ -65,6 +60,7 @@ export const previewItemsSlice = createSlice({
     resetPreviewPagination(state) {
       state.isLastPage = initialPreviewItemsState.isLastPage;
       state.offset = initialPreviewItemsState.offset;
+      state.pageNumber = initialPreviewItemsState.pageNumber;
     },
     setPreviewDateStart(state, action: PayloadAction<string>) {
       const currentEnd = new Date(state.dateRange.end);
