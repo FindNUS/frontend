@@ -13,6 +13,7 @@ import { useAppDispatch, useAppSelector } from "../../hooks";
 import getDateInputValue from "../../utils/getDateInputValue";
 import {
   resetPreview,
+  resetPreviewPagination,
   selectPreviewCategory,
   selectPreviewDate,
   selectPreviewItemsPerPage,
@@ -38,10 +39,12 @@ const PreviewFilter: React.FC<PreviewFilterProps> = function (
   const handleCategoryChange = (ev: React.FormEvent) => {
     const { value } = ev.target as HTMLSelectElement;
     dispatch(setPreviewCategory(value));
+    dispatch(resetPreviewPagination());
   };
   const handleItemsPerPageChange = (ev: React.FormEvent) => {
     const { value } = ev.target as HTMLSelectElement;
     dispatch(setPreviewItemsPerPage(+value));
+    dispatch(resetPreviewPagination());
   };
 
   const handleResetFilter = () => {
@@ -51,11 +54,13 @@ const PreviewFilter: React.FC<PreviewFilterProps> = function (
   const handleStartDateChange = (ev: React.FormEvent) => {
     const { value } = ev.target as HTMLInputElement;
     dispatch(setPreviewDateStart(value));
+    dispatch(resetPreviewPagination());
   };
 
   const handleEndDateChange = (ev: React.FormEvent) => {
     const { value } = ev.target as HTMLInputElement;
     dispatch(setPreviewDateEnd(value));
+    dispatch(resetPreviewPagination());
   };
 
   // reset previous filters
