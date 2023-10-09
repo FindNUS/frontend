@@ -4,7 +4,6 @@ import DropdownButton from "../../components/form/DropdownButton";
 import FormField from "../../components/form/FormField";
 import PopupMessage from "../../components/PopupMessage";
 import {
-  DISPLAY_FILTER_DATE_END,
   DISPLAY_FILTER_DATE_START,
   DROPDOWN_DEFAULT_KEY,
   DROPDOWN_ITEMS_PER_PAGE,
@@ -96,7 +95,7 @@ const PreviewFilter: React.FC<PreviewFilterProps> = function (
               disabled={false}
               value={dateFilter.start}
               dateMin={getDateInputValue(DISPLAY_FILTER_DATE_START)}
-              dateMax={getDateInputValue(DISPLAY_FILTER_DATE_END)}
+              dateMax={getDateInputValue(new Date())}
               required={true}
             />
             <FormField
@@ -106,7 +105,7 @@ const PreviewFilter: React.FC<PreviewFilterProps> = function (
               disabled={false}
               value={dateFilter.end}
               dateMin={getDateInputValue(DISPLAY_FILTER_DATE_START)}
-              dateMax={getDateInputValue(DISPLAY_FILTER_DATE_END)}
+              dateMax={getDateInputValue(new Date())}
               required={true}
             />
           </>
