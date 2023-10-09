@@ -26,7 +26,7 @@ import {
   FORM_FIELD_IDENTIFIER_DATE,
   FORM_FIELD_IDENTIFIER_LOCATION,
   FORM_FIELD_IDENTIFIER_NAME,
-  OLDEST_ALLOWED_DATE,
+  // OLDEST_ALLOWED_DATE,
   STORE_UPDATE_DELAY,
   ROUTE_SUBMIT_ITEM_POST,
   SUBMIT_FOUND_CATEGORIES,
@@ -41,6 +41,8 @@ import {
   ROUTE_DASHBOARD_ITEMS,
   FORM_FIELD_IDENTIFIER_IMAGE,
   ROUTE_LOGIN_FIRST_TIME,
+  DISPLAY_FILTER_DATE_START,
+  DISPLAY_FILTER_DATE_END,
 } from "../../constants";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import getArrayObjectKeyFromValue from "../../utils/getArrayObjectKeyFromValue";
@@ -178,8 +180,8 @@ const ItemSubmissionForm: React.FC = function () {
     // 3. validate date input
     setIdentifierStatus(
       FORM_FIELD_IDENTIFIER_DATE,
-      new Date(formInput.date) <= new Date() &&
-        new Date(formInput.date) > OLDEST_ALLOWED_DATE
+      new Date(formInput.date) <= DISPLAY_FILTER_DATE_END &&
+        new Date(formInput.date) > DISPLAY_FILTER_DATE_START
     );
     // 4. validate location input
     setIdentifierStatus(

@@ -1,7 +1,12 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../../app/rootReducer";
-import { DEFAULT_ITEMS_PER_PAGE, DROPDOWN_DEFAULT_KEY } from "../../constants";
-import { OLDEST_ALLOWED_DATE } from "../../constants";
+import {
+  DEFAULT_ITEMS_PER_PAGE,
+  DISPLAY_FILTER_DATE_END,
+  DISPLAY_FILTER_DATE_START,
+  DROPDOWN_DEFAULT_KEY,
+} from "../../constants";
+// import { OLDEST_ALLOWED_DATE } from "../../constants";
 import getDateInputValue from "../../utils/getDateInputValue";
 
 interface PreviewItemsState {
@@ -30,8 +35,10 @@ const initialPreviewItemsState: PreviewItemsState = {
   offset: 0,
   query: undefined,
   dateRange: {
-    end: getDateInputValue(new Date()),
-    start: getDateInputValue(OLDEST_ALLOWED_DATE),
+    // end: getDateInputValue(new Date()),
+    // start: getDateInputValue(OLDEST_ALLOWED_DATE),
+    end: getDateInputValue(DISPLAY_FILTER_DATE_END),
+    start: getDateInputValue(DISPLAY_FILTER_DATE_START),
     isInvalid: false,
     edited: false,
   },
