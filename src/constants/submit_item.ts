@@ -115,9 +115,11 @@ export const TIME_OFFSET = BROWSER_TIMEZONE_OFFSET * ONE_MINUTE_MILISECONDS;
 const SUBMISSION_DATE_DAYS = 180; // days
 export const SUBMISSION_DATE_RANGE =
   24 * 60 * ONE_MINUTE_MILISECONDS * SUBMISSION_DATE_DAYS; // miliseconds per day * days
-export const OLDEST_ALLOWED_DATE = new Date(
-  currentDate.setTime(currentDate.getTime() - SUBMISSION_DATE_RANGE)
-);
+export const DISPLAY_FILTER_DATE_START = new Date("2022-05-01");
+export const DISPLAY_FILTER_DATE_END = new Date("2022-08-31");
+// export const OLDEST_ALLOWED_DATE = new Date(
+//   currentDate.setTime(currentDate.getTime() - SUBMISSION_DATE_RANGE)
+// );
 
 export const E164_STANDARD_REGEX = /^\+?[1-9]\d{1,14}$/;
 

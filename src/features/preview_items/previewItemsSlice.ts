@@ -1,7 +1,12 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../../app/rootReducer";
-import { DEFAULT_ITEMS_PER_PAGE, DROPDOWN_DEFAULT_KEY } from "../../constants";
-import { OLDEST_ALLOWED_DATE } from "../../constants";
+import {
+  DEFAULT_ITEMS_PER_PAGE,
+  DISPLAY_FILTER_DATE_END,
+  DISPLAY_FILTER_DATE_START,
+  DROPDOWN_DEFAULT_KEY,
+} from "../../constants";
+// import { OLDEST_ALLOWED_DATE } from "../../constants";
 import getDateInputValue from "../../utils/getDateInputValue";
 
 interface PreviewItemsState {
@@ -19,6 +24,7 @@ interface PreviewItemsState {
     edited: boolean;
   };
   isLoading: boolean;
+  hasShownLoadingDelayToast: boolean;
 }
 
 const initialPreviewItemsState: PreviewItemsState = {
@@ -30,12 +36,15 @@ const initialPreviewItemsState: PreviewItemsState = {
   offset: 0,
   query: undefined,
   dateRange: {
-    end: getDateInputValue(new Date()),
-    start: getDateInputValue(OLDEST_ALLOWED_DATE),
+    // end: getDateInputValue(new Date()),
+    // start: getDateInputValue(OLDEST_ALLOWED_DATE),
+    end: getDateInputValue(DISPLAY_FILTER_DATE_END),
+    start: getDateInputValue(DISPLAY_FILTER_DATE_START),
     isInvalid: false,
     edited: false,
   },
   isLoading: false,
+  hasShownLoadingDelayToast: false,
 };
 
 export const previewItemsSlice = createSlice({
@@ -100,6 +109,9 @@ export const previewItemsSlice = createSlice({
       state.dateRange = initialPreviewItemsState.dateRange;
       state.isLoading = initialPreviewItemsState.isLoading;
     },
+    setShownLoadingDelayToast(state) {
+      state.hasShownLoadingDelayToast = true;
+    },
   },
 });
 
@@ -113,6 +125,7 @@ export const {
   setPreviewDateStart,
   setPreviewLoading,
   resetPreview,
+  setShownLoadingDelayToast,
 } = previewItemsSlice.actions;
 
 export const selectPreviewSlice = (state: RootState) => state.previewItem;
@@ -130,5 +143,7 @@ export const selectPreviewDate = (state: RootState) =>
   state.previewItem.dateRange;
 export const selectPreviewLoading = (state: RootState) =>
   state.previewItem.isLoading;
+export const selectHasShownLoadingDelayToast = (state: RootState) =>
+  state.previewItem.hasShownLoadingDelayToast;
 
 export default previewItemsSlice.reducer;
