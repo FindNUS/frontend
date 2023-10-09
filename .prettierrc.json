@@ -8,5 +8,5 @@
   "singleQuote": false,
   "jsxSingleQuote": false,
   "bracketSameLine": false,
-  "endOfLine": "crlf"
+  "endOfLine": "auto"
 }
