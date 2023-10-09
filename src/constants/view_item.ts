@@ -28,3 +28,5 @@ export const DROPDOWN_ITEMS_PER_PAGE = [
   { key: "25", value: "25" },
   { key: "50", value: "50" },
 ];
+export const ITEMS_LOADING_TOAST =
+  "Search results may take up to 30 seconds to load due to sleeping backend container.";

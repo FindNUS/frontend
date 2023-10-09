@@ -1,6 +1,6 @@
 {
   "name": "frontend",
-  "version": "1.4.2",
+  "version": "1.5.0",
   "private": true,
   "dependencies": {
     "@emotion/react": "^11.10.6",
@@ -19,6 +19,7 @@
     "react-redux-firebase": "^3.11.0",
     "react-router-dom": "^6.3.0",
     "react-scripts": "5.0.1",
+    "react-toastify": "^9.1.3",
     "redux-firestore": "^1.0.0",
     "typescript": "^4.6.4",
     "web-vitals": "^2.1.4"

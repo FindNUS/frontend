@@ -24,6 +24,7 @@ interface PreviewItemsState {
     edited: boolean;
   };
   isLoading: boolean;
+  hasShownLoadingDelayToast: boolean;
 }
 
 const initialPreviewItemsState: PreviewItemsState = {
@@ -43,6 +44,7 @@ const initialPreviewItemsState: PreviewItemsState = {
     edited: false,
   },
   isLoading: false,
+  hasShownLoadingDelayToast: false,
 };
 
 export const previewItemsSlice = createSlice({
@@ -107,6 +109,9 @@ export const previewItemsSlice = createSlice({
       state.dateRange = initialPreviewItemsState.dateRange;
       state.isLoading = initialPreviewItemsState.isLoading;
     },
+    setShownLoadingDelayToast(state) {
+      state.hasShownLoadingDelayToast = true;
+    },
   },
 });
 
@@ -120,6 +125,7 @@ export const {
   setPreviewDateStart,
   setPreviewLoading,
   resetPreview,
+  setShownLoadingDelayToast,
 } = previewItemsSlice.actions;
 
 export const selectPreviewSlice = (state: RootState) => state.previewItem;
@@ -137,5 +143,7 @@ export const selectPreviewDate = (state: RootState) =>
   state.previewItem.dateRange;
 export const selectPreviewLoading = (state: RootState) =>
   state.previewItem.isLoading;
+export const selectHasShownLoadingDelayToast = (state: RootState) =>
+  state.previewItem.hasShownLoadingDelayToast;
 
 export default previewItemsSlice.reducer;
