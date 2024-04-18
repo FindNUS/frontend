@@ -28,6 +28,10 @@ FindNUS is a lost and found item management system which aims to supplement exis
   - [Milestone 3: Extensions](#milestone-3-extensions)
 - [File Structure](#file-structure)
 - [Recommended browsers](#recommended-browsers)
+- [Known Issues](#known-issues)
+  - [1. React \>=18](#1-react-18)
+  - [2. Upgrading Firebase `>10.6.0`](#2-upgrading-firebase-1060)
+  - [3. Firebase permissions](#3-firebase-permissions)
 
 ## Getting Started
 
@@ -438,3 +442,30 @@ We recommend using the latest versions of Google Chrome and Chromium-based brows
 | Brave                         | 1.41.100                                 |
 
 <div align="right"><a href="#table-of-contents">Back to top</a></div>
+
+
+## Known Issues
+
+### 1. React >=18
+
+`react-redux-firebase` supports up to React `17`, and is currently out of development. As such, it is not possible to upgrade React beyond version 17, as well as various depencencies including `react-toastify` and `react-drag-drop-files` without making significant changes to the application. There are no plans to migrate to another library.
+
+### 2. Upgrading Firebase `>10.6.0`
+
+```
+ReferenceError: TextDecoder is not defined
+```
+
+The testing environment does not support `TextDecoder`, which is used by `undici` in `firebase` (see [github issue](https://github.com/firebase/firebase-js-sdk/issues/7845))
+
+Possible to add polyfills to resolve this issue, but will not be fixed as it is not a pressing issue.
+
+### 3. Firebase permissions
+
+```
+ERROR
+Missing or insufficient permissions.
+FirebaseError: Missing or insufficient permissions.
+```
+
+Unknown source.
