@@ -38,13 +38,9 @@ export interface useFirebaseGetOTPProps {
  * @returns The reCAPTCHA verifier instance.
  */
 export const setupAppVerifier = (auth: Auth, setAV: setAppVerifierType) => {
-  const av = new RecaptchaVerifier(
-    RECAPTCHA_CONTAINER_ID,
-    {
-      size: "invisible",
-    },
-    auth
-  );
+  const av = new RecaptchaVerifier(auth, RECAPTCHA_CONTAINER_ID, {
+    size: "invisible",
+  });
   setAV(av);
   return av;
 };
